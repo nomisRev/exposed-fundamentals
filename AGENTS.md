@@ -1,0 +1,6 @@
+- Use `agent-browser --help` CLI to check the slides but make sure to close it when you are done
+- You can find Slidev SKILLS here, node_modules/@slidev/cli/skills/slidev/SKILL.md
+- In doubt read code in node_modules to understand the libraries you need to work with
+- slidev-theme-kotlin can be found in ../slidev-theme-kotlin
+- Find Exposed documentation here: https://www.jetbrains.com/help/exposed/home.html
+- Use `slidev --help` and your extensions read-slide. A server should be running on port 3030.

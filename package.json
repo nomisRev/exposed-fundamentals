@@ -1,0 +1,21 @@
+{
+  "name": "kotlin-fundamentals-slides",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "slidev",
+    "build": "slidev build",
+    "export": "slidev export",
+    "screenshot": "slidev export --format png",
+    "check:snippets": "node scripts/check-snippet-sync.mjs"
+  },
+  "dependencies": {
+    "@slidev/cli": "52.19.1",
+    "roughjs": "4.6.6",
+    "slidev-theme-kotlin": "0.10.0",
+    "vue": "3.5.41"
+  },
+  "devDependencies": {
+    "playwright-chromium": "1.62.1"
+  }
+}
