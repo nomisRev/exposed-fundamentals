@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS profiles2 (id uuid DEFAULT uuidv7()() PRIMARY KEY);

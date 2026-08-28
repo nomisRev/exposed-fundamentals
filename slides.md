@@ -1,5 +1,6 @@
 ---
 theme: kotlin
+favicon: /Exposed icon.svg
 transition: view-transition
 layout: cover
 class: fundamentals-cover

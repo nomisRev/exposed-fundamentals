@@ -848,6 +848,53 @@ fun insertReturning(
 
 ---
 
+# Insert a talk — do nothing if exists
+
+````md sync-magic-move
+```kotlin
+Talks.insertIgnore {
+    it[Talks.title] = "Another title"
+    it[Talks.speakerId] = 99
+    it[Talks.startsAt] = Instant.parse("2026-10-01T10:00:00Z")
+}
+```
+```sql
+INSERT INTO talks (title, speaker_id, starts_at)
+VALUES ('Another title', 99, TIMESTAMP '2026-10-01 10:00:00')
+ON CONFLICT DO NOTHING;
+```
+
+```kotlin
+Talks.insertIgnoreAndGetId {
+    it[Talks.title] = "Another title"
+    it[Talks.speakerId] = 99
+    it[Talks.startsAt] = Instant.parse("2026-10-01T10:00:00Z")
+}
+```
+```sql
+INSERT INTO talks (title, speaker_id, starts_at)
+VALUES ('Another title', 99, TIMESTAMP '2026-10-01 10:00:00')
+ON CONFLICT DO NOTHING
+RETURNING id;
+```
+
+```kotlin
+Talks.insertReturning([Talks.id, Talks.createdAt], ignoreErrors = true) {
+    it[Talks.title] = "Another title"
+    it[Talks.speakerId] = 99
+    it[Talks.startsAt] = Instant.parse("2026-10-01T10:00:00Z")
+}
+```
+```sql
+INSERT INTO talks (title, speaker_id, starts_at)
+VALUES ('Another title', 99, TIMESTAMP '2026-10-01 10:00:00')
+ON CONFLICT DO NOTHING
+RETURNING id, createdAt;
+```
+````
+
+---
+
 # Insert collections with `batchInsert`
 
 ````md magic-move
@@ -970,27 +1017,75 @@ DO UPDATE SET
     speaker_id = EXCLUDED.speaker_id,
     starts_at = EXCLUDED.starts_at;
 ```
+
+```kotlin
+Talks.upsertReturning(Talks.slug) {
+    it[Talks.slug] = slug
+    it[Talks.title] = title
+    it[Talks.speakerId] = speakerId
+    it[Talks.startsAt] = startsAt
+}
+```
+```sql
+INSERT INTO talks (slug, title, speaker_id, starts_at)
+VALUES ('intro-to-kotlin', 'Kotlin: A Practical Introduction', 15, TIMESTAMP '2026-09-01 11:00:00')
+ON CONFLICT (slug)
+DO UPDATE SET
+    title = EXCLUDED.title,
+    speaker_id = EXCLUDED.speaker_id,
+    starts_at = EXCLUDED.starts_at
+RETURNING *;
+```
+
+```kotlin
+Talks.upsertReturning(Talks.slug, returning = [Talks.id, Talks.updatedAt]) {
+    it[Talks.slug] = slug
+    it[Talks.title] = title
+    it[Talks.speakerId] = speakerId
+    it[Talks.startsAt] = startsAt
+}
+```
+```sql
+INSERT INTO talks (slug, title, speaker_id, starts_at)
+VALUES ('intro-to-kotlin', 'Kotlin: A Practical Introduction', 15, TIMESTAMP '2026-09-01 11:00:00')
+ON CONFLICT (slug)
+DO UPDATE SET
+    title = EXCLUDED.title,
+    speaker_id = EXCLUDED.speaker_id,
+    starts_at = EXCLUDED.starts_at
+RETURNING id, updatedAt;
+```
 ````
 
 </DrawnAnnotation>
 </DrawnAnnotation>
 
-- Use `upsertReturning(...)` to return selected columns.
-- Use `insertIgnore` when a conflict should do nothing rather than update.
-
 ---
 
 # Delete states its scope
 
+<DrawnAnnotation text="removed" label="deleteWhere` returns the affected row count" on="0">
+<DrawnAnnotation text="deleteReturning" label="Use deleteReturning to return affected rows" on="1">
+
+````md magic-move
 ```kotlin
-val removed = Talks.deleteWhere {
-    Talks.id eq talkId
-}
+val removed: Int = Talks.deleteWhere { Talks.id eq talkId }
 ```
 
-`deleteWhere` returns the affected row count.
+```kotlin
+val removed: Iterable<ResultRow> = Talks.deleteReturning { Talks.id eq talkId }
+```
 
-Use `deleteReturning(...)` to return selected columns.
+```kotlin
+val removed: Iterable<TalkPreview> =
+    Talks.deleteReturning { Talks.id eq talkId }
+        .map { it.toTalkPreview() }
+```
+````
+
+</DrawnAnnotation>
+</DrawnAnnotation>
+
 
 ---
 
@@ -1005,17 +1100,15 @@ transaction(database) {
 }
 ```
 
-- Read generated SQL during development.
-- Use structured logging and protect sensitive values in production.
-- Pair SQL visibility with database plans and driver observability.
-
 ---
 
 # The SQL DSL stays visible by design
 
-- `transaction` → unit of work
-- `insert` / `select` → operation and projection
-- `where` → typed predicates
-- `ResultRow → DTO` → application data
+- `transaction`
+- `insert` ~ `SELECT`, `update` ~ `UPDATE`, `delete` ~ `DELETE`
+- `where`, `having`, ... → typed predicates
+- `ResultRow` → application data
 
-> **Exposed does not hide the query.** It represents and composes it in typed Kotlin.
+> **Exposed does not hide the query.**
+> 
+> It represents and composes it in typed Kotlin.

@@ -40,7 +40,6 @@ object Talks : LongIdTable(name = "talks", columnName = "talks_id", sequenceName
         onUpdate = ReferenceOption.CASCADE,
         fkName = "fk_talks_speaker_id"
     )
-    val boo = varchar("boo", 200).autoIncrement()
 
     //    val title = varchar("title", 200)
     val description = text("description")
@@ -49,8 +48,8 @@ object Talks : LongIdTable(name = "talks", columnName = "talks_id", sequenceName
     val title = varchar("title", 200)
         .transform(::TalkTitle) { it.value }
 
-    val date = datetime("")
-    val money: CompositeMoneyColumn<BigDecimal, CurrencyUnit, MonetaryAmount> = compositeMoney(1, 2, "")
+    val date = datetime("date")
+    val money: CompositeMoneyColumn<BigDecimal, CurrencyUnit, MonetaryAmount> = compositeMoney(1, 2, "money")
 
     val createdAt = timestamp("created_at").defaultExpression(CurrentTimestamp)
     val updatedAt = timestamp("updated_at").databaseGenerated()

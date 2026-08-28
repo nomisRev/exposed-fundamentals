@@ -14,7 +14,7 @@ import org.jetbrains.exposed.v1.json.*
 import kotlin.time.Duration
 
 /** A deliberately small, but complete, meetup schema for a BFF/API layer. */
-object ProfileTable : IdTable<Long>("profiles") {
+object ProfileTable : IdTable<Long>() {
   override val id = long("id").autoIncrement().entityId()
   override val primaryKey = PrimaryKey(id)
 
@@ -47,7 +47,7 @@ object Tags : LongIdTable("tags") {
 
 enum class TalkStatus { DRAFT, PUBLISHED, CANCELLED }
 
-object Talks : LongIdTable("talks", columnName = "id", sequenceName = "talks_id_seq") {
+object Talks : LongIdTable("talks") {
   val speakerId = reference("speaker_id", ProfileTable, onDelete = ReferenceOption.RESTRICT)
   val hostId = reference("host_id", ProfileTable, onDelete = ReferenceOption.RESTRICT)
   val title = varchar("title", 200)
@@ -285,22 +285,24 @@ class MeetupBff(private val database: Database? = null) {
       .where { TalkTags.talkId inList talkIds }
       .groupBy({ it[TalkTags.talkId].value }, { it[Tags.slug] })
 }
-
-fun update(talkId: Long, status: TalkStatus): TalkPreview? =
-  Talks.updateReturning([Talks.speakerId, Talks.title, Talks.startsAt], { Talks.id eq talkId }) {
-    it[Talks.status] = TalkStatus.PUBLISHED
-  }.singleOrNull()?.toTalkPreview()
-
-fun upsert(talkId: Long, status: TalkStatus): UpsertStatement<Long> =
-  Talks.upsert {
-    it[Talks.status] = status
-  }
+//
+//fun update(talkId: Long, status: TalkStatus): TalkPreview? =
+//  Talks.updateReturning([Talks.speakerId, Talks.title, Talks.startsAt], { Talks.id eq talkId }) {
+//    it[Talks.status] = TalkStatus.PUBLISHED
+//  }.singleOrNull()?.toTalkPreview()
+//
+//fun upsert(talkId: Long, status: TalkStatus): UpsertStatement<Long> =
+//  Talks.upsert {
+//    it[Talks.status] = status
+//  }
 
 fun main() {
 
   Talks.insertIgnore {  }
   Talks.insertIgnoreAndGetId {  }
-  Talks.insertReturning(ignoreErrors = true) {  }
+  Talks.insertReturning([Talks.id], ignoreErrors = true) {  }
+
+  Talks.deleteReturning { Talks.id eq 1 }
 
   Talks.upsert(Talks.slug) {
     it[Talks.slug] = slug
@@ -379,64 +381,64 @@ fun main() {
 
 }
 
-
-fun String.toUniqueSlug() = replace(" ", "-").lowercase()
-
-context(_: Transaction)
-fun insert(title: String, speakerId: Long, startsAt: Instant): InsertStatement<Number> =
-  Talks.insert {
-    it[Talks.title] = title
-    it[Talks.slug] = title.toUniqueSlug()
-    it[Talks.speakerId] = speakerId
-    it[Talks.startsAt] = startsAt
-  }
-
-context(_: Transaction)
-fun insertAndGetId(title: String, speakerId: Long, startsAt: Instant): EntityID<Long> =
-  Talks.insertAndGetId {
-    it[Talks.title] = title
-    it[Talks.slug] = title.toUniqueSlug()
-    it[Talks.speakerId] = speakerId
-    it[Talks.startsAt] = startsAt
-  }
-
-context(_: Transaction)
-fun insertReturning(title: String, speakerId: Long, startsAt: Instant): List<TalkWithoutSpeaker> =
-  Talks.insertReturning {
-    it[Talks.title] = title
-    it[Talks.speakerId] = speakerId
-    it[Talks.startsAt] = startsAt
-  }.map(ResultRow::toTalkWithoutSpeaker)
-
-
-data class NewTalk(val title: String, val description: String, val speakerId: Long, val startsAt: Instant)
-
-context(_: Transaction)
-fun insertBatch(newTalk: List<NewTalk>): List<TalkWithoutSpeaker> =
-  Talks.batchInsert(newTalk) { newTalk ->
-    this[Talks.title] = newTalk.title
-    this[Talks.speakerId] = newTalk.speakerId
-    this[Talks.startsAt] = newTalk.startsAt
-  }.map(ResultRow::toTalkWithoutSpeaker)
-
-context(_: Transaction)
-fun insertBatch_(newTalk: List<NewTalk>) {
-  val batch = Talks.batchInsert(newTalk, shouldReturnGeneratedValues = false) { newTalk ->
-    this[Talks.title] = newTalk.title
-    this[Talks.speakerId] = newTalk.speakerId
-    this[Talks.startsAt] = newTalk.startsAt
-  }
-
-}
-
-fun ResultRow.toTalkWithoutSpeaker(): TalkWithoutSpeaker = TODO()
-
-data class TalkWithoutSpeaker(
-  val id: Long,
-  val title: String,
-  val slug: String,
-  val speakerId: Long,
-  val startsAt: Instant,
-  val createdAt: Instant,
-  val updatedAt: Instant
-)
+//
+//fun String.toUniqueSlug() = replace(" ", "-").lowercase()
+//
+//context(_: Transaction)
+//fun insert(title: String, speakerId: Long, startsAt: Instant): InsertStatement<Number> =
+//  Talks.insert {
+//    it[Talks.title] = title
+//    it[Talks.slug] = title.toUniqueSlug()
+//    it[Talks.speakerId] = speakerId
+//    it[Talks.startsAt] = startsAt
+//  }
+//
+//context(_: Transaction)
+//fun insertAndGetId(title: String, speakerId: Long, startsAt: Instant): EntityID<Long> =
+//  Talks.insertAndGetId {
+//    it[Talks.title] = title
+//    it[Talks.slug] = title.toUniqueSlug()
+//    it[Talks.speakerId] = speakerId
+//    it[Talks.startsAt] = startsAt
+//  }
+//
+//context(_: Transaction)
+//fun insertReturning(title: String, speakerId: Long, startsAt: Instant): List<TalkWithoutSpeaker> =
+//  Talks.insertReturning {
+//    it[Talks.title] = title
+//    it[Talks.speakerId] = speakerId
+//    it[Talks.startsAt] = startsAt
+//  }.map(ResultRow::toTalkWithoutSpeaker)
+//
+//
+//data class NewTalk(val title: String, val description: String, val speakerId: Long, val startsAt: Instant)
+//
+//context(_: Transaction)
+//fun insertBatch(newTalk: List<NewTalk>): List<TalkWithoutSpeaker> =
+//  Talks.batchInsert(newTalk) { newTalk ->
+//    this[Talks.title] = newTalk.title
+//    this[Talks.speakerId] = newTalk.speakerId
+//    this[Talks.startsAt] = newTalk.startsAt
+//  }.map(ResultRow::toTalkWithoutSpeaker)
+//
+//context(_: Transaction)
+//fun insertBatch_(newTalk: List<NewTalk>) {
+//  val batch = Talks.batchInsert(newTalk, shouldReturnGeneratedValues = false) { newTalk ->
+//    this[Talks.title] = newTalk.title
+//    this[Talks.speakerId] = newTalk.speakerId
+//    this[Talks.startsAt] = newTalk.startsAt
+//  }
+//
+//}
+//
+//fun ResultRow.toTalkWithoutSpeaker(): TalkWithoutSpeaker = TODO()
+//
+//data class TalkWithoutSpeaker(
+//  val id: Long,
+//  val title: String,
+//  val slug: String,
+//  val speakerId: Long,
+//  val startsAt: Instant,
+//  val createdAt: Instant,
+//  val updatedAt: Instant
+//)
