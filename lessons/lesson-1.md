@@ -86,39 +86,35 @@ kodee: welcome
 # Defining our Tables
 
 <DrawnAnnotation text="Table(&quot;Profile&quot;)" label="Default tableName = className - Table suffix => Profile" on="0">
-<DrawnAnnotation text="Table(&quot;profiles&quot;)" label="Follow database conventions" on="1">
-<DrawnAnnotation text="Column<Long>" label="Every column is typed to a proper Kotlin type" on="2">
-<DrawnAnnotation text="PrimaryKey" label="Explicitly create PrimaryKey" on="2">
-<DrawnAnnotation text="val name" label="Create properties to match the shape of table" on="3">
 
-<DrawnAnnotation text=".autoIncrement().entityId()" label="Auto-incrementing database identifier as EntityID" on="4">
-
-<DrawnAnnotation text="IdTable<Long>" on="5">
-<DrawnAnnotation text="override" on="5">
-<DrawnAnnotation text="override" occurrence="2" label="Auto-incrementing database identifier as EntityID" on="5">
-
-<DrawnAnnotation text="LongIdTable" label="LongIdTable implements all this boilerplate for us" on="6">
-
-<DrawnAnnotation text="reference(&quot;speaker_id&quot;, ProfileTable.id)" label="Referencing a table requires the EntityID for the table" on="7">
-
-<DrawnAnnotation text="ProfileTable" occurrence="2" label="(Long)IdTable has specialised syntax for referencing, joins, DAO, and more" on="8">
-
-<DrawnAnnotation text="ReferenceOption" on="9">
-<DrawnAnnotation text="ReferenceOption" label="CASCADE, SET_NULL, RESTRICT, NO_ACTION, SET_DEFAULT;" occurrence="2" on="9">
-
-<DrawnAnnotation text="columnName = " on="10">
-<DrawnAnnotation text="sequenceName = " label="Override default column names" on="10">
-<DrawnAnnotation text="fkName = " on="10">
-
-
-````md magic-move
 ```kotlin
 object ProfileTable : Table("Profile")
 ```
 
+</DrawnAnnotation>
+
+---
+magic-move
+---
+
+# Defining our Tables
+
+<DrawnAnnotation text="Table(&quot;profiles&quot;)" label="Follow database conventions" on="0">
+
 ```kotlin
 object ProfileTable : Table("profiles")
 ```
+
+</DrawnAnnotation>
+
+---
+magic-move
+---
+
+# Defining our Tables
+
+<DrawnAnnotation text="Column<Long>" label="Every column is typed to a proper Kotlin type" on="0">
+<DrawnAnnotation text="PrimaryKey" label="Explicitly create PrimaryKey" on="0">
 
 ```kotlin
 object ProfileTable : Table("profiles") {
@@ -126,6 +122,17 @@ object ProfileTable : Table("profiles") {
     val primaryKey = PrimaryKey(id)
 }
 ```
+
+</DrawnAnnotation>
+</DrawnAnnotation>
+
+---
+magic-move
+---
+
+# Defining our Tables
+
+<DrawnAnnotation text="val name" label="Create properties to match the shape of table" on="0">
 
 ```kotlin
 object ProfileTable : Table("profiles") {
@@ -135,6 +142,16 @@ object ProfileTable : Table("profiles") {
 }
 ```
 
+</DrawnAnnotation>
+
+---
+magic-move
+---
+
+# Defining our Tables
+
+<DrawnAnnotation text=".autoIncrement().entityId()" label="Auto-incrementing database identifier as EntityID" on="0">
+
 ```kotlin
 object ProfileTable : Table("profiles") {
     val id: Column<EntityID<Long>> = long("id").autoIncrement().entityId()
@@ -142,6 +159,18 @@ object ProfileTable : Table("profiles") {
     val name = varchar("name", 120)
 }
 ```
+
+</DrawnAnnotation>
+
+---
+magic-move
+---
+
+# Defining our Tables
+
+<DrawnAnnotation text="IdTable<Long>" on="0">
+<DrawnAnnotation text="override" on="0">
+<DrawnAnnotation text="override" occurrence="2" label="Auto-incrementing database identifier as EntityID" on="0">
 
 ```kotlin
 object ProfileTable : IdTable<Long>("profiles") {
@@ -151,11 +180,33 @@ object ProfileTable : IdTable<Long>("profiles") {
 }
 ```
 
+</DrawnAnnotation>
+</DrawnAnnotation>
+</DrawnAnnotation>
+
+---
+magic-move
+---
+
+# Defining our Tables
+
+<DrawnAnnotation text="LongIdTable" label="LongIdTable implements all this boilerplate for us" on="0">
+
 ```kotlin
 object ProfileTable : LongIdTable("profiles") {
     val name = varchar("name", 120)
 }
 ```
+
+</DrawnAnnotation>
+
+---
+magic-move
+---
+
+# Defining our Tables
+
+<DrawnAnnotation text="reference(&quot;speaker_id&quot;, ProfileTable.id)" label="Referencing a table requires the EntityID for the table" on="0">
 
 ```kotlin
 object ProfileTable : LongIdTable("profiles") {
@@ -169,6 +220,16 @@ object TalksTable : LongIdTable("talks") {
 }
 ```
 
+</DrawnAnnotation>
+
+---
+magic-move
+---
+
+# Defining our Tables
+
+<DrawnAnnotation text="ProfileTable" occurrence="2" label="(Long)IdTable has specialised syntax for referencing, joins, DAO, and more" on="0">
+
 ```kotlin
 object ProfileTable : LongIdTable("profiles") {
     val name = varchar("name", 120)
@@ -180,6 +241,17 @@ object TalksTable : LongIdTable("talks") {
     val description = text("description")
 }
 ```
+
+</DrawnAnnotation>
+
+---
+magic-move
+---
+
+# Defining our Tables
+
+<DrawnAnnotation text="ReferenceOption" on="0">
+<DrawnAnnotation text="ReferenceOption" label="CASCADE, SET_NULL, RESTRICT, NO_ACTION, SET_DEFAULT;" occurrence="2" on="0">
 
 ```kotlin
 object ProfileTable : LongIdTable("profiles") {
@@ -197,6 +269,20 @@ object TalksTable : LongIdTable("talks") {
     val description = text("description")
 }
 ```
+
+</DrawnAnnotation>
+</DrawnAnnotation>
+
+---
+magic-move
+---
+
+# Defining our Tables
+
+<DrawnAnnotation text="columnName = " on="0">
+<DrawnAnnotation text="sequenceName = " label="Override default column names" on="0">
+<DrawnAnnotation text="fkName = " on="0">
+
 ```kotlin
 object ProfileTable : LongIdTable(
     "profiles",
@@ -218,22 +304,7 @@ object TalksTable : LongIdTable("talks") {
     val description = text("description")
 }
 ```
-````
 
-</DrawnAnnotation>
-</DrawnAnnotation>
-</DrawnAnnotation>
-</DrawnAnnotation>
-</DrawnAnnotation>
-</DrawnAnnotation>
-</DrawnAnnotation>
-</DrawnAnnotation>
-</DrawnAnnotation>
-</DrawnAnnotation>
-</DrawnAnnotation>
-</DrawnAnnotation>
-</DrawnAnnotation>
-</DrawnAnnotation>
 </DrawnAnnotation>
 </DrawnAnnotation>
 </DrawnAnnotation>

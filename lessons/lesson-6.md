@@ -64,12 +64,17 @@ Kotlin table model → compare / generate / validate → reviewed Flyway SQL →
 
 # Exposed Gradle Plugin
 
-````md magic-move
 ```kotlin gradle
 plugins {
     id("org.jetbrains.exposed.plugin") version "1.4.0"
 }
 ```
+
+---
+magic-move
+---
+
+# Exposed Gradle Plugin
 
 ```kotlin gradle
 plugins {
@@ -83,17 +88,17 @@ exposed {
     }
 }
 ```
-````
-<DrawnAnnotation text="generateMigrations" label="Writes migration files to src/main/resources/db/migration" on="2" placement="down">
 
-<v-clicks at="2">
+
+<v-clicks at="1">
+<DrawnAnnotation text="generateMigrations" label="Writes migration files to src/main/resources/db/migration" placement="down">
 
 ```bash
 ./gradlew generateMigrations
 ```
 
-</v-clicks>
 </DrawnAnnotation>
+</v-clicks>
 
 ---
 

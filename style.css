@@ -77,6 +77,16 @@
   --editor-border: #d1d3d6;
   --editor-muted: #6c707e;
   --editor-shadow: rgb(31 32 35 / 12%);
+
+  /* Short snippets begin at this editor measure, while longer snippets may
+     grow only to the shared slide-width cap. */
+  --code-window-min-width: 80ch;
+  --code-window-max-width: 70cqw;
+  --code-window-columns: 80;
+  /* Reserve breathing room after a fitted line without changing editor
+     padding on any side. */
+  --code-window-end-gutter: 16px;
+  --code-window-inline-space: calc(8rem + 2px + var(--code-window-end-gutter));
 }
 
 html.dark {
