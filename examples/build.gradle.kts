@@ -8,13 +8,12 @@ buildscript {
 }
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "2.4.10"
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.4.10"
+    id("org.jetbrains.kotlin.jvm") version "2.4.20-RC2"
     id("org.flywaydb.flyway") version "13.3.0"
-    id("org.jetbrains.exposed.plugin") version "1.4.0"
+    id("org.jetbrains.exposed.plugin") version "1.5.0"
 }
 
-group = "org.example"
+group = "org.jetbrains.exposed.example"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -22,41 +21,37 @@ repositories {
 }
 
 flyway {
-    url = "jdbc:postgresql://localhost:5432/postgres"
+    url = "jdbc:postgresql://localhost:5432/example"
     user = "postgres"
-    password = ""
+    password = "password"
     baselineOnMigrate = true
     validateOnMigrate = true
 }
 
 exposed {
     migrations {
-        tablesPackage = "org.example"
+        tablesPackage = "org.jetbrains.exposed.example"
         testContainersImageName = "postgres:18.6-alpine"
         fileVersionFormat = VersionFormat.MAJOR_MINOR
     }
 }
 
 dependencies {
-    implementation("org.jetbrains.exposed:exposed-core:1.4.0")
-    implementation("org.jetbrains.exposed:exposed-kotlin-datetime:1.4.0")
-    implementation("org.jetbrains.exposed:exposed-money:1.4.0")
-    implementation("org.javamoney.moneta:moneta-core:1.4.5")
-    implementation("org.jetbrains.exposed:exposed-dao:1.4.0")
-    implementation("org.jetbrains.exposed:exposed-jdbc:1.4.0")
-    implementation("org.jetbrains.exposed:exposed-r2dbc:1.4.0")
-    implementation("org.jetbrains.exposed:exposed-json:1.4.0")
-    implementation("org.jetbrains.exposed:exposed-crypt:1.4.0")
-    implementation("org.jetbrains.exposed:exposed-java-time:1.4.0")
-    implementation("org.jetbrains.exposed:exposed-jodatime:1.4.0")
-    testImplementation("org.jetbrains.kotlin:kotlin-test")
+    implementation("org.jetbrains.exposed:exposed-core:1.5.0")
+    implementation("org.jetbrains.exposed:exposed-dao:1.5.0")
+    implementation("org.jetbrains.exposed:exposed-jdbc:1.5.0")
+    implementation("org.jetbrains.exposed:exposed-r2dbc:1.5.0")
+    implementation("org.jetbrains.exposed:exposed-kotlin-datetime:1.5.0")
+
+    implementation("org.postgresql:postgresql:42.7.10")
+    implementation("org.postgresql:r2dbc-postgresql:1.1.1.RELEASE")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+
+    testImplementation(kotlin("test"))
 }
 
 kotlin {
     jvmToolchain(21)
-    compilerOptions {
-        freeCompilerArgs.add("-Xcollection-literals")
-    }
 }
 
 tasks.test {

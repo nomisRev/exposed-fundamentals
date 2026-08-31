@@ -15,7 +15,7 @@ kodee: wave
 # A relational query is built in layers
 
 > Upcoming talks with speaker, host, tags, and bookmark count.
-> 
+
 1. **Alias** — give repeated roles distinct names.
 2. **Aggregate** — derive a value from many rows.
 3. **Filter** — compose an API query safely.

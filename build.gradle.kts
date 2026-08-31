@@ -10,7 +10,7 @@ buildscript {
 }
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "2.4.10"
+    id("org.jetbrains.kotlin.jvm") version "2.4.20-RC2"
 }
 
 apply(plugin = "kotlinx-knit")
