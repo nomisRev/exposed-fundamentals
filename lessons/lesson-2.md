@@ -189,18 +189,19 @@ OFFSET 30
 
 # SQL-shaped Kotlin
 
-<DrawnAnnotation text="innerJoin" label="rightJoin, leftJoin, fullJoin, crossJoin" placement="up" >
+<DrawnAnnotation text="innerJoin" color="var(--drawn-annotation-color)" :sequential="false">
+<DrawnAnnotation text="INNER JOIN" label="rightJoin, leftJoin, fullJoin, crossJoin" color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.2644, y: 0.4239 }, connector: { type: 'polyline', points: [{ x: 0.1153, y: 0.3457 }, { x: 0.1324, y: 0.3905 }] } }">
 
 ```kotlin
 Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
 ```
-</DrawnAnnotation>
-
-
 ```sql
 FROM talks
 INNER JOIN profiles ON profiles.id = talks.speaker_id
 ```
+
+</DrawnAnnotation>
+</DrawnAnnotation>
 
 ---
 magic-move
@@ -243,7 +244,7 @@ WHERE talks.is_published = TRUE
 
 # Query
 
-<DrawnAnnotation text="Query" label="Lazy mutable builder allows building SQL">
+<DrawnAnnotation text="Query" label="Lazy mutable builder allows building SQL" :geometry="{ label: { x: 0.5240, y: 0.1091 }, connector: { type: 'quadratic', start: { x: 0.2712, y: 0.2178 }, control: { x: 0.3286, y: 0.1941 }, end: { x: 0.3609, y: 0.1519 } } }">
 
 ```kotlin
 fun previews(): Query =
@@ -258,7 +259,7 @@ fun previews(): Query =
 
 # Executing the query
 
-<DrawnAnnotation text="Blocking" label="JDBC is a blocking driver" placement="up" color="#f59e0b" >
+<DrawnAnnotation text="Blocking" label="JDBC is a blocking driver" placement="up" color="#f59e0b"  :geometry="{ label: { x: 0.5845, y: 0.2111 }, connector: { type: 'quadratic', start: { x: 0.1853, y: 0.3019 }, control: { x: 0.5448, y: 0.3080 }, end: { x: 0.5757, y: 0.2500 } } }">
 
 ```kotlin jdbc
 class Query(...) :
@@ -269,7 +270,7 @@ class Query(...) :
 
 
 
-<DrawnAnnotation text="Suspend" label="R2DBC is a reactive driver" color="#06b6d4" >
+<DrawnAnnotation text="Suspend" label="R2DBC is a reactive driver" color="#06b6d4"  :geometry="{ label: { x: 0.2150, y: 0.5444 } }">
 
 ```kotlin r2dbc
 class Query(...) :
@@ -284,7 +285,7 @@ class Query(...) :
 
 # Executing the query
 
-<DrawnAnnotation text="Iterable" occurrence=2 label="Blocking cursor" placement="up" color="#f59e0b" >
+<DrawnAnnotation text="Iterable" occurrence=2 label="Blocking cursor" placement="up" color="#f59e0b"  :geometry="{ label: { x: 0.5473, y: 0.1190 }, connector: { type: 'polyline', points: [{ x: 0.4427, y: 0.1752 }, { x: 0.4750, y: 0.1193 }] } }">
 
 ```kotlin jdbc
 interface SizedIterable<out T> : Iterable<T> {
@@ -300,7 +301,7 @@ interface SizedIterable<out T> : Iterable<T> {
 
 <DrawnAnnotation text="Flow" color="#06b6d4" >
 <DrawnAnnotation text="suspend" color="#06b6d4" >
-<DrawnAnnotation text="suspend" occurrence=2 label="R2DBC suspends like reactive types" color="#06b6d4" >
+<DrawnAnnotation text="suspend" occurrence=2 label="R2DBC suspends like reactive types" color="#06b6d4"  :geometry="{ label: { x: 0.2388, y: 0.7998 } }">
 
 ```kotlin r2dbc
 interface SizedIterable<out T> : Flow<T> {
