@@ -85,13 +85,13 @@ kodee: welcome
 
 # Defining our Tables
 
-<DrawnAnnotation text="Table(&quot;Profile&quot;)" label="Default tableName = className - Table suffix => Profile" on="0">
+<DrawnAnnotation text="Table(&quot;Profile&quot;)" label="Default tableName = className - Table suffix => Profile"  :geometry="{ connector: { type: 'polyline', points: [{ x: 0.3566, y: 0.2221 }, { x: 0.3566, y: 0.2495 }] } }">
 
 ```kotlin
 object ProfileTable : Table("Profile")
 ```
-
 </DrawnAnnotation>
+
 
 ---
 magic-move
@@ -99,13 +99,13 @@ magic-move
 
 # Defining our Tables
 
-<DrawnAnnotation text="Table(&quot;profiles&quot;)" label="Follow database conventions" on="0">
+<DrawnAnnotation text="Table(&quot;profiles&quot;)" label="Follow database conventions"  :geometry="{ label: { x: 0.5228, y: 0.3274 } }">
 
 ```kotlin
 object ProfileTable : Table("profiles")
 ```
-
 </DrawnAnnotation>
+
 
 ---
 magic-move
@@ -113,8 +113,8 @@ magic-move
 
 # Defining our Tables
 
-<DrawnAnnotation text="Column<Long>" label="Every column is typed to a proper Kotlin type" on="0">
-<DrawnAnnotation text="PrimaryKey" label="Explicitly create PrimaryKey" on="0">
+<DrawnAnnotation text="Column<Long>" label="Every column is typed to a proper Kotlin type"  :geometry="{ label: { x: 0.6345, y: 0.2683, width: 0.3862 }, connector: { type: 'polyline', points: [{ x: 0.3013, y: 0.2574 }, { x: 0.5208, y: 0.2665 }] } }">
+<DrawnAnnotation text="PrimaryKey" label="Explicitly create PrimaryKey"  :geometry="{ label: { x: 0.3143, y: 0.4041 }, connector: { type: 'polyline', points: [{ x: 0.3156, y: 0.3059 }, { x: 0.3156, y: 0.3818 }] } }">
 
 ```kotlin
 object ProfileTable : Table("profiles") {
@@ -122,9 +122,9 @@ object ProfileTable : Table("profiles") {
     val primaryKey = PrimaryKey(id)
 }
 ```
+</DrawnAnnotation>
+</DrawnAnnotation>
 
-</DrawnAnnotation>
-</DrawnAnnotation>
 
 ---
 magic-move
@@ -132,7 +132,7 @@ magic-move
 
 # Defining our Tables
 
-<DrawnAnnotation text="val name" label="Create properties to match the shape of table" on="0">
+<DrawnAnnotation text="val name" label="Create properties to match the shape of table"  :geometry="{ label: { x: 0.3592, y: 0.4755 }, connector: { type: 'polyline', points: [{ x: 0.1509, y: 0.3572 }, { x: 0.1690, y: 0.4447 }] } }">
 
 ```kotlin
 object ProfileTable : Table("profiles") {
@@ -141,8 +141,8 @@ object ProfileTable : Table("profiles") {
     val name = varchar("name", 120)
 }
 ```
-
 </DrawnAnnotation>
+
 
 ---
 magic-move
@@ -150,7 +150,7 @@ magic-move
 
 # Defining our Tables
 
-<DrawnAnnotation text=".autoIncrement().entityId()" label="Auto-incrementing database identifier as EntityID" on="0">
+<DrawnAnnotation text=".autoIncrement().entityId()" label="Auto-incrementing database identifier as EntityID"  :geometry="{ connector: { type: 'polyline', points: [{ x: 0.6677, y: 0.2624 }, { x: 0.6677, y: 0.2897 }] } }">
 
 ```kotlin
 object ProfileTable : Table("profiles") {
@@ -159,8 +159,8 @@ object ProfileTable : Table("profiles") {
     val name = varchar("name", 120)
 }
 ```
-
 </DrawnAnnotation>
+
 
 ---
 magic-move
@@ -168,9 +168,9 @@ magic-move
 
 # Defining our Tables
 
-<DrawnAnnotation text="IdTable<Long>" on="0">
-<DrawnAnnotation text="override" on="0">
-<DrawnAnnotation text="override" occurrence="2" label="Auto-incrementing database identifier as EntityID" on="0">
+<DrawnAnnotation text="IdTable<Long>" color="var(--drawn-annotation-color)" :sequential="false">
+<DrawnAnnotation text="override" color="var(--drawn-annotation-color)" :sequential="false">
+<DrawnAnnotation text="override" occurrence=2 label="Auto-incrementing database identifier as EntityID"  color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.3214, y: 0.4730 }, connector: { type: 'quadratic', start: { x: 0.0857, y: 0.3035 }, control: { x: 0.0878, y: 0.3792 }, end: { x: 0.1103, y: 0.4509 } } }">
 
 ```kotlin
 object ProfileTable : IdTable<Long>("profiles") {
@@ -179,10 +179,10 @@ object ProfileTable : IdTable<Long>("profiles") {
     val name = varchar("name", 120)
 }
 ```
+</DrawnAnnotation>
+</DrawnAnnotation>
+</DrawnAnnotation>
 
-</DrawnAnnotation>
-</DrawnAnnotation>
-</DrawnAnnotation>
 
 ---
 magic-move
@@ -190,15 +190,15 @@ magic-move
 
 # Defining our Tables
 
-<DrawnAnnotation text="LongIdTable" label="LongIdTable implements all this boilerplate for us" on="0">
+<DrawnAnnotation text="LongIdTable" label="LongIdTable implements all this boilerplate for us" :geometry="{ label: { x: 0.6492, y: 0.2531 }, connector: { type: 'polyline', points: [{ x: 0.3950, y: 0.2175 }, { x: 0.4634, y: 0.2323 }] } }">
 
 ```kotlin
 object ProfileTable : LongIdTable("profiles") {
     val name = varchar("name", 120)
 }
 ```
-
 </DrawnAnnotation>
+
 
 ---
 magic-move
@@ -206,7 +206,7 @@ magic-move
 
 # Defining our Tables
 
-<DrawnAnnotation text="reference(&quot;speaker_id&quot;, ProfileTable.id)" label="Referencing a table requires the EntityID for the table" on="0">
+<DrawnAnnotation text="reference(&quot;speaker_id&quot;, ProfileTable.id)" label="Referencing a table requires the EntityID for the table"  :geometry="{ label: { x: 0.6185, y: 0.6367 }, connector: { type: 'polyline', points: [{ x: 0.5525, y: 0.4407 }, { x: 0.5931, y: 0.5946 }] } }">
 
 ```kotlin
 object ProfileTable : LongIdTable("profiles") {
@@ -219,8 +219,8 @@ object TalksTable : LongIdTable("talks") {
     val description = text("description")
 }
 ```
-
 </DrawnAnnotation>
+
 
 ---
 magic-move
@@ -228,7 +228,7 @@ magic-move
 
 # Defining our Tables
 
-<DrawnAnnotation text="ProfileTable" occurrence="2" label="(Long)IdTable has specialised syntax for referencing, joins, DAO, and more" on="0">
+<DrawnAnnotation text="ProfileTable" occurrence=2 label="(Long)IdTable has specialised syntax for referencing, joins, DAO, and more"  :geometry="{ label: { x: 0.5608, y: 0.6211 } }">
 
 ```kotlin
 object ProfileTable : LongIdTable("profiles") {
@@ -241,8 +241,8 @@ object TalksTable : LongIdTable("talks") {
     val description = text("description")
 }
 ```
-
 </DrawnAnnotation>
+
 
 ---
 magic-move
@@ -250,8 +250,8 @@ magic-move
 
 # Defining our Tables
 
-<DrawnAnnotation text="ReferenceOption" on="0">
-<DrawnAnnotation text="ReferenceOption" label="CASCADE, SET_NULL, RESTRICT, NO_ACTION, SET_DEFAULT;" occurrence="2" on="0">
+<DrawnAnnotation text="ReferenceOption" >
+<DrawnAnnotation text="ReferenceOption" label="CASCADE, SET_NULL, RESTRICT, NO_ACTION, SET_DEFAULT;" occurrence=2  :geometry="{ label: { x: 0.6680, y: 0.6256, width: 0.4285 }, connector: { type: 'polyline', points: [{ x: 0.4084, y: 0.6099 }, { x: 0.5175, y: 0.6314 }] } }">
 
 ```kotlin
 object ProfileTable : LongIdTable("profiles") {
@@ -269,9 +269,9 @@ object TalksTable : LongIdTable("talks") {
     val description = text("description")
 }
 ```
+</DrawnAnnotation>
+</DrawnAnnotation>
 
-</DrawnAnnotation>
-</DrawnAnnotation>
 
 ---
 magic-move
@@ -279,9 +279,9 @@ magic-move
 
 # Defining our Tables
 
-<DrawnAnnotation text="columnName = " on="0">
-<DrawnAnnotation text="sequenceName = " label="Override default column names" on="0">
-<DrawnAnnotation text="fkName = " on="0">
+<DrawnAnnotation text="columnName = " >
+<DrawnAnnotation text="sequenceName = " label="Override default column names"  :geometry="{ label: { x: 0.6265, y: 0.4533 }, connector: { type: 'quadratic', start: { x: 0.2321, y: 0.3581 }, control: { x: 0.3994, y: 0.3687 }, end: { x: 0.5001, y: 0.4220 } } }">
+<DrawnAnnotation text="fkName = " >
 
 ```kotlin
 object ProfileTable : LongIdTable(
@@ -304,10 +304,10 @@ object TalksTable : LongIdTable("talks") {
     val description = text("description")
 }
 ```
+</DrawnAnnotation>
+</DrawnAnnotation>
+</DrawnAnnotation>
 
-</DrawnAnnotation>
-</DrawnAnnotation>
-</DrawnAnnotation>
 
 ---
 layout: two-cols-header
@@ -350,8 +350,8 @@ layout: two-cols-header
 
 # Columns can expose domain types
 
-<DrawnAnnotation text="varchar(&quot;title&quot;, 200)" label="Database stores varchar" on="0">
-<DrawnAnnotation text="Column<TalkTitle>" label="Our application sees TalkTitle" on="0">
+<DrawnAnnotation text="varchar(&quot;title&quot;, 200)" label="Database stores varchar" >
+<DrawnAnnotation text="Column<TalkTitle>" label="Our application sees TalkTitle" >
 
 ```kotlin
 @JvmInline
@@ -362,9 +362,9 @@ object Talks : Table("talks") {
         .transform(::TalkTitle) { it.value }
 }
 ```
+</DrawnAnnotation>
+</DrawnAnnotation>
 
-</DrawnAnnotation>
-</DrawnAnnotation>
 
 ---
 
@@ -372,7 +372,7 @@ object Talks : Table("talks") {
 
 <br>
 
-<DrawnAnnotation text="enumeration<E>()" label="Database stores ordinal which is dangerous for schema evolution" on="0" color="red" placement="up">
+<DrawnAnnotation text="enumeration<E>()" label="Database stores ordinal which is dangerous for schema evolution" color="red" placement="up">
 
 | `enumeration<E>()`       | `E : Enum<E>`              |
 |--------------------------|----------------------------|
@@ -381,7 +381,6 @@ object Talks : Table("talks") {
 | `vector()`               | `FloatArray` / `IntArray`  |
 | `javaUUID()`             | `java.util.UUID`           |
 | `blob()`                 | `ExposedBlob(InputStream)` |
-
 </DrawnAnnotation>
 
 ---
@@ -428,7 +427,8 @@ object Talks : Table("talks") {
 
 <div class="code-swap">
 <div v-click.hide="1">
-<DrawnAnnotation text="@Serializable" label="Works based on kotlinx.serialization" :on="0">
+
+<DrawnAnnotation text="@Serializable" label="Works based on kotlinx.serialization" >
 
 ```kotlin
 @Serializable
@@ -438,14 +438,16 @@ data class ProfilesAttributes(
     val relationshipStatus: String,
 )
 ```
-
 </DrawnAnnotation>
+
+
 </div>
 
 <div v-click="1">
-<DrawnAnnotation text="jacksonObjectMapper" label="Custom Jackson implementation" :on="1">
-<DrawnAnnotation text="mapper.writeValueAsString" :on="1">
-<DrawnAnnotation text="mapper.readValue<MyDataClass>" :on="1">
+
+<DrawnAnnotation text="jacksonObjectMapper" label="Custom Jackson implementation" :on="1" >
+<DrawnAnnotation text="mapper.writeValueAsString" :on="1" >
+<DrawnAnnotation text="mapper.readValue<MyDataClass>" :on="1" >
 
 ```kotlin{1,5-9}
 val mapper = jacksonObjectMapper()
@@ -459,10 +461,11 @@ object ProfileTable : LongIdTable("profiles") {
     )
 }
 ```
+</DrawnAnnotation>
+</DrawnAnnotation>
+</DrawnAnnotation>
 
-</DrawnAnnotation>
-</DrawnAnnotation>
-</DrawnAnnotation>
+
 </div>
 </div>
 
@@ -495,13 +498,12 @@ object ProfileTable : LongIdTable("profiles") {
 
 > DAO, transport, migration, and Spring modules add no column value mappings.
 
-<DrawnAnnotation text="compositeMoney" on="0">
-<DrawnAnnotation text="compositeMoney" occurrence="2" label="MonetaryAmount value backed by 2 columns BigDecimal & CurrencyUnit" on="0">
+<DrawnAnnotation text="compositeMoney">
+<DrawnAnnotation text="compositeMoney" occurrence=2 label="MonetaryAmount value backed by 2 columns BigDecimal & CurrencyUnit">
 
 | `currency()`                                                                                 | `javax.money.CurrencyUnit`   |
 |----------------------------------------------------------------------------------------------|------------------------------|
 | `compositeMoney(precision, scale)`                                                           | `javax.money.MonetaryAmount` |
 | <code>compositeMoney(<br>&nbsp;&nbsp;amountColumn,<br>&nbsp;&nbsp;currencyColumn<br>)</code> | `javax.money.MonetaryAmount` |
-
 </DrawnAnnotation>
 </DrawnAnnotation>

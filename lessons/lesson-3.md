@@ -189,18 +189,18 @@ OFFSET 30
 
 # SQL-shaped Kotlin
 
-<DrawnAnnotation text="innerJoin" label="rightJoin, leftJoin, fullJoin, crossJoin" on="0" placement="up">
+<DrawnAnnotation text="innerJoin" label="rightJoin, leftJoin, fullJoin, crossJoin" placement="up" >
 
 ```kotlin
 Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
 ```
+</DrawnAnnotation>
+
 
 ```sql
 FROM talks
 INNER JOIN profiles ON profiles.id = talks.speaker_id
 ```
-
-</DrawnAnnotation>
 
 ---
 magic-move
@@ -243,7 +243,7 @@ WHERE talks.is_published = TRUE
 
 # Query
 
-<DrawnAnnotation text="Query" label="Lazy mutable builder allows building SQL" on="0">
+<DrawnAnnotation text="Query" label="Lazy mutable builder allows building SQL">
 
 ```kotlin
 fun previews(): Query =
@@ -258,34 +258,33 @@ fun previews(): Query =
 
 # Executing the query
 
-<DrawnAnnotation text="Blocking" label="JDBC is a blocking driver" on="0" placement="up" color="#f59e0b">
+<DrawnAnnotation text="Blocking" label="JDBC is a blocking driver" placement="up" color="#f59e0b" >
 
 ```kotlin jdbc
 class Query(...) :
     SizedIterable<ResultRow>,
     BlockingExecutable<ResultApi, Query>
 ```
-
 </DrawnAnnotation>
 
 
 
-<DrawnAnnotation text="Suspend" label="R2DBC is a reactive driver"  on="0" color="#06b6d4">
+<DrawnAnnotation text="Suspend" label="R2DBC is a reactive driver" color="#06b6d4" >
 
 ```kotlin r2dbc
 class Query(...) :
     SizedIterable<ResultRow>,
     SuspendExecutable<ResultApi, Query>
 ```
-
 </DrawnAnnotation>
+
 
 
 ---
 
 # Executing the query
 
-<DrawnAnnotation text="Iterable" occurrence="2" label="Blocking cursor" placement="up" on="0" color="#f59e0b">
+<DrawnAnnotation text="Iterable" occurrence=2 label="Blocking cursor" placement="up" color="#f59e0b" >
 
 ```kotlin jdbc
 interface SizedIterable<out T> : Iterable<T> {
@@ -295,14 +294,13 @@ interface SizedIterable<out T> : Iterable<T> {
     fun empty(): Boolean
 }
 ```
-
 </DrawnAnnotation>
 
 
 
-<DrawnAnnotation text="Flow" on="0" color="#06b6d4">
-<DrawnAnnotation text="suspend" on="0" color="#06b6d4">
-<DrawnAnnotation text="suspend" occurrence="2" label="R2DBC suspends like reactive types"  on="0" color="#06b6d4">
+<DrawnAnnotation text="Flow" color="#06b6d4" >
+<DrawnAnnotation text="suspend" color="#06b6d4" >
+<DrawnAnnotation text="suspend" occurrence=2 label="R2DBC suspends like reactive types" color="#06b6d4" >
 
 ```kotlin r2dbc
 interface SizedIterable<out T> : Flow<T> {
@@ -312,10 +310,10 @@ interface SizedIterable<out T> : Flow<T> {
     suspend fun empty(): Boolean
 }
 ```
+</DrawnAnnotation>
+</DrawnAnnotation>
+</DrawnAnnotation>
 
-</DrawnAnnotation>
-</DrawnAnnotation>
-</DrawnAnnotation>
 
 
 ---
@@ -336,23 +334,23 @@ class Query(...) : Flow<ResultRow>
 
 # Seperate modules
 
-<DrawnAnnotation text="jdbc" on="0">
-<DrawnAnnotation text="r2dbc" label="R2DBC and JDBC live alongside each other" on="0">
+<DrawnAnnotation text="jdbc" >
+<DrawnAnnotation text="r2dbc" label="R2DBC and JDBC live alongside each other" >
 
 ```kotlin jdbc
 package org.jetbrains.exposed.v1.jdbc
 
 class Query(...) : Iterable<ResultRow>
 ```
+</DrawnAnnotation>
+</DrawnAnnotation>
+
 
 ```kotlin r2dbc
 package org.jetbrains.exposed.v1.r2dbc
 
 class Query(...) : Flow<ResultRow>
 ```
-
-</DrawnAnnotation>
-</DrawnAnnotation>
 
 ---
 
@@ -460,15 +458,15 @@ data class TalkPreview(
 
 # Accessing the data
 
-<DrawnAnnotation text="Column<A>): A" on="0" label="Typed data retrieval from ResultRow">
+<DrawnAnnotation text="Column<A>): A" label="Typed data retrieval from ResultRow" >
 
 ```kotlin
 operator fun <A> ResultRow.get(key: Column<A>): A = TODO("Exposed internals")
 
 fun ResultRow.toTalkPreview(): TalkPreview
 ```
-
 </DrawnAnnotation>
+
 
 ---
 magic-move
@@ -476,8 +474,8 @@ magic-move
 
 # Accessing the data
 
-<DrawnAnnotation text="title = " on="0" label="String">
-<DrawnAnnotation text="Talks.title" on="0" label="Column<String>">
+<DrawnAnnotation text="title = " label="String" >
+<DrawnAnnotation text="Talks.title" label="Column<String>" >
 
 ```kotlin
 operator fun <A> ResultRow.get(key: Column<A>): A = TODO("Exposed internals")
@@ -486,9 +484,9 @@ fun ResultRow.toTalkPreview() = TalkPreview(
     title = this.get(Talks.title),
 ) 
 ```
+</DrawnAnnotation>
+</DrawnAnnotation>
 
-</DrawnAnnotation>
-</DrawnAnnotation>
 
 ---
 magic-move
@@ -496,8 +494,8 @@ magic-move
 
 # Accessing the data
 
-<DrawnAnnotation text="operator" on="0">
-<DrawnAnnotation text="[Talks.title]" on="0" label="Kotlin index access operator">
+<DrawnAnnotation text="operator" >
+<DrawnAnnotation text="[Talks.title]" label="Kotlin index access operator" >
 
 ```kotlin
 operator fun <A> ResultRow.get(key: Column<A>): A = TODO("Exposed internals")
@@ -506,9 +504,9 @@ fun ResultRow.toTalkPreview() = TalkPreview(
     title = this[Talks.title],
 ) 
 ```
+</DrawnAnnotation>
+</DrawnAnnotation>
 
-</DrawnAnnotation>
-</DrawnAnnotation>
 
 ---
 magic-move
@@ -595,7 +593,7 @@ suspendTransaction { /* Transaction.() -> Unit */
 
 # Database work requires a transaction
 
-<DrawnAnnotation text="previews" label="Can be called from anywhere resulting in java.lang.IllegalStateException: No transaction in context." color="red" on="0">
+<DrawnAnnotation text="previews" label="Can be called from anywhere resulting in java.lang.IllegalStateException: No transaction in context." color="red" >
 
 ```kotlin
 fun previews(): List<TalkPreview> =
@@ -603,8 +601,8 @@ fun previews(): List<TalkPreview> =
         .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
         .map { it.toTalkPreview() }
 ```
-
 </DrawnAnnotation>
+
 
 ---
 magic-move
@@ -612,7 +610,7 @@ magic-move
 
 # Database work requires a transaction
 
-<DrawnAnnotation text="context(_: Transaction)" label="Compile-time guarantee it's called inside a Transaction" on="0">
+<DrawnAnnotation text="context(_: Transaction)" label="Compile-time guarantee it's called inside a Transaction" >
 
 ```kotlin
 context(_: Transaction)
@@ -621,8 +619,8 @@ fun previews(): List<TalkPreview> =
         .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
         .map { it.toTalkPreview() }
 ```
-
 </DrawnAnnotation>
+
 
 ---
 magic-move
@@ -630,7 +628,7 @@ magic-move
 
 # Database work requires a transaction
 
-<InlineCompilerError text="previews" occurrence="2" message="No context argument for '_: Transaction' found" on="0">
+<InlineCompilerError text="previews" occurrence=2 message="No context argument for '_: Transaction' found" on="0">
 
 ```kotlin
 context(_: Transaction)
@@ -650,8 +648,10 @@ magic-move
 
 # Database work requires a transaction
 
-<InlineCompilerError text="previews" occurrence="2" message="No context argument for '_: Transaction' found" on="0">
-<DrawnAnnotation text="Transaction" occurrence="2" label="Transaction context argument" on="0">
+<InlineCompilerError text="previews" occurrence=2 message="No context argument for '_: Transaction' found" on="0">
+
+<DrawnAnnotation text="Transaction" occurrence=2 label="Transaction context argument" >
+<DrawnAnnotation text="Please call Database.connect() first or specify a database explicitly in the transaction call" at="1" >
 
 ```kotlin
 context(_: Transaction)
@@ -666,9 +666,11 @@ fun example2() = transaction { /* Transaction.() -> Unit */
     previews()
 }
 ```
+</DrawnAnnotation>
+</DrawnAnnotation>
+
 
 <v-clicks>
-<DrawnAnnotation text="Please call Database.connect() first or specify a database explicitly in the transaction call">
 
 <div class="stacktrace" aria-label="Application stack trace">
   <div>Exception in thread "main" <span class="stacktrace-link">java.lang.IllegalStateException</span>: No database specified and no default database found.<br />Please call Database.connect() first or specify a database explicitly in the transaction call.</div>
@@ -677,18 +679,16 @@ fun example2() = transaction { /* Transaction.() -> Unit */
   <div>&nbsp;&nbsp;&nbsp;&nbsp;at org.jetbrains.exposed.v1.jdbc.transactions.TransactionsKt.transaction$default(<span class="stacktrace-link">Transactions.kt:133</span>)</div>
 </div>
 
-</DrawnAnnotation>
 </v-clicks>
 
-</DrawnAnnotation>
 </InlineCompilerError>
 
 ---
 
 # Database work requires a transaction
 
-<DrawnAnnotation text="(database)" label="explicitly specified database in the transaction call" on="0">
-<DrawnAnnotation text="(database: Database)" label="But where is this coming from?" on="1">
+<DrawnAnnotation text="(database)" label="explicitly specified database in the transaction call" >
+<DrawnAnnotation text="(database: Database)" label="But where is this coming from?" on="1" >
 
 ```kotlin
 context(_: Transaction)
@@ -699,9 +699,9 @@ fun previews(): List<TalkPreview> =
 
 fun example(database: Database) = transaction(database) { previews() }
 ```
+</DrawnAnnotation>
+</DrawnAnnotation>
 
-</DrawnAnnotation>
-</DrawnAnnotation>
 
 ---
 
@@ -757,8 +757,8 @@ val r2dbc = R2dbcDatabase.connect(
 
 # Database work requires a transaction
 
-<DrawnAnnotation text="transaction {" label="Default database found (from Database.connect)" on="0">
-<DrawnAnnotation text="transaction(database)" label="Prefer explicitly passing database instead of relying on implicit resolution" on="0">
+<DrawnAnnotation text="transaction {" label="Default database found (from Database.connect)" >
+<DrawnAnnotation text="transaction(database)" label="Prefer explicitly passing database instead of relying on implicit resolution" >
 
 ```kotlin
 context(_: Transaction)
@@ -771,15 +771,15 @@ fun example(database: Database) = transaction(database) { previews() }
 
 fun example() = transaction { previews() }
 ```
+</DrawnAnnotation>
+</DrawnAnnotation>
 
-</DrawnAnnotation>
-</DrawnAnnotation>
 
 ---
 
 # Database work requires a transaction
 
-<DrawnAnnotation text="@Transactional" label="Spring's @Transactional can also provide Exposed Transaction" on="0">
+<DrawnAnnotation text="@Transactional" label="Spring's @Transactional can also provide Exposed Transaction" >
 
 ```kotlin
 @Transactional
@@ -788,14 +788,14 @@ fun previews(): List<TalkPreview> =
         .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
         .map { it.toTalkPreview() }
 ```
-
 </DrawnAnnotation>
+
 
 ---
 
 # Insert a talk
 
-<DrawnAnnotation text="insert" occurrence="2" label="InsertStatement.() -> Unit builder" on="0">
+<DrawnAnnotation text="insert" occurrence=2 label="InsertStatement.() -> Unit builder" >
 
 ```kotlin
 context(_: Transaction)
@@ -804,21 +804,21 @@ fun insert(title: String, speakerId: Long, startsAt: Instant) =
 
     }
 ```
-
 </DrawnAnnotation>
+
 
 ---
 
 # Insert a talk
 
-<DrawnAnnotation text="operator" on="0" color="pink">
-<DrawnAnnotation text="set" on="0" color="pink">
-<DrawnAnnotation text="it[" label="Operator set with Column" on="0" color="pink">
-<DrawnAnnotation text="] =" on="0" color="pink">
-<DrawnAnnotation text="Column<S>" on="0">
-<DrawnAnnotation text="value: S" on="0">
-<DrawnAnnotation text="Talks.title" on="0">
-<DrawnAnnotation text="title" occurrence="3" label="Typesafe setter based on Column<S> type" on="0">
+<DrawnAnnotation text="operator" color="pink" >
+<DrawnAnnotation text="set" color="pink" >
+<DrawnAnnotation text="it[" label="Operator set with Column" color="pink" >
+<DrawnAnnotation text="] =" color="pink" >
+<DrawnAnnotation text="Column<S>" >
+<DrawnAnnotation text="value: S" >
+<DrawnAnnotation text="Talks.title" >
+<DrawnAnnotation text="title" occurrence=3 label="Typesafe setter based on Column<S> type" >
 
 ```kotlin
 operator fun <S> InsertStatement.set(column: Column<S>, value: S) = TODO("")
@@ -829,21 +829,21 @@ fun insert(title: String, speakerId: Long, startsAt: Instant) =
         it[Talks.title] = title
     }
 ```
+</DrawnAnnotation>
+</DrawnAnnotation>
+</DrawnAnnotation>
+</DrawnAnnotation>
+</DrawnAnnotation>
+</DrawnAnnotation>
+</DrawnAnnotation>
+</DrawnAnnotation>
 
-</DrawnAnnotation>
-</DrawnAnnotation>
-</DrawnAnnotation>
-</DrawnAnnotation>
-</DrawnAnnotation>
-</DrawnAnnotation>
-</DrawnAnnotation>
-</DrawnAnnotation>
 
 ---
 
 # Insert a talk
 
-<DrawnAnnotation text="InsertStatement" label="The executed insert statement, providing the affected-row count and any available generated values" on="0">
+<DrawnAnnotation text="InsertStatement" label="The executed insert statement, providing the affected-row count and any available generated values" >
 
 ```kotlin
 context(_: Transaction)
@@ -854,14 +854,14 @@ fun insert(title: String, speakerId: Long, startsAt: Instant): InsertStatement<N
         it[Talks.startsAt] = startsAt
     }
 ```
-
 </DrawnAnnotation>
+
 
 ---
 
 # Insert and get id
 
-<DrawnAnnotation text="EntityID<Long>" label="Returns EntityID not raw Long" on="0">
+<DrawnAnnotation text="EntityID<Long>" label="Returns EntityID not raw Long" >
 
 ```kotlin
 context(_: Transaction)
@@ -873,8 +873,8 @@ fun insertAndGetId(title: String, speakerId: Long, startsAt: Instant): EntityID<
         it[Talks.startsAt] = startsAt
     }
 ```
-
 </DrawnAnnotation>
+
 
 ---
 magic-move
@@ -882,7 +882,7 @@ magic-move
 
 # Insert and get id
 
-<DrawnAnnotation text=".value" label="Explicitly unwrap" on="0">
+<DrawnAnnotation text=".value" label="Explicitly unwrap" >
 
 ```kotlin
 context(_: Transaction)
@@ -894,14 +894,14 @@ fun insertAndGetId(title: String, speakerId: Long, startsAt: Instant): Long =
         it[Talks.startsAt] = startsAt
     }.value
 ```
-
 </DrawnAnnotation>
+
 
 ---
 
 # Insert a talk — return what you need
 
-<DrawnAnnotation text="listOf(Talks.id, Talks.createdAt, Talks.updatedAt)" label="Be explicit about returned data" on="0">
+<DrawnAnnotation text="listOf(Talks.id, Talks.createdAt, Talks.updatedAt)" label="Be explicit about returned data" >
 
 ```kotlin
 context(_: Transaction)
@@ -917,8 +917,8 @@ fun insertReturning(
         it[Talks.startsAt] = startsAt
     }
 ```
-
 </DrawnAnnotation>
+
 
 ---
 magic-move
@@ -926,7 +926,7 @@ magic-move
 
 # Insert a talk — return what you need
 
-<DrawnAnnotation text="[Talks.id, Talks.createdAt, Talks.updatedAt]" label="Use collection literals if you do!" on="0">
+<DrawnAnnotation text="[Talks.id, Talks.createdAt, Talks.updatedAt]" label="Use collection literals if you do!" >
 
 ```kotlin
 context(_: Transaction)
@@ -942,8 +942,8 @@ fun insertReturning(
         it[Talks.startsAt] = startsAt
     }
 ```
-
 </DrawnAnnotation>
+
 
 ---
 magic-move
@@ -951,7 +951,7 @@ magic-move
 
 # Insert a talk — return what you need
 
-<DrawnAnnotation text="insertReturning {" label="Or RETURNING *" on="0">
+<DrawnAnnotation text="insertReturning {" label="Or RETURNING *" >
 
 ```kotlin
 context(_: Transaction)
@@ -967,8 +967,8 @@ fun insertReturning(
         it[Talks.startsAt] = startsAt
     }
 ```
-
 </DrawnAnnotation>
+
 
 ---
 magic-move
@@ -976,8 +976,8 @@ magic-move
 
 # Insert a talk — return what you need
 
-<DrawnAnnotation text="TalkWithSpeakerId" on="0">
-<DrawnAnnotation text="map(ResultRow::toTalkWithSpeakerId)" label="Return all data typed whilst inserting" on="0" placement="down">
+<DrawnAnnotation text="TalkWithSpeakerId" >
+<DrawnAnnotation text="map(ResultRow::toTalkWithSpeakerId)" label="Return all data typed whilst inserting" placement="down" >
 
 ```kotlin
 context(_: Transaction)
@@ -993,9 +993,9 @@ fun insertReturning(
         it[Talks.startsAt] = startsAt
     }.map(ResultRow::toTalkWithSpeakerId)
 ```
+</DrawnAnnotation>
+</DrawnAnnotation>
 
-</DrawnAnnotation>
-</DrawnAnnotation>
 
 ---
 
@@ -1092,7 +1092,7 @@ fun insertBatch(newTalk: List<NewTalk>) {
 
 # Update states its scope
 
-<DrawnAnnotation text="{ Talks.id eq talkId }" label="Without a precise predicate can affect many rows." on="0">
+<DrawnAnnotation text="{ Talks.id eq talkId }" label="Without a precise predicate can affect many rows." >
 
 ```kotlin
 fun update(talkId: Long, status: TalkStatus) {
@@ -1101,8 +1101,8 @@ fun update(talkId: Long, status: TalkStatus) {
     }
 }
 ```
-
 </DrawnAnnotation>
+
 
 ---
 magic-move
@@ -1110,7 +1110,7 @@ magic-move
 
 # Update states its scope
 
-<DrawnAnnotation text="it[Talks.status] = TalkStatus.PUBLISHED" label="Same DSL as insert" on="0">
+<DrawnAnnotation text="it[Talks.status] = TalkStatus.PUBLISHED" label="Same DSL as insert" >
 
 ```kotlin
 fun update(talkId: Long, status: TalkStatus) {
@@ -1119,8 +1119,8 @@ fun update(talkId: Long, status: TalkStatus) {
     }
 }
 ```
-
 </DrawnAnnotation>
+
 
 ---
 magic-move
@@ -1128,7 +1128,7 @@ magic-move
 
 # Update states its scope
 
-<DrawnAnnotation text="[Talks.speakerId, Talks.title, Talks.startsAt]" label="Use Returning variant to return selected columns" on="0">
+<DrawnAnnotation text="[Talks.speakerId, Talks.title, Talks.startsAt]" label="Use Returning variant to return selected columns" >
 
 ```kotlin
 fun update(talkId: Long, status: TalkStatus): TalkPreview? =
@@ -1139,8 +1139,8 @@ fun update(talkId: Long, status: TalkStatus): TalkPreview? =
         it[Talks.status] = TalkStatus.PUBLISHED
     }.singleOrNull()?.toTalkPreview()
 ```
-
 </DrawnAnnotation>
+
 
 ---
 magic-move
@@ -1148,8 +1148,8 @@ magic-move
 
 # Update states its scope
 
-<DrawnAnnotation text="{ Talks.id eq talkId }" on="0">
-<DrawnAnnotation text="singleOrNull()" label="Predicate guarantees 1 or 0 rows will be affected" on="0">
+<DrawnAnnotation text="{ Talks.id eq talkId }" >
+<DrawnAnnotation text="singleOrNull()" label="Predicate guarantees 1 or 0 rows will be affected" >
 
 ```kotlin
 fun update(talkId: Long, status: TalkStatus): TalkPreview? =
@@ -1160,9 +1160,9 @@ fun update(talkId: Long, status: TalkStatus): TalkPreview? =
         it[Talks.status] = TalkStatus.PUBLISHED
     }.singleOrNull()?.toTalkPreview()
 ```
+</DrawnAnnotation>
+</DrawnAnnotation>
 
-</DrawnAnnotation>
-</DrawnAnnotation>
 
 ---
 
@@ -1193,8 +1193,8 @@ magic-move
 
 # Upsert states the conflict key
 
-<DrawnAnnotation text="Talks.slug" label="Specify unique key on which to update the row on conflict" on="0">
-<DrawnAnnotation text="(slug)" label="Must have UNIQUE constraint" on="0">
+<DrawnAnnotation text="Talks.slug" label="Specify unique key on which to update the row on conflict" >
+<DrawnAnnotation text="(slug)" label="Must have UNIQUE constraint" >
 
 ```kotlin
 Talks.upsert(Talks.slug) {
@@ -1204,6 +1204,9 @@ Talks.upsert(Talks.slug) {
     it[Talks.startsAt] = startsAt
 }
 ```
+</DrawnAnnotation>
+</DrawnAnnotation>
+
 
 ```sql
 INSERT INTO talks (slug, title, speaker_id, starts_at)
@@ -1214,9 +1217,6 @@ DO UPDATE SET
     speaker_id = EXCLUDED.speaker_id,
     starts_at = EXCLUDED.starts_at;
 ```
-
-</DrawnAnnotation>
-</DrawnAnnotation>
 
 ---
 magic-move
@@ -1274,13 +1274,13 @@ RETURNING id, updatedAt;
 
 # Delete states its scope
 
-<DrawnAnnotation text="removed" label="deleteWhere` returns the affected row count" on="0">
+<DrawnAnnotation text="removed" label="deleteWhere` returns the affected row count" >
 
 ```kotlin
 val removed: Int = Talks.deleteWhere { Talks.id eq talkId }
 ```
-
 </DrawnAnnotation>
+
 
 ---
 magic-move
@@ -1288,13 +1288,13 @@ magic-move
 
 # Delete states its scope
 
-<DrawnAnnotation text="deleteReturning" label="Use deleteReturning to return affected rows" on="0">
+<DrawnAnnotation text="deleteReturning" label="Use deleteReturning to return affected rows" >
 
 ```kotlin
 val removed: Iterable<ResultRow> = Talks.deleteReturning { Talks.id eq talkId }
 ```
-
 </DrawnAnnotation>
+
 
 ---
 magic-move
