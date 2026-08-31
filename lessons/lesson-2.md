@@ -92,7 +92,8 @@ Talks.select(Talks.id, Talks.title, Talks.startsAt)
 SELECT id, title, startsAt
 FROM talks
 WHERE id = :id
-ORDER BY title ASC LIMIT 10
+ORDER BY title ASC
+LIMIT 10
 ```
 
 ---
@@ -113,7 +114,8 @@ Talks.select(Talks.id, Talks.title, Talks.startsAt)
 SELECT id, title, startsAt
 FROM talks
 WHERE id = :id
-ORDER BY title ASC LIMIT 10
+ORDER BY title ASC
+LIMIT 10
 OFFSET 30
 ```
 
@@ -135,9 +137,9 @@ Talks.select(Talks.id, Talks.title, Talks.startsAt)
 ```sql
 SELECT id, title, startsAt
 FROM talks
-WHERE id = :id
-   OR description LIKE '%Kotlin%'
-ORDER BY title ASC LIMIT 10
+WHERE id = :id OR description LIKE '%Kotlin%'
+ORDER BY title ASC
+LIMIT 10
 OFFSET 30
 ```
 
@@ -162,9 +164,9 @@ Talks.select(Talks.id, Talks.title, Talks.startsAt)
 ```sql
 SELECT id, speakerId, title, description, startsAt
 FROM talks
-WHERE id = :id
-   OR description LIKE '%Kotlin%'
-ORDER BY title ASC LIMIT 10
+WHERE id = :id OR description LIKE '%Kotlin%'
+ORDER BY title ASC
+LIMIT 10
 OFFSET 30
 ```
 
@@ -172,8 +174,8 @@ OFFSET 30
 
 # SQL-shaped Kotlin
 
-<DrawnAnnotation text="innerJoin" color="var(--drawn-annotation-color)" :sequential="false">
-<DrawnAnnotation text="INNER JOIN" label="rightJoin, leftJoin, fullJoin, crossJoin" color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.2644, y: 0.4239 }, connector: { type: 'polyline', points: [{ x: 0.1153, y: 0.3457 }, { x: 0.1324, y: 0.3905 }] } }">
+<DrawnAnnotation text="innerJoin" color="var(--drawn-annotation-color)" :sequential="false" />
+<DrawnAnnotation text="INNER JOIN" label="rightJoin, leftJoin, fullJoin, crossJoin" color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.2644, y: 0.4239 }, connector: { type: 'polyline', points: [{ x: 0.1153, y: 0.3457 }, { x: 0.1324, y: 0.3905 }] } }" />
 
 ```kotlin
 Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
@@ -183,9 +185,6 @@ Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
 FROM talks
 INNER JOIN profiles ON profiles.id = talks.speaker_id
 ```
-
-</DrawnAnnotation>
-</DrawnAnnotation>
 
 ---
 magic-move
@@ -201,7 +200,7 @@ Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
 ```sql
 SELECT talks.title, talks.description, profiles.name, profiles.avatar_url
 FROM talks
-         INNER JOIN profiles ON profiles.id = talks.speaker_id
+INNER JOIN profiles ON profiles.id = talks.speaker_id
 
 ```
 
@@ -220,7 +219,7 @@ Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
 ```sql
 SELECT talks.title, talks.description, profiles.name, profiles.avatar_url
 FROM talks
-         INNER JOIN profiles ON profiles.id = talks.speaker_id
+INNER JOIN profiles ON profiles.id = talks.speaker_id
 WHERE talks.is_published = TRUE
 ```
 
@@ -228,7 +227,7 @@ WHERE talks.is_published = TRUE
 
 # Query
 
-<DrawnAnnotation text="Query" label="Lazy mutable builder allows building SQL" :geometry="{ label: { x: 0.5240, y: 0.1091 }, connector: { type: 'quadratic', start: { x: 0.2712, y: 0.2178 }, control: { x: 0.3286, y: 0.1941 }, end: { x: 0.3609, y: 0.1519 } } }">
+<DrawnAnnotation text="Query" label="Lazy mutable builder allows building SQL" :geometry="{ label: { x: 0.5240, y: 0.1091 }, connector: { type: 'quadratic', start: { x: 0.2712, y: 0.2178 }, control: { x: 0.3286, y: 0.1941 }, end: { x: 0.3609, y: 0.1519 } } }" />
 
 ```kotlin
 fun previews(): Query =
@@ -237,13 +236,11 @@ fun previews(): Query =
         .where { Talks.isPublished eq true }
 ```
 
-</DrawnAnnotation>
-
 ---
 
 # Executing the query
 
-<DrawnAnnotation text="Blocking" label="JDBC is a blocking driver" placement="up" color="#f59e0b"  :geometry="{ label: { x: 0.5845, y: 0.2111 }, connector: { type: 'quadratic', start: { x: 0.1853, y: 0.3019 }, control: { x: 0.5448, y: 0.3080 }, end: { x: 0.5757, y: 0.2500 } } }">
+<DrawnAnnotation text="Blocking" label="JDBC is a blocking driver" placement="up" color="#f59e0b"  :geometry="{ label: { x: 0.5845, y: 0.2111 }, connector: { type: 'quadratic', start: { x: 0.1853, y: 0.3019 }, control: { x: 0.5448, y: 0.3080 }, end: { x: 0.5757, y: 0.2500 } } }" />
 
 ```kotlin jdbc
 class Query(...) :
@@ -251,11 +248,7 @@ class Query(...) :
     BlockingExecutable<ResultApi, Query>
 ```
 
-</DrawnAnnotation>
-
-
-
-<DrawnAnnotation text="Suspend" label="R2DBC is a reactive driver" color="#06b6d4"  :geometry="{ label: { x: 0.2150, y: 0.5444 } }">
+<DrawnAnnotation text="Suspend" label="R2DBC is a reactive driver" color="#06b6d4"  :geometry="{ label: { x: 0.2150, y: 0.5444 } }" />
 
 ```kotlin r2dbc
 class Query(...) :
@@ -263,15 +256,11 @@ class Query(...) :
     SuspendExecutable<ResultApi, Query>
 ```
 
-</DrawnAnnotation>
-
-
-
 ---
 
 # Executing the query
 
-<DrawnAnnotation text="Iterable" occurrence=2 label="Blocking cursor" placement="up" color="#f59e0b"  :geometry="{ label: { x: 0.5473, y: 0.1190 }, connector: { type: 'polyline', points: [{ x: 0.4427, y: 0.1752 }, { x: 0.4750, y: 0.1193 }] } }">
+<DrawnAnnotation text="Iterable" occurrence=2 label="Blocking cursor" placement="up" color="#f59e0b"  :geometry="{ label: { x: 0.5473, y: 0.1190 }, connector: { type: 'polyline', points: [{ x: 0.4427, y: 0.1752 }, { x: 0.4750, y: 0.1193 }] } }" />
 
 ```kotlin jdbc
 interface SizedIterable<out T> : Iterable<T> {
@@ -282,13 +271,9 @@ interface SizedIterable<out T> : Iterable<T> {
 }
 ```
 
-</DrawnAnnotation>
-
-
-
-<DrawnAnnotation text="Flow" color="#06b6d4">
-<DrawnAnnotation text="suspend" color="#06b6d4" >
-<DrawnAnnotation text="suspend" occurrence=2 label="R2DBC suspends like reactive types" color="#06b6d4"  :geometry="{ label: { x: 0.2388, y: 0.7998 } }">
+<DrawnAnnotation text="Flow" color="#06b6d4" />
+<DrawnAnnotation text="suspend" color="#06b6d4"  />
+<DrawnAnnotation text="suspend" occurrence=2 label="R2DBC suspends like reactive types" color="#06b6d4"  :geometry="{ label: { x: 0.2388, y: 0.7998 } }" />
 
 ```kotlin r2dbc
 interface SizedIterable<out T> : Flow<T> {
@@ -298,12 +283,6 @@ interface SizedIterable<out T> : Flow<T> {
     suspend fun empty(): Boolean
 }
 ```
-
-</DrawnAnnotation>
-</DrawnAnnotation>
-</DrawnAnnotation>
-
-
 
 ---
 
@@ -323,8 +302,8 @@ class Query(...) : Flow<ResultRow>
 
 # Seperate modules
 
-<DrawnAnnotation text="jdbc" color="#f59e0b">
-<DrawnAnnotation text="r2dbc" color="#06b6d4" label="R2DBC and JDBC live alongside each other" :connect="false" :geometry="{ label: { x: 0.5462, y: 0.5702 } }">
+<DrawnAnnotation text="jdbc" color="#f59e0b" />
+<DrawnAnnotation text="r2dbc" color="#06b6d4" label="R2DBC and JDBC live alongside each other" :connect="false" :geometry="{ label: { x: 0.5462, y: 0.5702 } }" />
 
 ```kotlin jdbc
 package org.jetbrains.exposed.v1.jdbc
@@ -337,9 +316,6 @@ package org.jetbrains.exposed.v1.r2dbc
 
 class Query(...) : Flow<ResultRow>
 ```
-
-</DrawnAnnotation>
-</DrawnAnnotation>
 
 ---
 
@@ -446,7 +422,7 @@ data class TalkPreview(
 
 # Accessing the data
 
-<DrawnAnnotation text="Column<A>): A" label="Typed data retrieval from ResultRow"  :geometry="{ label: { x: 0.5266, y: 0.3739 } }">
+<DrawnAnnotation text="Column<A>): A" label="Typed data retrieval from ResultRow"  :geometry="{ label: { x: 0.5266, y: 0.3739 } }" />
 
 ```kotlin
 operator fun <A> ResultRow.get(key: Column<A>): A = TODO("Exposed internals")
@@ -454,17 +430,14 @@ operator fun <A> ResultRow.get(key: Column<A>): A = TODO("Exposed internals")
 fun ResultRow.toTalkPreview(): TalkPreview
 ```
 
-</DrawnAnnotation>
-
-
 ---
 magic-move
 ---
 
 # Accessing the data
 
-<DrawnAnnotation text="title = " label="String" color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.1326, y: 0.4427, width: 0.0569 } }">
-<DrawnAnnotation text="Talks.title" label="Column<String>"  :geometry="{ label: { x: 0.3207, y: 0.4405, width: 0.1521 }, connector: { type: 'polyline', points: [{ x: 0.3208, y: 0.3513 }, { x: 0.3205, y: 0.4184 }] } }">
+<DrawnAnnotation text="title = " label="String" color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.1326, y: 0.4427, width: 0.0569 } }" />
+<DrawnAnnotation text="Talks.title" label="Column<String>"  :geometry="{ label: { x: 0.3207, y: 0.4405, width: 0.1521 }, connector: { type: 'polyline', points: [{ x: 0.3208, y: 0.3513 }, { x: 0.3205, y: 0.4184 }] } }" />
 
 ```kotlin
 operator fun <A> ResultRow.get(key: Column<A>): A = TODO("Exposed internals")
@@ -474,18 +447,14 @@ fun ResultRow.toTalkPreview() = TalkPreview(
 ) 
 ```
 
-</DrawnAnnotation>
-</DrawnAnnotation>
-
-
 ---
 magic-move
 ---
 
 # Accessing the data
 
-<DrawnAnnotation text="operator" color="var(--drawn-annotation-color)" :sequential="false">
-<DrawnAnnotation text="[Talks.title]" label="Kotlin index access operator" color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.4532, y: 0.4426 } }">
+<DrawnAnnotation text="operator" color="var(--drawn-annotation-color)" :sequential="false" />
+<DrawnAnnotation text="[Talks.title]" label="Kotlin index access operator" color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.4532, y: 0.4426 } }" />
 
 ```kotlin
 operator fun <A> ResultRow.get(key: Column<A>): A = TODO("Exposed internals")
@@ -494,10 +463,6 @@ fun ResultRow.toTalkPreview() = TalkPreview(
     title = this[Talks.title],
 ) 
 ```
-
-</DrawnAnnotation>
-</DrawnAnnotation>
-
 
 ---
 magic-move
@@ -572,7 +537,7 @@ suspendTransaction { /* Transaction.() -> Unit */
 
 # Database work requires a transaction
 
-<DrawnAnnotation text="previews" :connect="false" label="Can be called from anywhere resulting in java.lang.IllegalStateException: No transaction in context." color="red"  :geometry="{ label: { x: 0.3899, y: 0.4872, width: 0.3896 }, connector: { type: 'quadratic', start: { x: 0.0821, y: 0.2209 }, control: { x: 0.1248, y: 0.4257 }, end: { x: 0.2179, y: 0.4845 } } }">
+<DrawnAnnotation text="previews" :connect="false" label="Can be called from anywhere resulting in java.lang.IllegalStateException: No transaction in context." color="red"  :geometry="{ label: { x: 0.3899, y: 0.4872, width: 0.3896 }, connector: { type: 'quadratic', start: { x: 0.0821, y: 0.2209 }, control: { x: 0.1248, y: 0.4257 }, end: { x: 0.2179, y: 0.4845 } } }" />
 
 ```kotlin
 fun previews(): List<TalkPreview> =
@@ -581,16 +546,13 @@ fun previews(): List<TalkPreview> =
         .map { it.toTalkPreview() }
 ```
 
-</DrawnAnnotation>
-
-
 ---
 magic-move
 ---
 
 # Database work requires a transaction
 
-<DrawnAnnotation text="context(_: Transaction)" label="Compile-time guarantee it's called inside a `Transaction`"  :geometry="{ label: { x: 0.2126, y: 0.4520, width: 0.3896 }, connector: { type: 'quadratic', start: { x: 0.0487, y: 0.2127 }, control: { x: 0.0121, y: 0.3546 }, end: { x: 0.0787, y: 0.4554 } } }">
+<DrawnAnnotation text="context(_: Transaction)" label="Compile-time guarantee it's called inside a `Transaction`"  :geometry="{ label: { x: 0.2126, y: 0.4520, width: 0.3896 }, connector: { type: 'quadratic', start: { x: 0.0487, y: 0.2127 }, control: { x: 0.0121, y: 0.3546 }, end: { x: 0.0787, y: 0.4554 } } }" />
 
 ```kotlin
 context(_: Transaction)
@@ -599,9 +561,6 @@ fun previews(): List<TalkPreview> =
         .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
         .map { it.toTalkPreview() }
 ```
-
-</DrawnAnnotation>
-
 
 ---
 magic-move
@@ -631,8 +590,8 @@ magic-move
 
 <InlineCompilerError text="previews" occurrence=2 message="No context argument for '_: Transaction' found">
 
-<DrawnAnnotation text="Transaction" occurrence=2 label="`Transaction` context argument" :geometry="{ connector: { type: 'polyline', points: [{ x: 0.4535, y: 0.5655 }, { x: 0.4535, y: 0.5928 }] } }">
-<DrawnAnnotation text="Please call Database.connect() first or specify a database explicitly in the transaction call" at="1" >
+<DrawnAnnotation text="Transaction" occurrence=2 label="`Transaction` context argument" :geometry="{ connector: { type: 'polyline', points: [{ x: 0.4535, y: 0.5655 }, { x: 0.4535, y: 0.5928 }] } }" />
+<DrawnAnnotation text="Please call Database.connect() first or specify a database explicitly in the transaction call" at="1"  />
 
 ```kotlin
 context(_: Transaction)
@@ -647,10 +606,6 @@ fun example2() = transaction { /* Transaction.() -> Unit */
     previews()
 }
 ```
-
-</DrawnAnnotation>
-</DrawnAnnotation>
-
 
 <v-clicks>
 
@@ -669,8 +624,8 @@ fun example2() = transaction { /* Transaction.() -> Unit */
 
 # Database work requires a transaction
 
-<DrawnAnnotation text="(database)" label="explicitly specified database in the transaction call"  :geometry="{ connector: { type: 'polyline', points: [{ x: 0.5608, y: 0.4825 }, { x: 0.5608, y: 0.5099 }] } }">
-<DrawnAnnotation text="(database: Database)" label="But where is this coming from?" on="1"  :geometry="{ label: { x: 0.2649, y: 0.5807 }, connector: { type: 'polyline', points: [{ x: 0.2649, y: 0.4785 }, { x: 0.2649, y: 0.5481 }] } }">
+<DrawnAnnotation text="(database)" label="explicitly specified database in the transaction call"  :geometry="{ connector: { type: 'polyline', points: [{ x: 0.5608, y: 0.4825 }, { x: 0.5608, y: 0.5099 }] } }" />
+<DrawnAnnotation text="(database: Database)" label="But where is this coming from?" on="1"  :geometry="{ label: { x: 0.2649, y: 0.5807 }, connector: { type: 'polyline', points: [{ x: 0.2649, y: 0.4785 }, { x: 0.2649, y: 0.5481 }] } }" />
 
 ```kotlin
 context(_: Transaction)
@@ -681,10 +636,6 @@ fun previews(): List<TalkPreview> =
 
 fun example(database: Database) = transaction(database) { previews() }
 ```
-
-</DrawnAnnotation>
-</DrawnAnnotation>
-
 
 ---
 
@@ -740,8 +691,8 @@ val r2dbc = R2dbcDatabase.connect(
 
 # Database work requires a transaction
 
-<DrawnAnnotation text="transaction {" label="Default database found (from `Database.connect`)"  :geometry="{ label: { x: 0.2795, y: 0.6414, width: 0.4562 }, connector: { type: 'polyline', points: [{ x: 0.2802, y: 0.5655 }, { x: 0.2796, y: 0.6164 }] } }">
-<DrawnAnnotation text="transaction(database)" label="Prefer explicitly passing database instead of relying on implicit resolution"  :geometry="{ label: { x: 0.7219, y: 0.7151, width: 0.4910 }, connector: { type: 'polyline', points: [{ x: 0.5338, y: 0.4873 }, { x: 0.6118, y: 0.6586 }] } }">
+<DrawnAnnotation text="transaction {" label="Default database found (from `Database.connect`)"  :geometry="{ label: { x: 0.2795, y: 0.6414, width: 0.4562 }, connector: { type: 'polyline', points: [{ x: 0.2802, y: 0.5655 }, { x: 0.2796, y: 0.6164 }] } }" />
+<DrawnAnnotation text="transaction(database)" label="Prefer explicitly passing database instead of relying on implicit resolution"  :geometry="{ label: { x: 0.7219, y: 0.7151, width: 0.4910 }, connector: { type: 'polyline', points: [{ x: 0.5338, y: 0.4873 }, { x: 0.6118, y: 0.6586 }] } }" />
 
 ```kotlin
 context(_: Transaction)
@@ -755,15 +706,11 @@ fun example(database: Database) = transaction(database) { previews() }
 fun example() = transaction { previews() }
 ```
 
-</DrawnAnnotation>
-</DrawnAnnotation>
-
-
 ---
 
 # Database work requires a transaction
 
-<DrawnAnnotation text="@Transactional" label="Spring's `@Transactional` can also provide Exposed `Transaction`"  :geometry="{ label: { x: 0.3536, y: 0.4769, width: 0.6311 }, connector: { type: 'quadratic', start: { x: 0.0380, y: 0.2161 }, control: { x: 0.0166, y: 0.3593 }, end: { x: 0.0507, y: 0.4770 } } }">
+<DrawnAnnotation text="@Transactional" label="Spring's `@Transactional` can also provide Exposed `Transaction`"  :geometry="{ label: { x: 0.3536, y: 0.4769, width: 0.6311 }, connector: { type: 'quadratic', start: { x: 0.0380, y: 0.2161 }, control: { x: 0.0166, y: 0.3593 }, end: { x: 0.0507, y: 0.4770 } } }" />
 
 ```kotlin
 @Transactional
@@ -773,14 +720,11 @@ fun previews(): List<TalkPreview> =
         .map { it.toTalkPreview() }
 ```
 
-</DrawnAnnotation>
-
-
 ---
 
 # Insert a talk
 
-<DrawnAnnotation text="insert" occurrence=2 label="`InsertStatement.() -> Unit` builder"  :geometry="{ label: { x: 0.4573, y: 0.3538, width: 0.3736 }, connector: { type: 'quadratic', start: { x: 0.1907, y: 0.3155 }, control: { x: 0.2015, y: 0.3615 }, end: { x: 0.2624, y: 0.3567 } } }">
+<DrawnAnnotation text="insert" occurrence=2 label="`InsertStatement.() -> Unit` builder"  :geometry="{ label: { x: 0.4573, y: 0.3538, width: 0.3736 }, connector: { type: 'quadratic', start: { x: 0.1907, y: 0.3155 }, control: { x: 0.2015, y: 0.3615 }, end: { x: 0.2624, y: 0.3567 } } }" />
 
 ```kotlin
 context(_: Transaction)
@@ -790,17 +734,14 @@ fun insert(title: String, speakerId: Long, startsAt: Instant) =
     }
 ```
 
-</DrawnAnnotation>
-
-
 ---
 
 # Insert a talk
 
-<DrawnAnnotation text="operator" color="var(--drawn-annotation-color)" sequential="false">
-<DrawnAnnotation text="set" color="var(--drawn-annotation-color)" sequential="false">
-<DrawnAnnotation text="Column<S>, value: S" color="var(--drawn-annotation-color)" sequential="false">
-<DrawnAnnotation text="it[Talks.title] = title" label="Typesafe operator setter using `Column<S>`" color="var(--drawn-annotation-color)" sequential="false" :geometry="{ label: { x: 0.4788, y: 0.5693, width: 0.3986 } }">
+<DrawnAnnotation text="operator" color="var(--drawn-annotation-color)" sequential="false" />
+<DrawnAnnotation text="set" color="var(--drawn-annotation-color)" sequential="false" />
+<DrawnAnnotation text="Column<S>, value: S" color="var(--drawn-annotation-color)" sequential="false" />
+<DrawnAnnotation text="it[Talks.title] = title" label="Typesafe operator setter using `Column<S>`" color="var(--drawn-annotation-color)" sequential="false" :geometry="{ label: { x: 0.4788, y: 0.5693, width: 0.3986 } }" />
 
 ```kotlin
 operator fun <S> InsertStatement.set(column: Column<S>, value: S) = TODO("")
@@ -812,17 +753,11 @@ fun insert(title: String, speakerId: Long, startsAt: Instant) =
     }
 ```
 
-</DrawnAnnotation>
-</DrawnAnnotation>
-</DrawnAnnotation>
-</DrawnAnnotation>
-
-
 ---
 
 # Insert a talk
 
-<DrawnAnnotation text="InsertStatement" label="The executed insert statement, providing the affected-row count and any available generated values"  :geometry="{ connector: { type: 'polyline', points: [{ x: 0.7698, y: 0.2644 }, { x: 0.7577, y: 0.2932 }] } }">
+<DrawnAnnotation text="InsertStatement" label="The executed insert statement, providing the affected-row count and any available generated values"  :geometry="{ connector: { type: 'polyline', points: [{ x: 0.7698, y: 0.2644 }, { x: 0.7577, y: 0.2932 }] } }" />
 
 ```kotlin
 context(_: Transaction)
@@ -834,14 +769,11 @@ fun insert(title: String, speakerId: Long, startsAt: Instant): InsertStatement<N
     }
 ```
 
-</DrawnAnnotation>
-
-
 ---
 
 # Insert and get id
 
-<DrawnAnnotation text="EntityID<Long>" label="Returns `EntityID` not raw Long"  :geometry="{ label: { x: 0.7346, y: 0.3501, width: 0.2986 } }">
+<DrawnAnnotation text="EntityID<Long>" label="Returns `EntityID` not raw Long"  :geometry="{ label: { x: 0.7346, y: 0.3501, width: 0.2986 } }" />
 
 ```kotlin
 context(_: Transaction)
@@ -854,16 +786,13 @@ fun insertAndGetId(title: String, speakerId: Long, startsAt: Instant): EntityID<
     }
 ```
 
-</DrawnAnnotation>
-
-
 ---
 magic-move
 ---
 
 # Insert and get id
 
-<DrawnAnnotation text=".value" label="Explicitly unwrap"  :geometry="{ connector: { type: 'polyline', points: [{ x: 0.1323, y: 0.5220 }, { x: 0.1323, y: 0.5493 }] } }">
+<DrawnAnnotation text=".value" label="Explicitly unwrap"  :geometry="{ connector: { type: 'polyline', points: [{ x: 0.1323, y: 0.5220 }, { x: 0.1323, y: 0.5493 }] } }" />
 
 ```kotlin
 context(_: Transaction)
@@ -876,14 +805,11 @@ fun insertAndGetId(title: String, speakerId: Long, startsAt: Instant): Long =
     }.value
 ```
 
-</DrawnAnnotation>
-
-
 ---
 
 # Insert a talk — return what you need
 
-<DrawnAnnotation text="listOf(Talks.id, Talks.createdAt, Talks.updatedAt)" label="Be explicit about returned data"  :geometry="{ label: { x: 0.6771, y: 0.5660, width: 0.2889 } }">
+<DrawnAnnotation text="listOf(Talks.id, Talks.createdAt, Talks.updatedAt)" label="Be explicit about returned data"  :geometry="{ label: { x: 0.6771, y: 0.5660, width: 0.2889 } }" />
 
 ```kotlin
 context(_: Transaction)
@@ -900,16 +826,13 @@ fun insertReturning(
     }
 ```
 
-</DrawnAnnotation>
-
-
 ---
 magic-move
 ---
 
 # Insert a talk — return what you need
 
-<DrawnAnnotation text="[Talks.id, Talks.createdAt, Talks.updatedAt]" label="Use collection literals if you do!"  :geometry="{ label: { x: 0.7109, y: 0.5424, width: 0.2931 } }">
+<DrawnAnnotation text="[Talks.id, Talks.createdAt, Talks.updatedAt]" label="Use collection literals if you do!"  :geometry="{ label: { x: 0.7109, y: 0.5424, width: 0.2931 } }" />
 
 ```kotlin
 context(_: Transaction)
@@ -926,16 +849,13 @@ fun insertReturning(
     }
 ```
 
-</DrawnAnnotation>
-
-
 ---
 magic-move
 ---
 
 # Insert a talk — return what you need
 
-<DrawnAnnotation text="insertReturning {" label="`RETURNING *`"  :geometry="{ label: { x: 0.4609, y: 0.4361, width: 0.1292 }, connector: { type: 'quadratic', start: { x: 0.3338, y: 0.4768 }, control: { x: 0.3679, y: 0.4772 }, end: { x: 0.3901, y: 0.4598 } } }">
+<DrawnAnnotation text="insertReturning {" label="`RETURNING *`"  :geometry="{ label: { x: 0.4609, y: 0.4361, width: 0.1292 }, connector: { type: 'quadratic', start: { x: 0.3338, y: 0.4768 }, control: { x: 0.3679, y: 0.4772 }, end: { x: 0.3901, y: 0.4598 } } }" />
 
 ```kotlin
 context(_: Transaction)
@@ -952,17 +872,14 @@ fun insertReturning(
     }
 ```
 
-</DrawnAnnotation>
-
-
 ---
 magic-move
 ---
 
 # Insert a talk — return what you need
 
-<DrawnAnnotation text="TalkWithSpeakerId" color="var(--drawn-annotation-color)" sequential="false">
-<DrawnAnnotation text="map(ResultRow::toTalkWithSpeakerId)" label="Return all data typed whilst inserting" color="var(--drawn-annotation-color)" sequential="false" :geometry="{ label: { x: 0.5601, y: 0.7715, width: 0.3424 }, connector: { type: 'quadratic', start: { x: 0.3220, y: 0.6937 }, control: { x: 0.3363, y: 0.7618 }, end: { x: 0.3724, y: 0.7696 } } }">
+<DrawnAnnotation text="TalkWithSpeakerId" color="var(--drawn-annotation-color)" sequential="false" />
+<DrawnAnnotation text="map(ResultRow::toTalkWithSpeakerId)" label="Return all data typed whilst inserting" color="var(--drawn-annotation-color)" sequential="false" :geometry="{ label: { x: 0.5601, y: 0.7715, width: 0.3424 }, connector: { type: 'quadratic', start: { x: 0.3220, y: 0.6937 }, control: { x: 0.3363, y: 0.7618 }, end: { x: 0.3724, y: 0.7696 } } }" />
 
 ```kotlin
 context(_: Transaction)
@@ -978,10 +895,6 @@ fun insertReturning(
         it[Talks.startsAt] = startsAt
     }.map(ResultRow::toTalkWithSpeakerId)
 ```
-
-</DrawnAnnotation>
-</DrawnAnnotation>
-
 
 ---
 
@@ -1078,7 +991,7 @@ fun insertBatch(newTalk: List<NewTalk>) {
 
 # Update states its scope
 
-<DrawnAnnotation text="{ Talks.id eq talkId }" label="Without a precise predicate can affect many rows."  :geometry="{ label: { x: 0.5380, y: 0.4855, width: 0.4722 }, connector: { type: 'quadratic', start: { x: 0.3242, y: 0.2578 }, control: { x: 0.3203, y: 0.3567 }, end: { x: 0.3365, y: 0.4422 } } }">
+<DrawnAnnotation text="{ Talks.id eq talkId }" label="Without a precise predicate can affect many rows."  :geometry="{ label: { x: 0.5380, y: 0.4855, width: 0.4722 }, connector: { type: 'quadratic', start: { x: 0.3242, y: 0.2578 }, control: { x: 0.3203, y: 0.3567 }, end: { x: 0.3365, y: 0.4422 } } }" />
 
 ```kotlin
 fun update(talkId: Long, status: TalkStatus) {
@@ -1088,16 +1001,13 @@ fun update(talkId: Long, status: TalkStatus) {
 }
 ```
 
-</DrawnAnnotation>
-
-
 ---
 magic-move
 ---
 
 # Update states its scope
 
-<DrawnAnnotation text="it[Talks.status] = TalkStatus.PUBLISHED" label="Same DSL as insert"  :geometry="{ label: { x: 0.4476, y: 0.3693, width: 0.1764 } }">
+<DrawnAnnotation text="it[Talks.status] = TalkStatus.PUBLISHED" label="Same DSL as insert"  :geometry="{ label: { x: 0.4476, y: 0.3693, width: 0.1764 } }" />
 
 ```kotlin
 fun update(talkId: Long, status: TalkStatus) {
@@ -1107,16 +1017,13 @@ fun update(talkId: Long, status: TalkStatus) {
 }
 ```
 
-</DrawnAnnotation>
-
-
 ---
 magic-move
 ---
 
 # Update states its scope
 
-<DrawnAnnotation text="[Talks.speakerId, Talks.title, Talks.startsAt]" label="Use `*Returning` variant to return selected columns"  :geometry="{ label: { x: 0.6590, y: 0.5519, width: 0.4826 }, connector: { type: 'quadratic', start: { x: 0.5255, y: 0.3171 }, control: { x: 0.5806, y: 0.4014 }, end: { x: 0.5807, y: 0.5082 } } }">
+<DrawnAnnotation text="[Talks.speakerId, Talks.title, Talks.startsAt]" label="Use `*Returning` variant to return selected columns"  :geometry="{ label: { x: 0.6590, y: 0.5519, width: 0.4826 }, connector: { type: 'quadratic', start: { x: 0.5255, y: 0.3171 }, control: { x: 0.5806, y: 0.4014 }, end: { x: 0.5807, y: 0.5082 } } }" />
 
 ```kotlin
 fun update(talkId: Long, status: TalkStatus): TalkPreview? =
@@ -1128,17 +1035,14 @@ fun update(talkId: Long, status: TalkStatus): TalkPreview? =
     }.singleOrNull()?.toTalkPreview()
 ```
 
-</DrawnAnnotation>
-
-
 ---
 magic-move
 ---
 
 # Update states its scope
 
-<DrawnAnnotation text="{ Talks.id eq talkId }" color="var(--drawn-annotation-color)">
-<DrawnAnnotation text="singleOrNull()" label="Predicate guarantees 1 or 0 rows will be affected" color="var(--drawn-annotation-color)" :geometry="{ label: { x: 0.3771, y: 0.5524, width: 0.4562 }, connector: { type: 'polyline', points: [{ x: 0.1802, y: 0.4769 }, { x: 0.2064, y: 0.5211 }] } }">
+<DrawnAnnotation text="{ Talks.id eq talkId }" color="var(--drawn-annotation-color)" />
+<DrawnAnnotation text="singleOrNull()" label="Predicate guarantees 1 or 0 rows will be affected" color="var(--drawn-annotation-color)" :geometry="{ label: { x: 0.3771, y: 0.5524, width: 0.4562 }, connector: { type: 'polyline', points: [{ x: 0.1802, y: 0.4769 }, { x: 0.2064, y: 0.5211 }] } }" />
 
 ```kotlin
 fun update(talkId: Long, status: TalkStatus): TalkPreview? =
@@ -1149,10 +1053,6 @@ fun update(talkId: Long, status: TalkStatus): TalkPreview? =
         it[Talks.status] = TalkStatus.PUBLISHED
     }.singleOrNull()?.toTalkPreview()
 ```
-
-</DrawnAnnotation>
-</DrawnAnnotation>
-
 
 ---
 
@@ -1183,8 +1083,8 @@ magic-move
 
 # Upsert states the conflict key
 
-<DrawnAnnotation text="Talks.slug" label="Specify unique key on which to update the row on conflict" color="var(--drawn-annotation-color)" :geometry="{ label: { x: 0.5627, y: 0.2624, width: 0.3896 }, connector: { type: 'quadratic', start: { x: 0.2933, y: 0.2174 }, control: { x: 0.4002, y: 0.2328 }, end: { x: 0.4179, y: 0.2617 } } }">
-<DrawnAnnotation text="(slug)" label="Must have `UNIQUE` constraint" color="var(--drawn-annotation-color)" :geometry="{ label: { x: 0.5751, y: 0.6642, width: 0.2715 }, connector: { type: 'quadratic', start: { x: 0.2279, y: 0.6090 }, control: { x: 0.3354, y: 0.6151 }, end: { x: 0.4286, y: 0.6528 } } }">
+<DrawnAnnotation text="Talks.slug" label="Specify unique key on which to update the row on conflict" color="var(--drawn-annotation-color)" :geometry="{ label: { x: 0.5627, y: 0.2624, width: 0.3896 }, connector: { type: 'quadratic', start: { x: 0.2933, y: 0.2174 }, control: { x: 0.4002, y: 0.2328 }, end: { x: 0.4179, y: 0.2617 } } }" />
+<DrawnAnnotation text="(slug)" label="Must have `UNIQUE` constraint" color="var(--drawn-annotation-color)" :geometry="{ label: { x: 0.5751, y: 0.6642, width: 0.2715 }, connector: { type: 'quadratic', start: { x: 0.2279, y: 0.6090 }, control: { x: 0.3354, y: 0.6151 }, end: { x: 0.4286, y: 0.6528 } } }" />
 
 ```kotlin
 Talks.upsert(Talks.slug) {
@@ -1203,9 +1103,6 @@ UPDATE SET
     speaker_id = EXCLUDED.speaker_id,
     starts_at = EXCLUDED.starts_at;
 ```
-
-</DrawnAnnotation>
-</DrawnAnnotation>
 
 ---
 magic-move
@@ -1263,14 +1160,11 @@ UPDATE SET
 
 # Delete states its scope
 
-<DrawnAnnotation text="removed" label="`deleteWhere` returns the affected row count"  :geometry="{ label: { x: 0.3653, y: 0.2844, width: 0.4222 } }">
+<DrawnAnnotation text="removed" label="`deleteWhere` returns the affected row count"  :geometry="{ label: { x: 0.3653, y: 0.2844, width: 0.4222 } }" />
 
 ```kotlin
 val removed: Int = Talks.deleteWhere { Talks.id eq talkId }
 ```
-
-</DrawnAnnotation>
-
 
 ---
 magic-move
@@ -1278,14 +1172,11 @@ magic-move
 
 # Delete states its scope
 
-<DrawnAnnotation text="deleteReturning" label="Use `deleteReturning` to return affected rows" >
+<DrawnAnnotation text="deleteReturning" label="Use `deleteReturning` to return affected rows"  />
 
 ```kotlin
 val removed: Iterable<ResultRow> = Talks.deleteReturning { Talks.id eq talkId }
 ```
-
-</DrawnAnnotation>
-
 
 ---
 magic-move

@@ -91,13 +91,13 @@ exposed {
 
 
 <v-clicks at="1">
-<DrawnAnnotation text="generateMigrations" label="Writes migration files to src/main/resources/db/migration" placement="down" at="1">
+<DrawnAnnotation text="generateMigrations" label="Writes migration files to src/main/resources/db/migration" placement="down" at="1" />
 
 ```bash
 ./gradlew generateMigrations
 ```
 
-</DrawnAnnotation>
+
 </v-clicks>
 
 ---
@@ -128,7 +128,7 @@ flyway {
 
 # Flyway
 
-<DrawnAnnotation text="migrate" label="Idempotent operation so we can execute on server start-up" placement="right">
+<DrawnAnnotation text="migrate" label="Idempotent operation so we can execute on server start-up" placement="right" />
 
 ```kotlin
 fun migrate(dataSource: HikariDataSource): MigrateResult =
@@ -139,7 +139,6 @@ fun migrate(dataSource: HikariDataSource): MigrateResult =
         .load()
         .migrate()
 ```
-</DrawnAnnotation>
 
 ---
 
