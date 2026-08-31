@@ -175,7 +175,7 @@ OFFSET 30
 # SQL-shaped Kotlin
 
 <DrawnAnnotation text="innerJoin" color="var(--drawn-annotation-color)" :sequential="false" />
-<DrawnAnnotation text="INNER JOIN" label="rightJoin, leftJoin, fullJoin, crossJoin" color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.2644, y: 0.4239 }, connector: { type: 'polyline', points: [{ x: 0.1153, y: 0.3457 }, { x: 0.1324, y: 0.3905 }] } }" />
+<DrawnAnnotation text="INNER JOIN" label="`rightJoin leftJoin fullJoin crossJoin`" color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.2168, y: 0.4673, width: 0.1646 }, connector: { type: 'quadratic', start: { x: 0.1153, y: 0.3457 }, control: { x: 0.1229, y: 0.4300 }, end: { x: 0.1592, y: 0.4731 } } }" />
 
 ```kotlin
 Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
@@ -240,7 +240,7 @@ fun previews(): Query =
 
 # Executing the query
 
-<DrawnAnnotation text="Blocking" label="JDBC is a blocking driver" placement="up" color="#f59e0b"  :geometry="{ label: { x: 0.5845, y: 0.2111 }, connector: { type: 'quadratic', start: { x: 0.1853, y: 0.3019 }, control: { x: 0.5448, y: 0.3080 }, end: { x: 0.5757, y: 0.2500 } } }" />
+<DrawnAnnotation text="Blocking" label="JDBC is a blocking driver" color="#f59e0b"  :geometry="{ label: { x: 0.5845, y: 0.2111 }, connector: { type: 'quadratic', start: { x: 0.1853, y: 0.3019 }, control: { x: 0.5448, y: 0.3080 }, end: { x: 0.5757, y: 0.2500 } } }" />
 
 ```kotlin jdbc
 class Query(...) :
@@ -260,7 +260,7 @@ class Query(...) :
 
 # Executing the query
 
-<DrawnAnnotation text="Iterable" occurrence=2 label="Blocking cursor" placement="up" color="#f59e0b"  :geometry="{ label: { x: 0.5473, y: 0.1190 }, connector: { type: 'polyline', points: [{ x: 0.4427, y: 0.1752 }, { x: 0.4750, y: 0.1193 }] } }" />
+<DrawnAnnotation text="Iterable" occurrence=2 label="Blocking cursor" color="#f59e0b"  :geometry="{ label: { x: 0.5473, y: 0.1190 }, connector: { type: 'polyline', points: [{ x: 0.4427, y: 0.1752 }, { x: 0.4750, y: 0.1193 }] } }" />
 
 ```kotlin jdbc
 interface SizedIterable<out T> : Iterable<T> {
@@ -422,7 +422,7 @@ data class TalkPreview(
 
 # Accessing the data
 
-<DrawnAnnotation text="Column<A>): A" label="Typed data retrieval from ResultRow"  :geometry="{ label: { x: 0.5266, y: 0.3739 } }" />
+<DrawnAnnotation text="Column<A>): A" label="Typed data retrieval from ResultRow"  :geometry="{ label: { x: 0.6103, y: 0.3744, width: 0.3417 } }" />
 
 ```kotlin
 operator fun <A> ResultRow.get(key: Column<A>): A = TODO("Exposed internals")

@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "slidev",
+    "prod": "npm run build && npx serve dist",
     "build": "slidev build",
     "export": "slidev export",
     "screenshot": "slidev export --format png",

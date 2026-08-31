@@ -91,7 +91,7 @@ exposed {
 
 
 <v-clicks at="1">
-<DrawnAnnotation text="generateMigrations" label="Writes migration files to src/main/resources/db/migration" placement="down" at="1" />
+<DrawnAnnotation text="generateMigrations" label="Writes migration files to src/main/resources/db/migration" at="1" />
 
 ```bash
 ./gradlew generateMigrations
@@ -128,7 +128,7 @@ flyway {
 
 # Flyway
 
-<DrawnAnnotation text="migrate" label="Idempotent operation so we can execute on server start-up" placement="right" />
+<DrawnAnnotation text="migrate" label="Idempotent operation so we can execute on server start-up" />
 
 ```kotlin
 fun migrate(dataSource: HikariDataSource): MigrateResult =
