@@ -150,7 +150,7 @@ magic-move
 
 # Defining our Tables
 
-<DrawnAnnotation text=".autoIncrement().entityId()" label="Auto-incrementing database identifier as EntityID"  :geometry="{ connector: { type: 'polyline', points: [{ x: 0.6677, y: 0.2624 }, { x: 0.6677, y: 0.2897 }] } }">
+<DrawnAnnotation text=".autoIncrement().entityId()" label="Auto-incrementing database identifier as EntityID"  :geometry="{ connector: { type: 'polyline', points: [{ x: 0.6677, y: 0.2664 }, { x: 0.6677, y: 0.2937 }] } }">
 
 ```kotlin
 object ProfileTable : Table("profiles") {
@@ -170,7 +170,7 @@ magic-move
 
 <DrawnAnnotation text="IdTable<Long>" color="var(--drawn-annotation-color)" :sequential="false">
 <DrawnAnnotation text="override" color="var(--drawn-annotation-color)" :sequential="false">
-<DrawnAnnotation text="override" occurrence=2 label="Auto-incrementing database identifier as EntityID"  color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.3214, y: 0.4730 }, connector: { type: 'quadratic', start: { x: 0.0857, y: 0.3035 }, control: { x: 0.0878, y: 0.3792 }, end: { x: 0.1103, y: 0.4509 } } }">
+<DrawnAnnotation text="override" occurrence=2 label="Auto-incrementing database identifier as EntityID"  color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.3767, y: 0.4595, width: 0.4632 }, connector: { type: 'quadratic', start: { x: 0.1757, y: 0.3040 }, control: { x: 0.1778, y: 0.3797 }, end: { x: 0.1990, y: 0.4318 } } }">
 
 ```kotlin
 object ProfileTable : IdTable<Long>("profiles") {
@@ -190,7 +190,7 @@ magic-move
 
 # Defining our Tables
 
-<DrawnAnnotation text="LongIdTable" label="LongIdTable implements all this boilerplate for us" :geometry="{ label: { x: 0.6492, y: 0.2531 }, connector: { type: 'polyline', points: [{ x: 0.3950, y: 0.2175 }, { x: 0.4634, y: 0.2323 }] } }">
+<DrawnAnnotation text="LongIdTable" label="LongIdTable implements all this boilerplate for us" :geometry="{ label: { x: 0.6854, y: 0.2628, width: 0.4590 }, connector: { type: 'polyline', points: [{ x: 0.3950, y: 0.2175 }, { x: 0.4634, y: 0.2323 }] } }">
 
 ```kotlin
 object ProfileTable : LongIdTable("profiles") {

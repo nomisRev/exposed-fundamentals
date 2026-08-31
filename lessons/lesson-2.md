@@ -299,7 +299,7 @@ interface SizedIterable<out T> : Iterable<T> {
 
 
 
-<DrawnAnnotation text="Flow" color="#06b6d4" >
+<DrawnAnnotation text="Flow" color="#06b6d4">
 <DrawnAnnotation text="suspend" color="#06b6d4" >
 <DrawnAnnotation text="suspend" occurrence=2 label="R2DBC suspends like reactive types" color="#06b6d4"  :geometry="{ label: { x: 0.2388, y: 0.7998 } }">
 
@@ -335,23 +335,22 @@ class Query(...) : Flow<ResultRow>
 
 # Seperate modules
 
-<DrawnAnnotation text="jdbc" >
-<DrawnAnnotation text="r2dbc" label="R2DBC and JDBC live alongside each other" >
+<DrawnAnnotation text="jdbc" color="#f59e0b">
+<DrawnAnnotation text="r2dbc" color="#06b6d4" label="R2DBC and JDBC live alongside each other" :connect="false" :geometry="{ label: { x: 0.5462, y: 0.5702 } }">
 
 ```kotlin jdbc
 package org.jetbrains.exposed.v1.jdbc
 
 class Query(...) : Iterable<ResultRow>
 ```
-</DrawnAnnotation>
-</DrawnAnnotation>
-
-
 ```kotlin r2dbc
 package org.jetbrains.exposed.v1.r2dbc
 
 class Query(...) : Flow<ResultRow>
 ```
+
+</DrawnAnnotation>
+</DrawnAnnotation>
 
 ---
 
@@ -459,7 +458,7 @@ data class TalkPreview(
 
 # Accessing the data
 
-<DrawnAnnotation text="Column<A>): A" label="Typed data retrieval from ResultRow" >
+<DrawnAnnotation text="Column<A>): A" label="Typed data retrieval from ResultRow"  :geometry="{ label: { x: 0.5266, y: 0.3739 } }">
 
 ```kotlin
 operator fun <A> ResultRow.get(key: Column<A>): A = TODO("Exposed internals")
@@ -475,7 +474,7 @@ magic-move
 
 # Accessing the data
 
-<DrawnAnnotation text="title = " label="String" >
+<DrawnAnnotation text="title = " label="String" color="var(--drawn-annotation-color)" :sequential="false">
 <DrawnAnnotation text="Talks.title" label="Column<String>" >
 
 ```kotlin
@@ -495,8 +494,8 @@ magic-move
 
 # Accessing the data
 
-<DrawnAnnotation text="operator" >
-<DrawnAnnotation text="[Talks.title]" label="Kotlin index access operator" >
+<DrawnAnnotation text="operator" color="var(--drawn-annotation-color)" :sequential="false">
+<DrawnAnnotation text="[Talks.title]" label="Kotlin index access operator" color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.4532, y: 0.4426 } }">
 
 ```kotlin
 operator fun <A> ResultRow.get(key: Column<A>): A = TODO("Exposed internals")
@@ -543,19 +542,6 @@ fun previews(): List<TalkPreview> =
         .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
         .map { row: ResultRow -> row.toTalkPreview() }
 ```
-
----
-
-# Accessing the data
-
-```kotlin
-fun ResultRow.toTalkPreview(): TalkPreview
-
-val results = Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
-    .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
-    .map { it.toTalkPreview() }
-```
-
 <v-clicks>
 
 <div class="stacktrace" aria-label="Application stack trace">
@@ -594,7 +580,7 @@ suspendTransaction { /* Transaction.() -> Unit */
 
 # Database work requires a transaction
 
-<DrawnAnnotation text="previews" label="Can be called from anywhere resulting in java.lang.IllegalStateException: No transaction in context." color="red" >
+<DrawnAnnotation text="previews" :connect="false" label="Can be called from anywhere resulting in java.lang.IllegalStateException: No transaction in context." color="red"  :geometry="{ label: { x: 0.3899, y: 0.4872, width: 0.3896 }, connector: { type: 'quadratic', start: { x: 0.0821, y: 0.2209 }, control: { x: 0.1248, y: 0.4257 }, end: { x: 0.2179, y: 0.4845 } } }">
 
 ```kotlin
 fun previews(): List<TalkPreview> =
@@ -611,7 +597,7 @@ magic-move
 
 # Database work requires a transaction
 
-<DrawnAnnotation text="context(_: Transaction)" label="Compile-time guarantee it's called inside a Transaction" >
+<DrawnAnnotation text="context(_: Transaction)" label="Compile-time guarantee it's called inside a Transaction"  :geometry="{ label: { x: 0.2126, y: 0.4520, width: 0.3896 }, connector: { type: 'quadratic', start: { x: 0.0487, y: 0.2127 }, control: { x: 0.0121, y: 0.3546 }, end: { x: 0.0787, y: 0.4554 } } }">
 
 ```kotlin
 context(_: Transaction)
@@ -649,9 +635,9 @@ magic-move
 
 # Database work requires a transaction
 
-<InlineCompilerError text="previews" occurrence=2 message="No context argument for '_: Transaction' found" on="0">
+<InlineCompilerError text="previews" occurrence=2 message="No context argument for '_: Transaction' found">
 
-<DrawnAnnotation text="Transaction" occurrence=2 label="Transaction context argument" >
+<DrawnAnnotation text="Transaction" occurrence=2 label="Transaction context argument">
 <DrawnAnnotation text="Please call Database.connect() first or specify a database explicitly in the transaction call" at="1" >
 
 ```kotlin
@@ -688,8 +674,8 @@ fun example2() = transaction { /* Transaction.() -> Unit */
 
 # Database work requires a transaction
 
-<DrawnAnnotation text="(database)" label="explicitly specified database in the transaction call" >
-<DrawnAnnotation text="(database: Database)" label="But where is this coming from?" on="1" >
+<DrawnAnnotation text="(database)" label="explicitly specified database in the transaction call"  :geometry="{ connector: { type: 'polyline', points: [{ x: 0.5608, y: 0.4825 }, { x: 0.5608, y: 0.5099 }] } }">
+<DrawnAnnotation text="(database: Database)" label="But where is this coming from?" on="1"  :geometry="{ label: { x: 0.2649, y: 0.5807 }, connector: { type: 'polyline', points: [{ x: 0.2649, y: 0.4785 }, { x: 0.2649, y: 0.5481 }] } }">
 
 ```kotlin
 context(_: Transaction)
