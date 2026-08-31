@@ -45,71 +45,9 @@ magic-move
 
 # SQL-shaped Kotlin
 
-<DrawnAnnotation text="id, title, startsAt" label="`Talks.` can be made available in two ways">
-
 ```kotlin
-Talks.select(id, title, startsAt)
-```
-
-```sql
-SELECT id, title, startsAt
-FROM talks
-```
-
-</DrawnAnnotation>
-
----
-magic-move
----
-
-# SQL-shaped Kotlin
-
-<DrawnAnnotation text="Talks." label="Receiver is `this: Talks` so `Talks.` can be omitted">
-
-```kotlin
-fun Talks.selectExample() = 
-    select(id, title, startsAt)
-```
-
-```sql
-SELECT id, title, startsAt
-FROM talks
-```
-
-</DrawnAnnotation>
-
----
-magic-move
----
-
-# SQL-shaped Kotlin
-
-<DrawnAnnotation text="this@selectExample.id eq id" label="Can result in shadowing / ambiguity" color="red">
-
-```kotlin
-fun Talks.selectExample(id: Long) = 
-    select(id, title, startsAt)
-        .where { this@selectExample.id eq id }
-```
-
-```sql
-SELECT id, title, startsAt
-FROM talks
-WHERE id = :id
-```
-
-</DrawnAnnotation>
-
----
-magic-move
----
-
-# SQL-shaped Kotlin
-
-```kotlin
-fun Talks.selectExample(requestedTalkId: Long) = 
-    select(id, title, startsAt)
-        .where { id eq requestedTalkId }
+Talks.select(Talks.id, Talks.title, Talks.startsAt)
+    .where { Talks.id eq id }
 ```
 
 ```sql
@@ -124,57 +62,16 @@ magic-move
 
 # SQL-shaped Kotlin
 
-<DrawnAnnotation text="id, title, startsAt" label="Explicit `import org.jetbrains.Talks.name`">
-<DrawnAnnotation text="Talks.id eq id" label="Can result in shadowing / ambiguity" on="1">
-
 ```kotlin
-fun selectById(id: Long) = 
-    Talks.select(id, title, startsAt)
-        .where { Talks.id eq id }
+Talks.select(Talks.id, Talks.title, Talks.startsAt)
+    .where { Talks.id eq id }
+    .orderBy(Talks.title, SortOrder.ASC)
 ```
 
 ```sql
 SELECT id, title, startsAt
 FROM talks
 WHERE id = :id
-```
-
-</DrawnAnnotation>
-</DrawnAnnotation>
-
----
-magic-move
----
-
-# SQL-shaped Kotlin
-
-```kotlin
-Talks.select(id, title, startsAt)
-    .where { id eq requestedTalkId }
-```
-
-```sql
-SELECT id, title, startsAt
-FROM talks
-WHERE id = :requestedTalkId
-```
-
----
-magic-move
----
-
-# SQL-shaped Kotlin
-
-```kotlin
-Talks.select(id, title, startsAt)
-    .where { id eq requestedTalkId }
-    .orderBy(title, SortOrder.ASC)
-```
-
-```sql
-SELECT id, title, startsAt
-FROM talks
-WHERE id = :requestedTalkId
 ORDER BY title ASC
 ```
 
@@ -185,16 +82,16 @@ magic-move
 # SQL-shaped Kotlin
 
 ```kotlin
-Talks.select(id, title, startsAt)
-    .where { id eq requestedTalkId }
-    .orderBy(title, SortOrder.ASC)
+Talks.select(Talks.id, Talks.title, Talks.startsAt)
+    .where { Talks.id eq id }
+    .orderBy(Talks.title, SortOrder.ASC)
     .limit(10)
 ```
 
 ```sql
 SELECT id, title, startsAt
 FROM talks
-WHERE id = :requestedTalkId
+WHERE id = :id
 ORDER BY title ASC
 LIMIT 10
 ```
@@ -206,9 +103,9 @@ magic-move
 # SQL-shaped Kotlin
 
 ```kotlin
-Talks.select(id, title, startsAt)
-    .where { id eq requestedTalkId }
-    .orderBy(title, SortOrder.ASC)
+Talks.select(Talks.id, Talks.title, Talks.startsAt)
+    .where { Talks.id eq id }
+    .orderBy(Talks.title, SortOrder.ASC)
     .limit(10)
     .offset(30)
 ```
@@ -216,7 +113,7 @@ Talks.select(id, title, startsAt)
 ```sql
 SELECT id, title, startsAt
 FROM talks
-WHERE id = :requestedTalkId
+WHERE id = :id
 ORDER BY title ASC
 LIMIT 10
 OFFSET 30
@@ -229,18 +126,18 @@ magic-move
 # SQL-shaped Kotlin
 
 ```kotlin
-Talks.select(id, title, startsAt)
-    .where { id eq requestedTalkId }
-    .orderBy(title, SortOrder.ASC)
+Talks.select(Talks.id, Talks.title, Talks.startsAt)
+    .where { Talks.id eq id }
+    .orderBy(Talks.title, SortOrder.ASC)
     .limit(10)
     .offset(30)
-    .andWhere { description like "%Kotlin%" }
+    .orWhere { Talks.description like "%Kotlin%" }
 ```
 
 ```sql
 SELECT id, title, startsAt
 FROM talks
-WHERE id = :requestedTalkId AND description LIKE '%Kotlin%'
+WHERE id = :id OR description LIKE '%Kotlin%'
 ORDER BY title ASC
 LIMIT 10
 OFFSET 30
@@ -253,21 +150,21 @@ magic-move
 # SQL-shaped Kotlin
 
 ```kotlin
-Talks.select(id, title, startsAt)
-    .where { id eq requestedTalkId }
-    .orderBy(title, SortOrder.ASC)
+Talks.select(Talks.id, Talks.title, Talks.startsAt)
+    .where { Talks.id eq id }
+    .orderBy(Talks.title, SortOrder.ASC)
     .limit(10)
     .offset(30)
-    .andWhere { description like "%Kotlin%" }
+    .orWhere { Talks.description like "%Kotlin%" }
     .adjustSelect {
-        select(id, speakerId, title, description, startsAt)
+        select(Talks.id, Talks.speakerId, Talks.title, Talks.description, Talks.startsAt)
     }
 ```
 
 ```sql
 SELECT id, speakerId, title, description, startsAt
 FROM talks
-WHERE id = :requestedTalkId AND description LIKE '%Kotlin%'
+WHERE id = :id OR description LIKE '%Kotlin%'
 ORDER BY title ASC
 LIMIT 10
 OFFSET 30
@@ -469,11 +366,10 @@ import org.jetbrains.exposed.v1.r2dbc.Query
 # <span color="#f59e0b">JDBC</span> ~ <span color="#06b6d4">R2DBC</span>
 
 ```kotlin
-fun talks(requestedTalkId: Long, limit: Long = 10, offset: Long = 30): Query =
-    Talks.select(id, speakerId, title, description, startsAt)
-        .where { id eq requestedTalkId }
-        .andWhere { description like "%Kotlin%" }
-        .orderBy(title, SortOrder.ASC)
+fun talks(limit: Long = 10, offset: Long = 30): Query =
+    Talks.select(Talks.speakerId, Talks.title, Talks.description, Talks.startsAt)
+        .where { Talks.description like "%Kotlin%" }
+        .orderBy(Talks.title, SortOrder.ASC)
         .limit(10)
         .offset(30)
 
@@ -562,8 +458,8 @@ magic-move
 
 # Accessing the data
 
-<DrawnAnnotation text="title = " label="String" color="var(--drawn-annotation-color)" :sequential="false">
-<DrawnAnnotation text="Talks.title" label="Column<String>" >
+<DrawnAnnotation text="title = " label="String" color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.1326, y: 0.4427, width: 0.0569 } }">
+<DrawnAnnotation text="Talks.title" label="Column<String>"  :geometry="{ label: { x: 0.3207, y: 0.4405, width: 0.1521 }, connector: { type: 'polyline', points: [{ x: 0.3208, y: 0.3513 }, { x: 0.3205, y: 0.4184 }] } }">
 
 ```kotlin
 operator fun <A> ResultRow.get(key: Column<A>): A = TODO("Exposed internals")
@@ -685,7 +581,7 @@ magic-move
 
 # Database work requires a transaction
 
-<DrawnAnnotation text="context(_: Transaction)" label="Compile-time guarantee it's called inside a Transaction"  :geometry="{ label: { x: 0.2126, y: 0.4520, width: 0.3896 }, connector: { type: 'quadratic', start: { x: 0.0487, y: 0.2127 }, control: { x: 0.0121, y: 0.3546 }, end: { x: 0.0787, y: 0.4554 } } }">
+<DrawnAnnotation text="context(_: Transaction)" label="Compile-time guarantee it's called inside a `Transaction`"  :geometry="{ label: { x: 0.2126, y: 0.4520, width: 0.3896 }, connector: { type: 'quadratic', start: { x: 0.0487, y: 0.2127 }, control: { x: 0.0121, y: 0.3546 }, end: { x: 0.0787, y: 0.4554 } } }">
 
 ```kotlin
 context(_: Transaction)
@@ -703,7 +599,7 @@ magic-move
 
 # Database work requires a transaction
 
-<InlineCompilerError text="previews" occurrence=2 message="No context argument for '_: Transaction' found" on="0">
+<InlineCompilerError text="previews" occurrence=2 message="No context argument for '_: Transaction' found">
 
 ```kotlin
 context(_: Transaction)
@@ -725,7 +621,7 @@ magic-move
 
 <InlineCompilerError text="previews" occurrence=2 message="No context argument for '_: Transaction' found">
 
-<DrawnAnnotation text="Transaction" occurrence=2 label="Transaction context argument">
+<DrawnAnnotation text="Transaction" occurrence=2 label="Transaction context argument" :geometry="{ connector: { type: 'polyline', points: [{ x: 0.4535, y: 0.5655 }, { x: 0.4535, y: 0.5928 }] } }">
 <DrawnAnnotation text="Please call Database.connect() first or specify a database explicitly in the transaction call" at="1" >
 
 ```kotlin
