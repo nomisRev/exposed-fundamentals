@@ -180,7 +180,22 @@ OFFSET 30
 ```kotlin
 Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
 ```
+```sql
+FROM talks
+INNER JOIN profiles ON profiles.id = talks.speaker_id
+```
 
+---
+magic-move
+---
+
+# SQL-shaped Kotlin
+
+<DrawnAnnotation text="ON profiles.id = talks.speaker_id" label="Is derived from `Column` reference on `IdTable`" color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.6415, y: 0.4786, width: 0.4905 }, connector: { type: 'quadratic', start: { x: 0.3689, y: 0.3469 }, control: { x: 0.3765, y: 0.4312 }, end: { x: 0.4128, y: 0.4743 } } }" />
+
+```kotlin
+Talks.innerJoin(ProfileTable)
+```
 ```sql
 FROM talks
 INNER JOIN profiles ON profiles.id = talks.speaker_id
@@ -193,7 +208,7 @@ magic-move
 # SQL-shaped Kotlin
 
 ```kotlin
-Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
+Talks.innerJoin(ProfileTable)
     .select(Talks.title, Talks.description, ProfileTable.name, ProfileTable.avatarUrl)
 ```
 
@@ -211,7 +226,7 @@ magic-move
 # SQL-shaped Kotlin
 
 ```kotlin
-Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
+Talks.innerJoin(ProfileTable)
     .select(Talks.title, Talks.description, ProfileTable.name, ProfileTable.avatarUrl)
     .where { Talks.isPublished eq true }
 ```
@@ -231,7 +246,7 @@ WHERE talks.is_published = TRUE
 
 ```kotlin
 fun previews(): Query =
-    Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
+    Talks.innerJoin(ProfileTable)
         .select(Talks.title, Talks.description, ProfileTable.name, ProfileTable.avatarUrl)
         .where { Talks.isPublished eq true }
 ```
@@ -354,7 +369,7 @@ fun talks(limit: Long = 10, offset: Long = 30): Query =
         .offset(30)
 
 fun previews(): Query =
-    Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
+    Talks.innerJoin(ProfileTable)
         .select(title, description, ProfileTable.name, ProfileTable.avatarUrl)
         .where { Talks.isPublished eq true }
 ```
@@ -494,7 +509,7 @@ fun ResultRow.toTalkPreview() = TalkPreview(
 )
 
 fun previews(): List<TalkPreview> =
-    Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
+    Talks.innerJoin(ProfileTable)
         .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
         .map { row: ResultRow -> row.toTalkPreview() }
 ```
@@ -541,7 +556,7 @@ suspendTransaction { /* Transaction.() -> Unit */
 
 ```kotlin
 fun previews(): List<TalkPreview> =
-    Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
+    Talks.innerJoin(ProfileTable)
         .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
         .map { it.toTalkPreview() }
 ```
@@ -557,7 +572,7 @@ magic-move
 ```kotlin
 context(_: Transaction)
 fun previews(): List<TalkPreview> =
-    Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
+    Talks.innerJoin(ProfileTable)
         .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
         .map { it.toTalkPreview() }
 ```
@@ -573,7 +588,7 @@ magic-move
 ```kotlin
 context(_: Transaction)
 fun previews(): List<TalkPreview> =
-    Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
+    Talks.innerJoin(ProfileTable)
         .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
         .map { it.toTalkPreview() }
 
@@ -596,7 +611,7 @@ magic-move
 ```kotlin
 context(_: Transaction)
 fun previews(): List<TalkPreview> =
-    Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
+    Talks.innerJoin(ProfileTable)
         .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
         .map { it.toTalkPreview() }
 
@@ -630,7 +645,7 @@ fun example2() = transaction { /* Transaction.() -> Unit */
 ```kotlin
 context(_: Transaction)
 fun previews(): List<TalkPreview> =
-    Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
+    Talks.innerJoin(ProfileTable)
         .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
         .map { it.toTalkPreview() }
 
@@ -697,7 +712,7 @@ val r2dbc = R2dbcDatabase.connect(
 ```kotlin
 context(_: Transaction)
 fun previews(): List<TalkPreview> =
-    Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
+    Talks.innerJoin(ProfileTable)
         .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
         .map { it.toTalkPreview() }
 
@@ -715,7 +730,7 @@ fun example() = transaction { previews() }
 ```kotlin
 @Transactional
 fun previews(): List<TalkPreview> =
-    Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
+    Talks.innerJoin(ProfileTable)
         .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
         .map { it.toTalkPreview() }
 ```
