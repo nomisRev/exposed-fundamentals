@@ -190,7 +190,7 @@ magic-move
 
 # Defining our Tables
 
-<DrawnAnnotation text="LongIdTable" label="LongIdTable implements all this boilerplate for us" :geometry="{ label: { x: 0.6854, y: 0.2628, width: 0.4590 }, connector: { type: 'polyline', points: [{ x: 0.3950, y: 0.2175 }, { x: 0.4634, y: 0.2323 }] } }">
+<DrawnAnnotation text="LongIdTable" label="`LongIdTable` implements all this boilerplate for us" :geometry="{ label: { x: 0.6854, y: 0.2628, width: 0.4913 }, connector: { type: 'polyline', points: [{ x: 0.3950, y: 0.2175 }, { x: 0.4634, y: 0.2323 }] } }">
 
 ```kotlin
 object ProfileTable : LongIdTable("profiles") {
@@ -206,7 +206,7 @@ magic-move
 
 # Defining our Tables
 
-<DrawnAnnotation text="reference(&quot;speaker_id&quot;, ProfileTable.id)" label="Referencing a table requires the EntityID for the table"  :geometry="{ label: { x: 0.6185, y: 0.6367 }, connector: { type: 'polyline', points: [{ x: 0.5525, y: 0.4407 }, { x: 0.5931, y: 0.5946 }] } }">
+<DrawnAnnotation text="reference(&quot;speaker_id&quot;, ProfileTable.id)" label="Referencing a table requires the `EntityID` for the table"  :geometry="{ label: { x: 0.6185, y: 0.6367 }, connector: { type: 'polyline', points: [{ x: 0.5525, y: 0.4407 }, { x: 0.5931, y: 0.5946 }] } }">
 
 ```kotlin
 object ProfileTable : LongIdTable("profiles") {
@@ -228,7 +228,7 @@ magic-move
 
 # Defining our Tables
 
-<DrawnAnnotation text="ProfileTable" occurrence=2 label="(Long)IdTable has specialised syntax for referencing, joins, DAO, and more"  :geometry="{ label: { x: 0.5608, y: 0.6211 } }">
+<DrawnAnnotation text="ProfileTable" occurrence=2 label="`(Long)IdTable` has specialised syntax for referencing, joins, DAO, and more"  :geometry="{ label: { x: 0.5608, y: 0.6211 } }">
 
 ```kotlin
 object ProfileTable : LongIdTable("profiles") {
@@ -251,7 +251,7 @@ magic-move
 # Defining our Tables
 
 <DrawnAnnotation text="ReferenceOption" color="var(--drawn-annotation-color)" :sequential="false">
-<DrawnAnnotation text="ReferenceOption" label="CASCADE, SET_NULL, RESTRICT, NO_ACTION, SET_DEFAULT;" occurrence=2  color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.6680, y: 0.6256, width: 0.4285 }, connector: { type: 'polyline', points: [{ x: 0.4084, y: 0.6099 }, { x: 0.5175, y: 0.6314 }] } }">
+<DrawnAnnotation text="ReferenceOption" label="`CASCADE, SET_NULL, RESTRICT, NO_ACTION, SET_DEFAULT;`" occurrence=2  color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.6680, y: 0.6256, width: 0.4285 }, connector: { type: 'polyline', points: [{ x: 0.4084, y: 0.6099 }, { x: 0.5175, y: 0.6314 }] } }">
 
 ```kotlin
 object ProfileTable : LongIdTable("profiles") {
@@ -350,8 +350,8 @@ layout: two-cols-header
 
 # Columns can expose domain types
 
-<DrawnAnnotation text="Column<TalkTitle>" label="Our application sees TalkTitle"  :geometry="{ label: { x: 0.3176, y: 0.5295 }, connector: { type: 'quadratic', start: { x: 0.3338, y: 0.5081 }, control: { x: 0.3712, y: 0.4684 }, end: { x: 0.3736, y: 0.4001 } } }">
-<DrawnAnnotation text="varchar(&quot;title&quot;, 200)" label="Database stores varchar"  :geometry="{ label: { x: 0.7435, y: 0.4465 }, connector: { type: 'quadratic', start: { x: 0.5398, y: 0.4026 }, control: { x: 0.5566, y: 0.4530 }, end: { x: 0.6222, y: 0.4460 } } }">
+<DrawnAnnotation text="Column<TalkTitle>" label="Our application sees `TalkTitle`"  :geometry="{ label: { x: 0.3176, y: 0.5295 }, connector: { type: 'quadratic', start: { x: 0.3338, y: 0.5081 }, control: { x: 0.3712, y: 0.4684 }, end: { x: 0.3736, y: 0.4001 } } }">
+<DrawnAnnotation text="varchar(&quot;title&quot;, 200)" label="Database stores `varchar`"  :geometry="{ label: { x: 0.7435, y: 0.4465 }, connector: { type: 'quadratic', start: { x: 0.5398, y: 0.4026 }, control: { x: 0.5566, y: 0.4530 }, end: { x: 0.6222, y: 0.4460 } } }">
 
 ```kotlin
 @JvmInline
@@ -372,7 +372,7 @@ object Talks : Table("talks") {
 
 <br>
 
-<DrawnAnnotation text="enumeration<E>()" label="Database stores ordinal which is dangerous for schema evolution" color="red" placement="up" :geometry="{ label: { x: 0.6855, y: 0.1305, width: 0.5673 }, connector: { type: 'quadratic', start: { x: 0.2676, y: 0.3007 }, control: { x: 0.4075, y: 0.2777 }, end: { x: 0.5460, y: 0.1872 } } }">
+<DrawnAnnotation text="`enumeration<E>()`" label="Database stores ordinal which is dangerous for schema evolution" color="red" placement="up" :geometry="{ label: { x: 0.6855, y: 0.1305, width: 0.5673 }, connector: { type: 'quadratic', start: { x: 0.2676, y: 0.3007 }, control: { x: 0.4075, y: 0.2777 }, end: { x: 0.5460, y: 0.1872 } } }">
 
 | `enumeration<E>()`       | `E : Enum<E>`              |
 |--------------------------|----------------------------|
@@ -499,7 +499,7 @@ object ProfileTable : LongIdTable("profiles") {
 > DAO, transport, migration, and Spring modules add no column value mappings.
 
 <DrawnAnnotation text="compositeMoney" color="var(--drawn-annotation-color)" :sequential="false">
-<DrawnAnnotation text="compositeMoney" occurrence=2 label="MonetaryAmount value backed by 2 columns BigDecimal & CurrencyUnit" color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.4653, y: 0.8549, width: 0.3562 }, connector: { type: 'quadratic', start: { x: 0.2526, y: 0.5876 }, control: { x: 0.4187, y: 0.7023 }, end: { x: 0.4521, y: 0.8144 } } }">
+<DrawnAnnotation text="compositeMoney" occurrence=2 label="`MonetaryAmount` value backed by 2 columns `BigDecimal` & `CurrencyUnit`" color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.4943, y: 0.8808, width: 0.3562 }, connector: { type: 'quadratic', start: { x: 0.2526, y: 0.5876 }, control: { x: 0.4187, y: 0.7023 }, end: { x: 0.4521, y: 0.8144 } } }">
 
 | `currency()`                                                                                 | `javax.money.CurrencyUnit`   |
 |----------------------------------------------------------------------------------------------|------------------------------|

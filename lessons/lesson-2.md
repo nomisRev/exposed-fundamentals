@@ -45,6 +45,8 @@ magic-move
 
 # SQL-shaped Kotlin
 
+<DrawnAnnotation text="id, title, startsAt" label="`Talks.` can be made available in two ways">
+
 ```kotlin
 Talks.select(id, title, startsAt)
 ```
@@ -53,6 +55,92 @@ Talks.select(id, title, startsAt)
 SELECT id, title, startsAt
 FROM talks
 ```
+
+</DrawnAnnotation>
+
+---
+magic-move
+---
+
+# SQL-shaped Kotlin
+
+<DrawnAnnotation text="Talks." label="Receiver is `this: Talks` so `Talks.` can be omitted">
+
+```kotlin
+fun Talks.selectExample() = 
+    select(id, title, startsAt)
+```
+
+```sql
+SELECT id, title, startsAt
+FROM talks
+```
+
+</DrawnAnnotation>
+
+---
+magic-move
+---
+
+# SQL-shaped Kotlin
+
+<DrawnAnnotation text="this@selectExample.id eq id" label="Can result in shadowing / ambiguity" color="red">
+
+```kotlin
+fun Talks.selectExample(id: Long) = 
+    select(id, title, startsAt)
+        .where { this@selectExample.id eq id }
+```
+
+```sql
+SELECT id, title, startsAt
+FROM talks
+WHERE id = :id
+```
+
+</DrawnAnnotation>
+
+---
+magic-move
+---
+
+# SQL-shaped Kotlin
+
+```kotlin
+fun Talks.selectExample(requestedTalkId: Long) = 
+    select(id, title, startsAt)
+        .where { id eq requestedTalkId }
+```
+
+```sql
+SELECT id, title, startsAt
+FROM talks
+WHERE id = :id
+```
+
+---
+magic-move
+---
+
+# SQL-shaped Kotlin
+
+<DrawnAnnotation text="id, title, startsAt" label="Explicit `import org.jetbrains.Talks.name`">
+<DrawnAnnotation text="Talks.id eq id" label="Can result in shadowing / ambiguity" on="1">
+
+```kotlin
+fun selectById(id: Long) = 
+    Talks.select(id, title, startsAt)
+        .where { Talks.id eq id }
+```
+
+```sql
+SELECT id, title, startsAt
+FROM talks
+WHERE id = :id
+```
+
+</DrawnAnnotation>
+</DrawnAnnotation>
 
 ---
 magic-move
