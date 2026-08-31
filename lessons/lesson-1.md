@@ -250,8 +250,8 @@ magic-move
 
 # Defining our Tables
 
-<DrawnAnnotation text="ReferenceOption" >
-<DrawnAnnotation text="ReferenceOption" label="CASCADE, SET_NULL, RESTRICT, NO_ACTION, SET_DEFAULT;" occurrence=2  :geometry="{ label: { x: 0.6680, y: 0.6256, width: 0.4285 }, connector: { type: 'polyline', points: [{ x: 0.4084, y: 0.6099 }, { x: 0.5175, y: 0.6314 }] } }">
+<DrawnAnnotation text="ReferenceOption" color="var(--drawn-annotation-color)" :sequential="false">
+<DrawnAnnotation text="ReferenceOption" label="CASCADE, SET_NULL, RESTRICT, NO_ACTION, SET_DEFAULT;" occurrence=2  color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.6680, y: 0.6256, width: 0.4285 }, connector: { type: 'polyline', points: [{ x: 0.4084, y: 0.6099 }, { x: 0.5175, y: 0.6314 }] } }">
 
 ```kotlin
 object ProfileTable : LongIdTable("profiles") {
@@ -279,9 +279,9 @@ magic-move
 
 # Defining our Tables
 
-<DrawnAnnotation text="columnName = " >
-<DrawnAnnotation text="sequenceName = " label="Override default column names"  :geometry="{ label: { x: 0.6265, y: 0.4533 }, connector: { type: 'quadratic', start: { x: 0.2321, y: 0.3581 }, control: { x: 0.3994, y: 0.3687 }, end: { x: 0.5001, y: 0.4220 } } }">
-<DrawnAnnotation text="fkName = " >
+<DrawnAnnotation text="columnName = " color="var(--drawn-annotation-color)" :sequential="false">
+<DrawnAnnotation text="sequenceName = " label="Override default column names" color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.6265, y: 0.4533 }, connector: { type: 'quadratic', start: { x: 0.2321, y: 0.3581 }, control: { x: 0.3994, y: 0.3687 }, end: { x: 0.5001, y: 0.4220 } } }">
+<DrawnAnnotation text="fkName = " color="var(--drawn-annotation-color)" :sequential="false">
 
 ```kotlin
 object ProfileTable : LongIdTable(
@@ -350,8 +350,8 @@ layout: two-cols-header
 
 # Columns can expose domain types
 
-<DrawnAnnotation text="varchar(&quot;title&quot;, 200)" label="Database stores varchar" >
-<DrawnAnnotation text="Column<TalkTitle>" label="Our application sees TalkTitle" >
+<DrawnAnnotation text="Column<TalkTitle>" label="Our application sees TalkTitle"  :geometry="{ label: { x: 0.3176, y: 0.5295 }, connector: { type: 'quadratic', start: { x: 0.3338, y: 0.5081 }, control: { x: 0.3712, y: 0.4684 }, end: { x: 0.3736, y: 0.4001 } } }">
+<DrawnAnnotation text="varchar(&quot;title&quot;, 200)" label="Database stores varchar"  :geometry="{ label: { x: 0.7435, y: 0.4465 }, connector: { type: 'quadratic', start: { x: 0.5398, y: 0.4026 }, control: { x: 0.5566, y: 0.4530 }, end: { x: 0.6222, y: 0.4460 } } }">
 
 ```kotlin
 @JvmInline
@@ -372,7 +372,7 @@ object Talks : Table("talks") {
 
 <br>
 
-<DrawnAnnotation text="enumeration<E>()" label="Database stores ordinal which is dangerous for schema evolution" color="red" placement="up">
+<DrawnAnnotation text="enumeration<E>()" label="Database stores ordinal which is dangerous for schema evolution" color="red" placement="up" :geometry="{ label: { x: 0.6855, y: 0.1305, width: 0.5673 }, connector: { type: 'quadratic', start: { x: 0.2676, y: 0.3007 }, control: { x: 0.4075, y: 0.2777 }, end: { x: 0.5460, y: 0.1872 } } }">
 
 | `enumeration<E>()`       | `E : Enum<E>`              |
 |--------------------------|----------------------------|
@@ -428,7 +428,7 @@ object Talks : Table("talks") {
 <div class="code-swap">
 <div v-click.hide="1">
 
-<DrawnAnnotation text="@Serializable" label="Works based on kotlinx.serialization" >
+<DrawnAnnotation text="@Serializable" label="Works based on kotlinx.serialization" until="1" :geometry="{ label: { x: 0.6945, y: 0.4483 }, connector: { type: 'quadratic', start: { x: 0.1983, y: 0.4161 }, control: { x: 0.3895, y: 0.4026 }, end: { x: 0.5163, y: 0.4484 } } }">
 
 ```kotlin
 @Serializable
@@ -445,9 +445,9 @@ data class ProfilesAttributes(
 
 <div v-click="1">
 
-<DrawnAnnotation text="jacksonObjectMapper" label="Custom Jackson implementation" :on="1" >
-<DrawnAnnotation text="mapper.writeValueAsString" :on="1" >
-<DrawnAnnotation text="mapper.readValue<MyDataClass>" :on="1" >
+<DrawnAnnotation text="jacksonObjectMapper" label="Custom Jackson implementation" :on="1" color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.7269, y: 0.4832 }, connector: { type: 'quadratic', start: { x: 0.3873, y: 0.4190 }, control: { x: 0.4779, y: 0.4307 }, end: { x: 0.5653, y: 0.4834 } } }">
+<DrawnAnnotation text="mapper.writeValueAsString" :on="1" color="var(--drawn-annotation-color)" :sequential="false">
+<DrawnAnnotation text="mapper.readValue<MyDataClass>" :on="1" color="var(--drawn-annotation-color)" :sequential="false">
 
 ```kotlin{1,5-9}
 val mapper = jacksonObjectMapper()
@@ -498,8 +498,8 @@ object ProfileTable : LongIdTable("profiles") {
 
 > DAO, transport, migration, and Spring modules add no column value mappings.
 
-<DrawnAnnotation text="compositeMoney">
-<DrawnAnnotation text="compositeMoney" occurrence=2 label="MonetaryAmount value backed by 2 columns BigDecimal & CurrencyUnit">
+<DrawnAnnotation text="compositeMoney" color="var(--drawn-annotation-color)" :sequential="false">
+<DrawnAnnotation text="compositeMoney" occurrence=2 label="MonetaryAmount value backed by 2 columns BigDecimal & CurrencyUnit" color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.4653, y: 0.8549, width: 0.3562 }, connector: { type: 'quadratic', start: { x: 0.2526, y: 0.5876 }, control: { x: 0.4187, y: 0.7023 }, end: { x: 0.4521, y: 0.8144 } } }">
 
 | `currency()`                                                                                 | `javax.money.CurrencyUnit`   |
 |----------------------------------------------------------------------------------------------|------------------------------|
