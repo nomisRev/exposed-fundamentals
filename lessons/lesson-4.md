@@ -25,7 +25,7 @@ kodee: wave
 # Keep talks with zero bookmarks
 
 <DrawnAnnotation text="count().alias(&quot;bookmark_count&quot;)" />
-<DrawnAnnotation text="bookmarkCount" occurrence="2" label="Use the aliased column in select"  :geometry="{ label: { x: 0.6844, y: 0.3948 }, connector: { start: { x: 0.4248, y: 0.3486 }, end: { x: 0.5269, y: 0.3817 } } }"/>
+<DrawnAnnotation text="bookmarkCount" occurrence="2" label="Use the aliased column in select"  :geometry="{ label: { x: 0.6943, y: 0.4173 }, connector: { start: { x: 0.4324, y: 0.3761 }, end: { x: 0.5345, y: 0.4092 } } }"/>
 <DrawnAnnotation text="COUNT(bookmarks.talk_id) bookmark_count" />
 
 ```kotlin
@@ -49,7 +49,7 @@ ORDER BY bookmark_count DESC
 
 # Keep talks with zero bookmarks
 
-<DrawnAnnotation text="this[bookmarkCount]" label="Use the aliased column in `ResultRow` extraction"  :geometry="{ label: { x: 0.7379, y: 0.3449, width: 0.3015 }, connector: { start: { x: 0.6292, y: 0.5178 }, end: { x: 0.7153, y: 0.3940 } } }"/>
+<DrawnAnnotation text="this[bookmarkCount]" label="Use the aliased column in `ResultRow` extraction"  :geometry="{ label: { x: 0.7379, y: 0.3449, width: 0.3015 }, connector: { start: { x: 0.6870, y: 0.5539 }, end: { x: 0.7153, y: 0.3940 } } }"/>
 
 ```kotlin
 val bookmarkCount = Bookmarks.talkId.count().alias("bookmark_count")
@@ -76,7 +76,8 @@ magic-move
 
 # Keep only talks with 10+ bookmarks
 
-<DrawnAnnotation text="having" label="`having` after `groupBy` to filter the aggregate"  :geometry="{ label: { x: 0.6213, y: 0.4189, width: 0.3882 }, connector: { start: { x: 0.1425, y: 0.4315 }, end: { x: 0.5087, y: 0.4315 } } }"/>
+<DrawnAnnotation text="having" label="`having` after `groupBy` to filter the aggregate"  :geometry="{ label: { x: 0.2621, y: 0.9141, width: 0.7196 }, connector: { start: { x: 0.0661, y: 0.4606 }, end: { x: 0.0485, y: 0.8983 } } }"/>
+<DrawnAnnotation text="Bookmarks.talkId.count()" occurrence="2" label="PostgreSQL doesn't make SELECT aliases available but doesn't run it twice"  :geometry="{ label: { x: 0.7603, y: 0.2904, width: 0.3836 }, connector: { start: { x: 0.4638, y: 0.4611 }, end: { x: 0.7692, y: 0.3351 } } }"/>
 
 ```kotlin
 val bookmarkCount = Bookmarks.talkId.count().alias("bookmark_count")
@@ -84,7 +85,7 @@ val bookmarkCount = Bookmarks.talkId.count().alias("bookmark_count")
 Talks.leftJoin(Bookmarks)
   .select(Talks.title, bookmarkCount)
   .groupBy(Talks.id, Talks.title)
-  .having { bookmarkCount greaterEq 10 }
+  .having { Bookmarks.talkId.count() greaterEq 10 }
   .orderBy(bookmarkCount, SortOrder.DESC)
 ```
 
@@ -114,6 +115,8 @@ ORDER BY bookmark_count DESC
 
 # A query can become a value in another query
 
+<DrawnAnnotation text="inSubQuery" label="Check if a queries result row contains the element `Talks.id`"  :geometry="{ label: { x: 0.6190, y: 0.6306, width: 0.2099 } }"/>
+
 ```kotlin
 fun talkIdsForTag(tag: String): Query =
   TalkTags.innerJoin(Tags)
@@ -123,47 +126,116 @@ fun talkIdsForTag(tag: String): Query =
 Talks.select(Talks.title)
   .where { Talks.id inSubQuery talkIdsForTag("kotlin") }
 ```
-
-- `inSubQuery` compares a value to query rows.
-- `exists` and `notExists` ask whether a related row exists.
-- Query aliases create named derived tables.
+```sql
+SELECT talks.title
+FROM talks
+WHERE talks.id IN (
+  SELECT talk_tags.talk_id
+  FROM talk_tags
+    INNER JOIN tags ON tags.id = talk_tags.tag_id
+  WHERE tags."label" = 'kotlin'
+)
+```
 
 ---
 
-# Optional filters compose `Op<Boolean>`
+# A query can become a predicate in another query
 
-> API input adds a predicate, not SQL text.
+<DrawnAnnotation text="exists" label="Keep the talk if the correlated query returns at least one row"  :geometry="{ label: { x: 0.5685, y: 0.6277, width: 0.5428 }, connector: { start: { x: 0.2526, y: 0.5294 }, end: { x: 0.4005, y: 0.6292 } } }"/>
 
 ```kotlin
-val predicates = buildList {
-  tag?.let { add(Talks.id inSubQuery talkIdsForTag(it)) }
-  speakerName?.let { add(ProfileTable.name eq it) }
-  published?.let { add(Talks.isPublished eq it) }
-}
+fun hasTag(tag: String) =
+  TalkTags.innerJoin(Tags)
+    .select(TalkTags.talkId)
+    .where { TalkTags.talkId eq Talks.id and (Tags.label eq tag) }
 
-Talks.innerJoin(ProfileTable)
-  .select(Talks.columns + ProfileTable.columns)
-  .where { predicates.compoundAnd() }
-  .limit(size).offset(offset)
+Talks.select(Talks.title)
+  .where { exists(hasTag("kotlin")) }
+```
+```sql
+SELECT talks.title
+FROM talks
+WHERE EXISTS (
+  SELECT talk_tags.talk_id
+  FROM talk_tags 
+    INNER JOIN tags ON tags.id = talk_tags.tag_id
+  WHERE talk_tags.talk_id = talks.id AND tags."label" = 'kotlin'
+)
 ```
 
 ---
 
 # Expressions can call SQL functions
 
-```kotlin
-val normalizedName = ProfileTable.name.trim().lowerCase().alias("normalized_name")
+<DrawnAnnotation text="Talks.title.lowerCase()" label="Reference expressions in custom functions, works with aliases" on="0" />
+<DrawnAnnotation text="unaccent" label="Requires `exec(&quot;CREATE EXTENSION IF NOT EXISTS unaccent;&quot;)`" on="1" :geometry="{ label: { x: 0.5886, y: 0.5310 }, connector: { start: { x: 0.5877, y: 0.3738 }, end: { x: 0.5873, y: 0.4986 } } }"/>
 
-val normalizedTitle = CustomStringFunction(
-  "unaccent", Talks.title.lowerCase(),
-).alias("normalized_title")
+```kotlin
+val normalizedName = ProfileTable.name.trim().lowerCase()
+  .alias("normalized_name")
+
+val normalizedTitle = CustomStringFunction("unaccent", Talks.title.lowerCase())
+  .alias("normalized_title")
 ```
 
-`unaccent` is PostgreSQL-specific and needs its extension. Keep database-specific behaviour labelled.
+---
+
+<DrawnAnnotation text="normalizedName, normalizedTitle" label="Reference them in select"  :geometry="{ label: { x: 0.7094, y: 0.4752 } }"/>
+<DrawnAnnotation text="LOWER(TRIM(profiles.&quot;name&quot;)) normalized_name" />
+<DrawnAnnotation text="unaccent(LOWER(talks.title)) normalized_title" />
+
+
+```kotlin
+val normalizedName = ProfileTable.name.trim().lowerCase()
+  .alias("normalized_name")
+
+val normalizedTitle = CustomStringFunction("unaccent", Talks.title.lowerCase())
+  .alias("normalized_title")
+
+Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
+  .select(normalizedName, normalizedTitle)
+  .orderBy(normalizedTitle to SortOrder.ASC)
+```
+```sql
+SELECT(
+       LOWER(TRIM(profiles."name")) normalized_name,
+       unaccent(LOWER(talks.title)) normalized_title  
+) 
+FROM talks INNER JOIN profiles ON (talks.speaker_id = profiles.id)
+ORDER BY normalized_title ASC
+```
+
+---
+
+<DrawnAnnotation text="normalizedName" occurrence="3" /> 
+<DrawnAnnotation text="normalizedTitle" occurrence="4" label="Reference them in the ResultRow"  :geometry="{ label: { x: 0.7231, y: 0.3131 } }"/> 
+
+```kotlin
+Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
+  .select(normalizedName, normalizedTitle)
+  .orderBy(normalizedTitle to SortOrder.ASC)
+  .map { row ->
+    NormalizedTalk(
+      normalizedName = row[normalizedName],
+      normalizedTitle = row[normalizedTitle],
+    )
+  }
+```
+```sql
+SELECT(
+       LOWER(TRIM(profiles."name")) normalized_name,
+       unaccent(LOWER(talks.title)) normalized_title  
+) 
+FROM talks INNER JOIN profiles ON (talks.speaker_id = profiles.id)
+ORDER BY normalized_title ASC
+```
 
 ---
 
 # For special SQL syntax, implement an expression
+
+<DrawnAnnotation text="ExpressionWithColumnType<Long>" label="Typed definition gives us type safety" on="0"  :geometry="{ label: { x: 0.8259, y: 0.2830, width: 0.1924 } }"/>
+<DrawnAnnotation text="QueryBuilder" occurrence="2" label="Full control over the SQL" on="1"  :geometry="{ label: { x: 0.6615, y: 0.4555 } }"/>
 
 ```kotlin
 private object TotalCount : ExpressionWithColumnType<Long>() {
@@ -175,7 +247,28 @@ private object TotalCount : ExpressionWithColumnType<Long>() {
 }
 ```
 
-Select `TotalCount`, then read `row[TotalCount]`. Custom emitted SQL is your dialect responsibility.
+---
+
+<DrawnAnnotation text="TotalCount" />
+<DrawnAnnotation text="row[TotalCount]" label="Returns `Long` due to `ExpressionWithColumnType<Long>`"  :geometry="{ label: { x: 0.6709, y: 0.4581, width: 0.4627 }, connector: { start: { x: 0.4383, y: 0.4221 }, end: { x: 0.5534, y: 0.4451 } } }"/>
+
+```kotlin
+Talks.select(Talks.id, Talks.title, TotalCount)
+  .where { Talks.isPublished eq true }
+  .map { row ->
+    TalkPageRow(
+      id = row[Talks.id].value,
+      title = row[Talks.title],
+      totalCount = row[TotalCount],
+    )
+  }
+```
+```sql
+SELECT talks.id, talks.title, COUNT(*) OVER ()
+FROM talks
+WHERE talks.is_published = TRUE
+
+```
 
 ---
 

@@ -25,6 +25,7 @@ kodee: welcome
       </picture>
       <span>Kotlin</span>
     </div>
+    <br/>
     <ul class="boundary-concepts">
       <li>Rich types</li>
       <li>Domain rules</li>
@@ -52,6 +53,7 @@ kodee: welcome
       <img class="boundary-database-logo" src="/Postgresql_elephant.svg" alt="" aria-hidden="true">
       <span>Database</span>
     </div>
+    <br/>
     <ul class="boundary-concepts">
       <li>Tables and rows</li>
       <li>Keys and constraints</li>
@@ -85,7 +87,7 @@ kodee: welcome
 
 # Defining our Tables
 
-<DrawnAnnotation text="Table(&quot;Profile&quot;)" label="Default `tableName =` className - `Table` suffix => Profile"  :geometry="{ connector: { start: { x: 0.3566, y: 0.2221 }, end: { x: 0.3566, y: 0.2495 } } }" />
+<DrawnAnnotation text="Table(&quot;Profile&quot;)" label="Default `tableName =` className - `Table` suffix => Profile"  :geometry="{ label: { x: 0.3972, y: 0.3123 }, connector: { start: { x: 0.3566, y: 0.2303 }, end: { x: 0.3576, y: 0.2737 } } }" />
 
 ```kotlin
 object ProfileTable : Table("Profile")
@@ -109,8 +111,8 @@ magic-move
 
 # Defining our Tables
 
-<DrawnAnnotation text="Column<Long>" label="Every column is typed to a proper Kotlin type"  :geometry="{ label: { x: 0.6345, y: 0.2683, width: 0.3862 }, connector: { start: { x: 0.3013, y: 0.2574 }, end: { x: 0.5208, y: 0.2665 } } }" />
-<DrawnAnnotation text="PrimaryKey" label="Explicitly create PrimaryKey"  :geometry="{ label: { x: 0.3143, y: 0.4041 }, connector: { start: { x: 0.3156, y: 0.3059 }, end: { x: 0.3156, y: 0.3818 } } }" />
+<DrawnAnnotation text="Column<Long>" label="Every column is typed to a proper Kotlin type"  :geometry="{ label: { x: 0.6369, y: 0.2841, width: 0.3862 }, connector: { start: { x: 0.3056, y: 0.2676 }, end: { x: 0.5251, y: 0.2767 } } }" />
+<DrawnAnnotation text="PrimaryKey" label="Explicitly create PrimaryKey"  :geometry="{ label: { x: 0.3151, y: 0.4306 }, connector: { start: { x: 0.3157, y: 0.3282 }, end: { x: 0.3157, y: 0.4041 } } }" />
 
 ```kotlin
 object ProfileTable : Table("profiles") {
@@ -125,7 +127,7 @@ magic-move
 
 # Defining our Tables
 
-<DrawnAnnotation text="val name" label="Create properties to match the shape of table"  :geometry="{ label: { x: 0.3592, y: 0.4755 }, connector: { start: { x: 0.1509, y: 0.3572 }, end: { x: 0.1690, y: 0.4447 } } }" />
+<DrawnAnnotation text="val name" label="Create properties to match the shape of table"  :geometry="{ label: { x: 0.3608, y: 0.4888 }, connector: { start: { x: 0.1546, y: 0.3749 }, end: { x: 0.1727, y: 0.4624 } } }" />
 
 ```kotlin
 object ProfileTable : Table("profiles") {
@@ -141,7 +143,7 @@ magic-move
 
 # Defining our Tables
 
-<DrawnAnnotation text=".autoIncrement().entityId()" label="Auto-incrementing database identifier as `EntityID`"  :geometry="{ label: { x: 0.6843, y: 0.3497 }, connector: { start: { x: 0.6677, y: 0.2664 }, end: { x: 0.6843, y: 0.3119 } } }" />
+<DrawnAnnotation text=".autoIncrement().entityId()" label="Auto-incrementing database identifier as `EntityID`"  :geometry="{ label: { x: 0.6843, y: 0.3497 }, connector: { start: { x: 0.6696, y: 0.2813 }, end: { x: 0.6862, y: 0.3268 } } }" />
 
 ```kotlin
 object ProfileTable : Table("profiles") {
@@ -159,7 +161,7 @@ magic-move
 
 <DrawnAnnotation text="IdTable<Long>" color="var(--drawn-annotation-color)" :sequential="false" />
 <DrawnAnnotation text="override" color="var(--drawn-annotation-color)" :sequential="false" />
-<DrawnAnnotation text="override" occurrence=2 label="Auto-incrementing database identifier as `EntityID`"  color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.3767, y: 0.4595, width: 0.4632 }, connector: { type: 'quadratic', start: { x: 0.1757, y: 0.3040 }, control: { x: 0.1778, y: 0.3797 }, end: { x: 0.1990, y: 0.4318 } } }" />
+<DrawnAnnotation text="override" occurrence=2 label="Auto-incrementing database identifier as `EntityID`"  color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.3339, y: 0.4825, width: 0.4632 }, connector: { type: 'quadratic', start: { x: 0.1667, y: 0.3249 }, control: { x: 0.1688, y: 0.4006 }, end: { x: 0.1900, y: 0.4527 } } }" />
 
 ```kotlin
 object ProfileTable : IdTable<Long>("profiles") {
@@ -175,7 +177,7 @@ magic-move
 
 # Defining our Tables
 
-<DrawnAnnotation text="LongIdTable" label="`LongIdTable` implements all this boilerplate for us" :geometry="{ label: { x: 0.6854, y: 0.2628, width: 0.4913 }, connector: { start: { x: 0.3950, y: 0.2175 }, end: { x: 0.4634, y: 0.2323 } } }" />
+<DrawnAnnotation text="LongIdTable" label="`LongIdTable` implements all this boilerplate for us" :geometry="{ label: { x: 0.6854, y: 0.2628, width: 0.4913 }, connector: { start: { x: 0.4272, y: 0.2253 }, end: { x: 0.4956, y: 0.2401 } } }" />
 
 ```kotlin
 object ProfileTable : LongIdTable("profiles") {
@@ -189,7 +191,7 @@ magic-move
 
 # Defining our Tables
 
-<DrawnAnnotation text="reference(&quot;speaker_id&quot;, ProfileTable.id)" label="Referencing a table requires the `EntityID` for the table"  :geometry="{ label: { x: 0.6185, y: 0.6367 }, connector: { start: { x: 0.5525, y: 0.4407 }, end: { x: 0.5931, y: 0.5946 } } }" />
+<DrawnAnnotation text="reference(&quot;speaker_id&quot;, ProfileTable.id)" label="Referencing a table requires the `EntityID` for the table"  :geometry="{ label: { x: 0.6195, y: 0.6672 }, connector: { start: { x: 0.5503, y: 0.4746 }, end: { x: 0.5909, y: 0.6285 } } }" />
 
 ```kotlin
 object ProfileTable : LongIdTable("profiles") {
@@ -209,7 +211,7 @@ magic-move
 
 # Defining our Tables
 
-<DrawnAnnotation text="ProfileTable" occurrence=2 label="`(Long)IdTable` has specialised syntax for referencing, joins, DAO, and more"  :geometry="{ label: { x: 0.5608, y: 0.6211 } }" />
+<DrawnAnnotation text="ProfileTable" occurrence=2 label="`(Long)IdTable` has specialised syntax for referencing, joins, DAO, and more"  :geometry="{ label: { x: 0.5608, y: 0.6561 } }" />
 
 ```kotlin
 object ProfileTable : LongIdTable("profiles") {
@@ -230,7 +232,7 @@ magic-move
 # Defining our Tables
 
 <DrawnAnnotation text="ReferenceOption" color="var(--drawn-annotation-color)" :sequential="false" />
-<DrawnAnnotation text="ReferenceOption" label="`CASCADE, SET_NULL, RESTRICT, NO_ACTION, SET_DEFAULT;`" occurrence=2  color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.6375, y: 0.6414, width: 0.1961 }, connector: { type: 'quadratic', start: { x: 0.4041, y: 0.6097 }, control: { x: 0.4848, y: 0.6591 }, end: { x: 0.5661, y: 0.6530 } } }" />
+<DrawnAnnotation text="ReferenceOption" label="`CASCADE, SET_NULL, RESTRICT, NO_ACTION, SET_DEFAULT;`" occurrence=2  color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.6232, y: 0.7100, width: 0.1234 }, connector: { type: 'quadratic', start: { x: 0.3924, y: 0.6624 }, control: { x: 0.4731, y: 0.7118 }, end: { x: 0.5544, y: 0.7057 } } }" />
 
 ```kotlin
 object ProfileTable : LongIdTable("profiles") {
@@ -256,7 +258,7 @@ magic-move
 # Defining our Tables
 
 <DrawnAnnotation text="columnName = " color="var(--drawn-annotation-color)" :sequential="false" />
-<DrawnAnnotation text="sequenceName = " label="Override default column names" color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.6265, y: 0.4533 }, connector: { type: 'quadratic', start: { x: 0.2321, y: 0.3581 }, control: { x: 0.3994, y: 0.3687 }, end: { x: 0.5001, y: 0.4220 } } }" />
+<DrawnAnnotation text="sequenceName = " label="Override default column names" color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.6311, y: 0.4739 }, connector: { type: 'quadratic', start: { x: 0.2552, y: 0.3719 }, control: { x: 0.4225, y: 0.3825 }, end: { x: 0.5232, y: 0.4358 } } }" />
 <DrawnAnnotation text="fkName = " color="var(--drawn-annotation-color)" :sequential="false" />
 
 ```kotlin
@@ -322,8 +324,8 @@ layout: two-cols-header
 
 # Columns can expose domain types
 
-<DrawnAnnotation text="Column<TalkTitle>" label="Kotlin sees `TalkTitle`"  :geometry="{ label: { x: 0.3176, y: 0.5295 }, connector: { type: 'quadratic', start: { x: 0.3338, y: 0.5081 }, control: { x: 0.3712, y: 0.4684 }, end: { x: 0.3736, y: 0.4001 } } }" />
-<DrawnAnnotation text="varchar(&quot;title&quot;, 200)" label="Database stores `varchar`"  :geometry="{ label: { x: 0.7435, y: 0.4465 }, connector: { type: 'quadratic', start: { x: 0.5398, y: 0.4026 }, control: { x: 0.5566, y: 0.4530 }, end: { x: 0.6222, y: 0.4460 } } }" />
+<DrawnAnnotation text="Column<TalkTitle>" label="Kotlin sees `TalkTitle`"  :geometry="{ label: { x: 0.2937, y: 0.5805 }, connector: { type: 'quadratic', start: { x: 0.3190, y: 0.5356 }, control: { x: 0.3564, y: 0.4959 }, end: { x: 0.3588, y: 0.4276 } } }" />
+<DrawnAnnotation text="varchar(&quot;title&quot;, 200)" label="Database stores `varchar`"  :geometry="{ label: { x: 0.7655, y: 0.4677 }, connector: { type: 'quadratic', start: { x: 0.5568, y: 0.4260 }, control: { x: 0.5736, y: 0.4764 }, end: { x: 0.6392, y: 0.4694 } } }" />
 
 ```kotlin
 @JvmInline
@@ -411,7 +413,7 @@ data class ProfilesAttributes(
 
 <div v-click="1">
 
-<DrawnAnnotation text="jacksonObjectMapper" label="Custom Jackson implementation" :on="1" color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.7269, y: 0.4832 }, connector: { type: 'quadratic', start: { x: 0.3873, y: 0.4190 }, control: { x: 0.4779, y: 0.4307 }, end: { x: 0.5653, y: 0.4834 } } }" />
+<DrawnAnnotation text="jacksonObjectMapper" label="Custom Jackson implementation" :on="1" color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.7494, y: 0.5173 }, connector: { type: 'quadratic', start: { x: 0.4189, y: 0.4240 }, control: { x: 0.5095, y: 0.4357 }, end: { x: 0.5969, y: 0.4884 } } }" />
 <DrawnAnnotation text="mapper.writeValueAsString" :on="1" color="var(--drawn-annotation-color)" :sequential="false" />
 <DrawnAnnotation text="mapper.readValue<MyDataClass>" :on="1" color="var(--drawn-annotation-color)" :sequential="false" />
 
