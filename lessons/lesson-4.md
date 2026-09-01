@@ -24,13 +24,46 @@ kodee: wave
 
 # Keep talks with zero bookmarks
 
+<DrawnAnnotation text="count().alias(&quot;bookmark_count&quot;)" />
+<DrawnAnnotation text="bookmarkCount" occurrence="2" label="Use the aliased column in select"  :geometry="{ label: { x: 0.6844, y: 0.3948 }, connector: { start: { x: 0.4248, y: 0.3486 }, end: { x: 0.5269, y: 0.3817 } } }"/>
+<DrawnAnnotation text="COUNT(bookmarks.talk_id) bookmark_count" />
+
 ```kotlin
 val bookmarkCount = Bookmarks.talkId.count().alias("bookmark_count")
 
-Talks.leftJoin(Bookmarks) { Talks.id eq Bookmarks.talkId }
+Talks.leftJoin(Bookmarks)
   .select(Talks.title, bookmarkCount)
   .groupBy(Talks.id, Talks.title)
   .orderBy(bookmarkCount, SortOrder.DESC)
+```
+```sql
+SELECT talks.title, COUNT(bookmarks.talk_id) bookmark_count
+FROM talks LEFT JOIN bookmarks ON talks.id = bookmarks.talk_id
+GROUP BY talks.id, talks.title
+ORDER BY bookmark_count DESC
+```
+
+---
+
+# Keep talks with zero bookmarks
+
+<DrawnAnnotation text="this[bookmarkCount]" label="Use the aliased column in `ResultRow` extraction"  :geometry="{ label: { x: 0.7379, y: 0.3449, width: 0.3015 }, connector: { start: { x: 0.6292, y: 0.5178 }, end: { x: 0.7153, y: 0.3940 } } }"/>
+
+```kotlin
+val bookmarkCount = Bookmarks.talkId.count().alias("bookmark_count")
+
+Talks.leftJoin(Bookmarks)
+  .select(Talks.title, bookmarkCount)
+  .groupBy(Talks.id, Talks.title)
+  .orderBy(bookmarkCount, SortOrder.DESC)
+
+fun ResultRow.bookmarkCount(): Int = this[bookmarkCount]
+```
+```sql
+SELECT talks.title, COUNT(bookmarks.talk_id) bookmark_count
+FROM talks LEFT JOIN bookmarks ON talks.id = bookmarks.talk_id
+GROUP BY talks.id, talks.title
+ORDER BY bookmark_count DESC
 ```
 
 ---
@@ -45,24 +78,6 @@ Talks.leftJoin(Bookmarks) { Talks.id eq Bookmarks.talkId }
 | `sum()` | What total? | Ticket revenue |
 | `average()` | What typical value? | Session rating |
 | `having { ... }` | Which groups? | Talks with 10+ bookmarks |
-
-
----
-
-# One table, two roles: use table aliases
-
-> Use the aliased column in both `select` and `ResultRow` extraction.
-
-```kotlin
-val speaker = ProfileTable.alias("speaker")
-val host = ProfileTable.alias("host")
-
-Talks
-  .join(speaker, JoinType.INNER, Talks.speakerId, speaker[ProfileTable.id])
-  .join(host, JoinType.INNER, Talks.hostId, host[ProfileTable.id])
-  .select(Talks.title, speaker[ProfileTable.name], host[ProfileTable.name])
-```
-
 
 ---
 

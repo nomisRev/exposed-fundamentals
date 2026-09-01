@@ -275,7 +275,7 @@ class Query(...) :
 
 # Executing the query
 
-<DrawnAnnotation text="Iterable" occurrence=2 label="Blocking cursor" color="#f59e0b"  :geometry="{ label: { x: 0.5473, y: 0.1190 }, connector: { type: 'polyline', points: [{ x: 0.4427, y: 0.1752 }, { x: 0.4750, y: 0.1193 }] } }" />
+<DrawnAnnotation text="Iterable" occurrence=2 label="Blocking cursor" color="#f59e0b"  :geometry="{ label: { x: 0.5473, y: 0.1190 }, connector: { start: { x: 0.4427, y: 0.1752 }, end: { x: 0.4750, y: 0.1193 } } }" />
 
 ```kotlin jdbc
 interface SizedIterable<out T> : Iterable<T> {
@@ -452,7 +452,7 @@ magic-move
 # Accessing the data
 
 <DrawnAnnotation text="title = " label="String" color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.1326, y: 0.4427, width: 0.0569 } }" />
-<DrawnAnnotation text="Talks.title" label="Column<String>"  :geometry="{ label: { x: 0.3207, y: 0.4405, width: 0.1521 }, connector: { type: 'polyline', points: [{ x: 0.3208, y: 0.3513 }, { x: 0.3205, y: 0.4184 }] } }" />
+<DrawnAnnotation text="Talks.title" label="Column<String>"  :geometry="{ label: { x: 0.3207, y: 0.4405, width: 0.1521 }, connector: { start: { x: 0.3208, y: 0.3513 }, end: { x: 0.3205, y: 0.4184 } } }" />
 
 ```kotlin
 operator fun <A> ResultRow.get(key: Column<A>): A = TODO("Exposed internals")
@@ -605,7 +605,7 @@ magic-move
 
 <InlineCompilerError text="previews" occurrence=2 message="No context argument for '_: Transaction' found">
 
-<DrawnAnnotation text="Transaction" occurrence=2 label="`Transaction` context argument" :geometry="{ connector: { type: 'polyline', points: [{ x: 0.4535, y: 0.5655 }, { x: 0.4535, y: 0.5928 }] } }" />
+<DrawnAnnotation text="Transaction" occurrence=2 label="`Transaction` context argument" :geometry="{ connector: { start: { x: 0.4535, y: 0.5655 }, end: { x: 0.4535, y: 0.5928 } } }" />
 <DrawnAnnotation text="Please call Database.connect() first or specify a database explicitly in the transaction call" at="1"  />
 
 ```kotlin
@@ -639,8 +639,8 @@ fun example2() = transaction { /* Transaction.() -> Unit */
 
 # Database work requires a transaction
 
-<DrawnAnnotation text="(database)" label="explicitly specified database in the transaction call"  :geometry="{ connector: { type: 'polyline', points: [{ x: 0.5608, y: 0.4825 }, { x: 0.5608, y: 0.5099 }] } }" />
-<DrawnAnnotation text="(database: Database)" label="But where is this coming from?" on="1"  :geometry="{ label: { x: 0.2649, y: 0.5807 }, connector: { type: 'polyline', points: [{ x: 0.2649, y: 0.4785 }, { x: 0.2649, y: 0.5481 }] } }" />
+<DrawnAnnotation text="(database)" label="explicitly specified database in the transaction call"  :geometry="{ connector: { start: { x: 0.5608, y: 0.4825 }, end: { x: 0.5608, y: 0.5099 } } }" />
+<DrawnAnnotation text="(database: Database)" label="But where is this coming from?" on="1"  :geometry="{ label: { x: 0.2649, y: 0.5807 }, connector: { start: { x: 0.2649, y: 0.4785 }, end: { x: 0.2649, y: 0.5481 } } }" />
 
 ```kotlin
 context(_: Transaction)
@@ -706,8 +706,8 @@ val r2dbc = R2dbcDatabase.connect(
 
 # Database work requires a transaction
 
-<DrawnAnnotation text="transaction {" label="Default database found (from `Database.connect`)"  :geometry="{ label: { x: 0.2795, y: 0.6414, width: 0.4562 }, connector: { type: 'polyline', points: [{ x: 0.2802, y: 0.5655 }, { x: 0.2796, y: 0.6164 }] } }" />
-<DrawnAnnotation text="transaction(database)" label="Prefer explicitly passing database instead of relying on implicit resolution"  :geometry="{ label: { x: 0.7219, y: 0.7151, width: 0.4910 }, connector: { type: 'polyline', points: [{ x: 0.5338, y: 0.4873 }, { x: 0.6118, y: 0.6586 }] } }" />
+<DrawnAnnotation text="transaction {" label="Default database found (from `Database.connect`)"  :geometry="{ label: { x: 0.2795, y: 0.6414, width: 0.4562 }, connector: { start: { x: 0.2802, y: 0.5655 }, end: { x: 0.2796, y: 0.6164 } } }" />
+<DrawnAnnotation text="transaction(database)" label="Prefer explicitly passing database instead of relying on implicit resolution"  :geometry="{ label: { x: 0.7219, y: 0.7151, width: 0.4910 }, connector: { start: { x: 0.5338, y: 0.4873 }, end: { x: 0.6118, y: 0.6586 } } }" />
 
 ```kotlin
 context(_: Transaction)
@@ -772,7 +772,7 @@ fun insert(title: String, speakerId: Long, startsAt: Instant) =
 
 # Insert a talk
 
-<DrawnAnnotation text="InsertStatement" label="The executed insert statement, providing the affected-row count and any available generated values"  :geometry="{ connector: { type: 'polyline', points: [{ x: 0.7698, y: 0.2644 }, { x: 0.7577, y: 0.2932 }] } }" />
+<DrawnAnnotation text="InsertStatement" label="The executed insert statement, providing the affected-row count and any available generated values"  :geometry="{ connector: { start: { x: 0.7698, y: 0.2644 }, end: { x: 0.7577, y: 0.2932 } } }" />
 
 ```kotlin
 context(_: Transaction)
@@ -807,7 +807,7 @@ magic-move
 
 # Insert and get id
 
-<DrawnAnnotation text=".value" label="Explicitly unwrap"  :geometry="{ connector: { type: 'polyline', points: [{ x: 0.1323, y: 0.5220 }, { x: 0.1323, y: 0.5493 }] } }" />
+<DrawnAnnotation text=".value" label="Explicitly unwrap"  :geometry="{ connector: { start: { x: 0.1323, y: 0.5220 }, end: { x: 0.1323, y: 0.5493 } } }" />
 
 ```kotlin
 context(_: Transaction)
@@ -1057,7 +1057,7 @@ magic-move
 # Update states its scope
 
 <DrawnAnnotation text="{ Talks.id eq talkId }" color="var(--drawn-annotation-color)" />
-<DrawnAnnotation text="singleOrNull()" label="Predicate guarantees 1 or 0 rows will be affected" color="var(--drawn-annotation-color)" :geometry="{ label: { x: 0.3771, y: 0.5524, width: 0.4562 }, connector: { type: 'polyline', points: [{ x: 0.1802, y: 0.4769 }, { x: 0.2064, y: 0.5211 }] } }" />
+<DrawnAnnotation text="singleOrNull()" label="Predicate guarantees 1 or 0 rows will be affected" color="var(--drawn-annotation-color)" :geometry="{ label: { x: 0.3771, y: 0.5524, width: 0.4562 }, connector: { start: { x: 0.1802, y: 0.4769 }, end: { x: 0.2064, y: 0.5211 } } }" />
 
 ```kotlin
 fun update(talkId: Long, status: TalkStatus): TalkPreview? =

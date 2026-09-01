@@ -8,6 +8,7 @@ buildscript {
 }
 
 plugins {
+    application
     id("org.jetbrains.kotlin.jvm") version "2.4.20-RC2"
     id("org.flywaydb.flyway") version "13.3.0"
     id("org.jetbrains.exposed.plugin") version "1.5.0"
@@ -46,8 +47,13 @@ dependencies {
     implementation("org.postgresql:postgresql:42.7.10")
     implementation("org.postgresql:r2dbc-postgresql:1.1.1.RELEASE")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+    implementation("org.testcontainers:postgresql:1.21.4")
 
     testImplementation(kotlin("test"))
+}
+
+application {
+    mainClass = "org.jetbrains.exposed.example.MainKt"
 }
 
 kotlin {

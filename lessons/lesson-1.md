@@ -85,7 +85,7 @@ kodee: welcome
 
 # Defining our Tables
 
-<DrawnAnnotation text="Table(&quot;Profile&quot;)" label="Default `tableName =` className - `Table` suffix => Profile"  :geometry="{ connector: { type: 'polyline', points: [{ x: 0.3566, y: 0.2221 }, { x: 0.3566, y: 0.2495 }] } }" />
+<DrawnAnnotation text="Table(&quot;Profile&quot;)" label="Default `tableName =` className - `Table` suffix => Profile"  :geometry="{ connector: { start: { x: 0.3566, y: 0.2221 }, end: { x: 0.3566, y: 0.2495 } } }" />
 
 ```kotlin
 object ProfileTable : Table("Profile")
@@ -109,8 +109,8 @@ magic-move
 
 # Defining our Tables
 
-<DrawnAnnotation text="Column<Long>" label="Every column is typed to a proper Kotlin type"  :geometry="{ label: { x: 0.6345, y: 0.2683, width: 0.3862 }, connector: { type: 'polyline', points: [{ x: 0.3013, y: 0.2574 }, { x: 0.5208, y: 0.2665 }] } }" />
-<DrawnAnnotation text="PrimaryKey" label="Explicitly create PrimaryKey"  :geometry="{ label: { x: 0.3143, y: 0.4041 }, connector: { type: 'polyline', points: [{ x: 0.3156, y: 0.3059 }, { x: 0.3156, y: 0.3818 }] } }" />
+<DrawnAnnotation text="Column<Long>" label="Every column is typed to a proper Kotlin type"  :geometry="{ label: { x: 0.6345, y: 0.2683, width: 0.3862 }, connector: { start: { x: 0.3013, y: 0.2574 }, end: { x: 0.5208, y: 0.2665 } } }" />
+<DrawnAnnotation text="PrimaryKey" label="Explicitly create PrimaryKey"  :geometry="{ label: { x: 0.3143, y: 0.4041 }, connector: { start: { x: 0.3156, y: 0.3059 }, end: { x: 0.3156, y: 0.3818 } } }" />
 
 ```kotlin
 object ProfileTable : Table("profiles") {
@@ -125,7 +125,7 @@ magic-move
 
 # Defining our Tables
 
-<DrawnAnnotation text="val name" label="Create properties to match the shape of table"  :geometry="{ label: { x: 0.3592, y: 0.4755 }, connector: { type: 'polyline', points: [{ x: 0.1509, y: 0.3572 }, { x: 0.1690, y: 0.4447 }] } }" />
+<DrawnAnnotation text="val name" label="Create properties to match the shape of table"  :geometry="{ label: { x: 0.3592, y: 0.4755 }, connector: { start: { x: 0.1509, y: 0.3572 }, end: { x: 0.1690, y: 0.4447 } } }" />
 
 ```kotlin
 object ProfileTable : Table("profiles") {
@@ -141,7 +141,7 @@ magic-move
 
 # Defining our Tables
 
-<DrawnAnnotation text=".autoIncrement().entityId()" label="Auto-incrementing database identifier as `EntityID`"  :geometry="{ connector: { type: 'polyline', points: [{ x: 0.6677, y: 0.2664 }, { x: 0.6677, y: 0.2937 }] } }" />
+<DrawnAnnotation text=".autoIncrement().entityId()" label="Auto-incrementing database identifier as `EntityID`"  :geometry="{ label: { x: 0.6843, y: 0.3497 }, connector: { start: { x: 0.6677, y: 0.2664 }, end: { x: 0.6843, y: 0.3119 } } }" />
 
 ```kotlin
 object ProfileTable : Table("profiles") {
@@ -175,7 +175,7 @@ magic-move
 
 # Defining our Tables
 
-<DrawnAnnotation text="LongIdTable" label="`LongIdTable` implements all this boilerplate for us" :geometry="{ label: { x: 0.6854, y: 0.2628, width: 0.4913 }, connector: { type: 'polyline', points: [{ x: 0.3950, y: 0.2175 }, { x: 0.4634, y: 0.2323 }] } }" />
+<DrawnAnnotation text="LongIdTable" label="`LongIdTable` implements all this boilerplate for us" :geometry="{ label: { x: 0.6854, y: 0.2628, width: 0.4913 }, connector: { start: { x: 0.3950, y: 0.2175 }, end: { x: 0.4634, y: 0.2323 } } }" />
 
 ```kotlin
 object ProfileTable : LongIdTable("profiles") {
@@ -189,7 +189,7 @@ magic-move
 
 # Defining our Tables
 
-<DrawnAnnotation text="reference(&quot;speaker_id&quot;, ProfileTable.id)" label="Referencing a table requires the `EntityID` for the table"  :geometry="{ label: { x: 0.6185, y: 0.6367 }, connector: { type: 'polyline', points: [{ x: 0.5525, y: 0.4407 }, { x: 0.5931, y: 0.5946 }] } }" />
+<DrawnAnnotation text="reference(&quot;speaker_id&quot;, ProfileTable.id)" label="Referencing a table requires the `EntityID` for the table"  :geometry="{ label: { x: 0.6185, y: 0.6367 }, connector: { start: { x: 0.5525, y: 0.4407 }, end: { x: 0.5931, y: 0.5946 } } }" />
 
 ```kotlin
 object ProfileTable : LongIdTable("profiles") {
