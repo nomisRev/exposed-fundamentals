@@ -76,8 +76,8 @@ magic-move
 
 # Keep only talks with 10+ bookmarks
 
-<DrawnAnnotation text="having" label="`having` after `groupBy` to filter the aggregate"  :geometry="{ label: { x: 0.2621, y: 0.9141, width: 0.7196 }, connector: { start: { x: 0.0661, y: 0.4606 }, end: { x: 0.0485, y: 0.8983 } } }"/>
-<DrawnAnnotation text="Bookmarks.talkId.count()" occurrence="2" label="PostgreSQL doesn't make SELECT aliases available but doesn't run it twice"  :geometry="{ label: { x: 0.7603, y: 0.2904, width: 0.3836 }, connector: { start: { x: 0.4638, y: 0.4611 }, end: { x: 0.7692, y: 0.3351 } } }"/>
+<DrawnAnnotation text="having" label="`having` after `groupBy` to filter the aggregate" on="1" :geometry="{ label: { x: 0.2621, y: 0.9141, width: 0.7196 }, connector: { start: { x: 0.0661, y: 0.4606 }, end: { x: 0.0485, y: 0.8983 } } }"/>
+<DrawnAnnotation text="Bookmarks.talkId.count()" occurrence="2" label="PostgreSQL doesn't make SELECT aliases available but doesn't run it twice" on="2" :geometry="{ label: { x: 0.7603, y: 0.2904, width: 0.3836 }, connector: { start: { x: 0.4638, y: 0.4611 }, end: { x: 0.7692, y: 0.3351 } } }"/>
 
 ```kotlin
 val bookmarkCount = Bookmarks.talkId.count().alias("bookmark_count")
@@ -115,7 +115,27 @@ ORDER BY bookmark_count DESC
 
 # A query can become a value in another query
 
-<DrawnAnnotation text="inSubQuery" label="Check if a queries result row contains the element `Talks.id`"  :geometry="{ label: { x: 0.6190, y: 0.6306, width: 0.2099 } }"/>
+```kotlin
+fun talkIdsForTag(tag: String): Query =
+  TalkTags.innerJoin(Tags)
+    .select(TalkTags.talkId)
+    .where { Tags.label eq tag }
+```
+```sql
+SELECT talk_tags.talk_id
+FROM talk_tags
+INNER JOIN tags ON tags.id = talk_tags.tag_id
+WHERE tags."label" = 'kotlin'
+```
+
+---
+magic-move
+---
+
+# A query can become a value in another query
+
+<DrawnAnnotation text="where { Talks.id inSubQuery" label="Check if a queries result row contains the element `Talks.id`"  :geometry="{ label: { x: 0.6190, y: 0.6306, width: 0.2099 } }"/>
+<DrawnAnnotation text="WHERE talks.id IN" />
 
 ```kotlin
 fun talkIdsForTag(tag: String): Query =
@@ -132,7 +152,7 @@ FROM talks
 WHERE talks.id IN (
   SELECT talk_tags.talk_id
   FROM talk_tags
-    INNER JOIN tags ON tags.id = talk_tags.tag_id
+  INNER JOIN tags ON tags.id = talk_tags.tag_id
   WHERE tags."label" = 'kotlin'
 )
 ```
@@ -141,7 +161,7 @@ WHERE talks.id IN (
 
 # A query can become a predicate in another query
 
-<DrawnAnnotation text="exists" label="Keep the talk if the correlated query returns at least one row"  :geometry="{ label: { x: 0.5685, y: 0.6277, width: 0.5428 }, connector: { start: { x: 0.2526, y: 0.5294 }, end: { x: 0.4005, y: 0.6292 } } }"/>
+<DrawnAnnotation text="exists" label="If the `hasTag` query returns at least one row"  :geometry="{ label: { x: 0.5943, y: 0.6619, width: 0.5428 }, connector: { start: { x: 0.2526, y: 0.5294 }, end: { x: 0.4005, y: 0.6292 } } }"/>
 
 ```kotlin
 fun hasTag(tag: String) =
