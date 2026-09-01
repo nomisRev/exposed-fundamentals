@@ -184,6 +184,39 @@ html.dark .boundary-database-logo { filter: brightness(1.3); }
 html.dark .boundary-world p, html.dark .boundary-takeaway > span:last-child { color: #aaa4b4; }
 html.dark .boundary-capabilities li { background: #2b2b2b; color: #d5d0dc; }
 
+/* Lesson 6: schema ownership */
+.schema-ownership-visual { display: grid; grid-template-columns: minmax(0, 1fr) 8.5rem minmax(0, 1fr); align-items: stretch; gap: 0; max-width: 70rem; margin: 1.15rem auto 0.85rem; }
+.schema-model { min-height: 16.75rem; padding: 1.25rem 1.4rem 1.15rem; border: 1px solid rgb(121 84 246 / 30%); border-radius: 1rem; background: linear-gradient(145deg, rgb(121 84 246 / 13%), transparent 72%); }
+.schema-flyway { border-color: rgb(235 85 230 / 38%); background: linear-gradient(215deg, rgb(235 85 230 / 13%), transparent 72%); }
+.schema-model-heading { display: flex; align-items: center; min-height: 3.4rem; gap: 0.55rem; color: var(--fundamentals-ink); font-size: 1.45rem; font-weight: 800; letter-spacing: -0.04em; line-height: 1.05; }
+.schema-kotlin-logo, .schema-exposed-logo, .schema-postgres-logo { display: block; flex: 0 0 auto; width: 2.05rem; height: 2.05rem; object-fit: contain; }
+.schema-kotlin-logo img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.schema-exposed-logo { width: 1.8rem; height: 1.8rem; margin-left: -0.23rem; }
+.schema-flyway-logo { display: block; flex: 0 0 auto; width: 2.25rem; height: 2.15rem; object-fit: contain; }
+.schema-postgres-logo { width: 1.9rem; height: 2.15rem; margin-left: -0.23rem; }
+.schema-model-kicker { margin: 0.6rem 0 0.7rem; color: #665f71; font-family: var(--slidev-font-mono); font-size: 0.75rem; font-weight: 800; letter-spacing: 0.095em; text-transform: uppercase; }
+.schema-model ul { display: grid; gap: 0.38rem; margin: 0; padding: 0; list-style: none; }
+.schema-model li { padding: 0.38rem 0.65rem; border-left: 0.18rem solid var(--fundamentals-purple); background: rgb(121 84 246 / 7%); font-size: 0.98rem; font-weight: 700; line-height: 1.2; }
+.schema-flyway li { border-left-color: var(--fundamentals-pink); background: rgb(235 85 230 / 7%); }
+.slidev-layout .schema-model li::before { display: none !important; content: none !important; }
+.slidev-layout .schema-model li::marker { content: ''; }
+.schema-model-role { display: block; margin-top: 0.85rem; color: var(--fundamentals-purple); font-size: 1rem; font-weight: 800; text-align: center; }
+.schema-flyway .schema-model-role { color: #bd3caa; }
+.schema-relationship { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.45rem; min-width: 0; color: #665f71; text-align: center; }
+.schema-relationship-line { position: relative; width: 100%; height: 0.18rem; background: linear-gradient(90deg, var(--fundamentals-purple), var(--fundamentals-pink)); }
+.schema-relationship-line:first-child::before, .schema-relationship-line:last-child::after { position: absolute; top: 50%; width: 0.55rem; height: 0.55rem; border-top: 0.18rem solid var(--fundamentals-purple); border-right: 0.18rem solid var(--fundamentals-purple); content: ''; }
+.schema-relationship-line:first-child::before { left: -0.06rem; transform: translateY(-50%) rotate(-135deg); }
+.schema-relationship-line:last-child::after { right: -0.06rem; border-color: var(--fundamentals-pink); transform: translateY(-50%) rotate(45deg); }
+.schema-relationship strong { width: 6.7rem; padding: 0.35rem 0.25rem; border: 1px solid rgb(121 84 246 / 28%); border-radius: 0.6rem; background: #fff; box-shadow: 0 0.35rem 1rem rgb(121 84 246 / 10%); font-family: var(--slidev-font-mono); font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.schema-ownership-takeaway { display: flex; justify-content: center; gap: 0.55rem; margin: 0 auto; font-size: 1.22rem; line-height: 1.35; text-align: center; }
+.schema-ownership-takeaway strong { color: var(--fundamentals-purple); }
+.schema-ownership-takeaway span { color: #665f71; font-weight: 650; }
+.schema-utils-note { margin: 0.75rem auto 0; color: #665f71; font-size: 0.97rem; font-weight: 600; text-align: center; }
+.schema-utils-note code { color: var(--fundamentals-purple); }
+html.dark .schema-model-kicker, html.dark .schema-ownership-takeaway span, html.dark .schema-utils-note { color: #aaa4b4; }
+html.dark .schema-relationship strong { background: #2b2b2b; }
+html.dark .schema-postgres-logo { filter: brightness(1.3); }
+
 /* Lesson 1: Exposed overview */
 .exposed-definition { display: flex; align-items: center; gap: 1rem; margin: 1.5rem 0 1.75rem; }
 .exposed-definition p { margin: 0; font-size: 2rem; }

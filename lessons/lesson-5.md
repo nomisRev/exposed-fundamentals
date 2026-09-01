@@ -147,48 +147,26 @@ for(talk in talks) {
 
 # An entity belongs to its transaction
 
-```text
-transaction(database)
-  └─ entity cache
-      └─ Talk(id) → one managed instance
+<EntityTransactionBoundary />
 
-application boundary
-  └─ TalkPreview(...) → ordinary detached data
-```
-
-- DAO has identity and caching within a transaction.
-- Lazy access after the transaction is a lifecycle bug.
-- Return DTOs, not entities, across service and API boundaries.
+- **DAO has identity and caching** within a transaction.
+- **Lazy access after the transaction** is a lifecycle bug.
+- **Return DTOs, not entities** across service and API boundaries.
 
 ---
 
 # Mix APIs at a deliberate boundary
+
+<DrawnAnnotation text="wrapRows" label="Turns Query into managed entities allowing more complex relationships"  :geometry="{ label: { x: 0.4769, y: 0.5324, width: 0.4817 }, connector: { start: { x: 0.4369, y: 0.4238 }, end: { x: 0.4369, y: 0.5052 } } }"/>
 
 ```kotlin
 val query = Talks
   .select(Talks.columns)
   .where { Talks.isPublished eq true }
 
-val talks = Talk.wrapRows(query)
+val talks: Iterable<Talk> = Talk.wrapRows(query)
   .with(Talk::speaker, Talk::host, Talk::tags)
 ```
-
-- `wrapRows` turns entity-table rows into managed entities.
-- Keep them inside the transaction.
-- Load the relations the caller needs.
-
----
-
-# Choose the access style for the job
-
-| Prefer SQL DSL                          | Consider DAO                         |
-|-----------------------------------------|--------------------------------------|
-| Projections and DTO responses           | Record-oriented CRUD                 |
-| Reporting, aggregates, window functions | Navigable relationships              |
-| Complex joins, aliases, subqueries      | Transaction-scoped entity cache      |
-| Explicit SQL-shaped query control       | Carefully managed lazy/eager loading |
-
-> Neither API replaces relational design. Choose the one that makes the operation’s shape and lifecycle clearest.
 
 ---
 
@@ -199,5 +177,3 @@ val talks = Talk.wrapRows(query)
 - `transaction + cache` → lifecycle context
 - `TalkPreview` → ordinary application data
 
-> Model relationally, migrate deliberately, compose SQL visibly, and use DAO only when entity-oriented access earns its
-> lifecycle cost.

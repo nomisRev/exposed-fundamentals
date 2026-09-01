@@ -12,19 +12,52 @@ kodee: wave
 
 # Two models, one production schema
 
-| Kotlin + Exposed                                         | Flyway + PostgreSQL                        |
-|----------------------------------------------------------|--------------------------------------------|
-| Describes types, columns, keys, constraints, and queries | Evolves reviewed, versioned schema changes |
+<div class="schema-ownership-visual" aria-label="Exposed models a PostgreSQL schema while Flyway owns its production evolution">
+  <section class="schema-model schema-exposed">
+    <header class="schema-model-heading">
+      <picture class="schema-kotlin-logo" aria-hidden="true">
+        <source media="(prefers-color-scheme: dark)" srcset="/kotlin_dark.svg">
+        <img src="/kotlin.svg" alt="">
+      </picture>
+      <img class="schema-exposed-logo" src="/Exposed icon.svg" alt="" aria-hidden="true">
+      <span>Kotlin + Exposed</span>
+    </header>
+    <p class="schema-model-kicker">Application model</p>
+    <ul>
+      <li>Types and columns</li>
+      <li>Keys and constraints</li>
+      <li>Typed queries</li>
+    </ul>
+    <strong class="schema-model-role">Models the database</strong>
+  </section>
 
-> **Exposed tables model the database.** Flyway owns production database evolution.
+  <div class="schema-relationship" aria-hidden="true">
+    <span class="schema-relationship-line"></span>
+    <strong>same schema</strong>
+    <span class="schema-relationship-line"></span>
+  </div>
 
-`SchemaUtils.create()` is useful for demos and tests — not the production migration strategy.
+  <section class="schema-model schema-flyway">
+    <header class="schema-model-heading">
+      <img class="schema-flyway-logo" src="/flyway-seeklogo.svg" alt="" aria-hidden="true">
+      <img class="schema-postgres-logo" src="/Postgresql_elephant.svg" alt="" aria-hidden="true">
+      <span>Flyway + PostgreSQL</span>
+    </header>
+    <p class="schema-model-kicker">Production schema</p>
+    <ul>
+      <li>Reviewed SQL changes</li>
+      <li>Versioned migration history</li>
+      <li>Database enforcement</li>
+    </ul>
+    <strong class="schema-model-role">Owns schema evolution</strong>
+  </section>
+</div>
 
 ---
 
 # A migration history is a story
 
-> Each file explains **what changed**, is reviewed in Git, and runs once in order.
+> Each file explains **what changed**, is reviewed in Git
 >
 > History makes deployments repeatable
 
@@ -52,14 +85,12 @@ CREATE TABLE profiles
 # Exposed can assist — it does not deploy
 
 ```text
-Kotlin table model → compare / generate / validate → reviewed Flyway SQL → PostgreSQL
+Kotlin table model → compare / generate → reviewed Flyway SQL → PostgreSQL
 ```
 
-- `exposed-migration-core` provides shared migration support.
-- Use `exposed-migration-jdbc` or `exposed-migration-r2dbc`.
-- `MigrationUtils` can diff, generate SQL/scripts, and validate.
-
-> Generated SQL can include destructive changes. **Review it before it reaches a real database.**
+> Generated SQL can include destructive changes.
+> 
+> **Review it before it reaches a real database.**
 
 ---
 
@@ -91,7 +122,7 @@ exposed {
 ```
 
 <v-clicks at="1">
-<DrawnAnnotation text="generateMigrations" label="Writes migration files to src/main/resources/db/migration" at="1" />
+<DrawnAnnotation text="generateMigrations" label="Writes migration files to src/main/resources/db/migration" on="1" />
 
 ```bash
 ./gradlew generateMigrations
@@ -128,7 +159,7 @@ flyway {
 
 # Flyway
 
-<DrawnAnnotation text="migrate" label="Idempotent operation so we can execute on server start-up" />
+<DrawnAnnotation text="migrate" label="Idempotent operation so we can execute on server start-up"  :geometry="{ label: { x: 0.3537, y: 0.6057 }, connector: { start: { x: 0.0688, y: 0.2224 }, end: { x: 0.0724, y: 0.5713 } } }"/>
 
 ```kotlin
 fun migrate(dataSource: HikariDataSource): MigrateResult =
@@ -149,9 +180,6 @@ fun migrate(dataSource: HikariDataSource): MigrateResult =
 | Flyway history    | Which reviewed changes run, and in what order |
 | PostgreSQL schema | What the database enforces now                |
 | Exposed tables    | How Kotlin maps to and queries that schema    |
-
-Keep the definitions aligned and validate drift. Calling all three “the single source of truth” hides their different
-responsibilities.
 
 ---
 

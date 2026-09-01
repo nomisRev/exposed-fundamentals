@@ -177,3 +177,11 @@ fun publishedTalkEntities(database: Database): List<TalkPreview> = transaction(d
             )
         }
 }
+
+
+val query = Talks
+  .select(Talks.columns)
+  .where { Talks.isPublished eq true }
+
+val talks = Talk.wrapRows(query)
+  .with(Talk::speaker, Talk::host, Talk::tags)
