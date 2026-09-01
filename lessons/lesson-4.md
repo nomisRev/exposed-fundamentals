@@ -141,7 +141,6 @@ Talks.innerJoin(ProfileTable)
   .limit(size).offset(offset)
 ```
 
-
 ---
 
 # Expressions can call SQL functions

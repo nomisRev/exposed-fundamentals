@@ -7,13 +7,6 @@ class: fundamentals-cover
 canvasWidth: 1440
 aspectRatio: 16/9
 colorSchema: both
-fonts:
-  sans: JetBrains Sans
-  mono: JetBrains Mono
-  provider: none
-  local:
-    - JetBrains Sans
-    - JetBrains Mono
 highlighter: shiki
 themeConfig:
   kodee: greeting

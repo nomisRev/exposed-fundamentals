@@ -1,101 +1,13 @@
-/* Bundle the presentation fonts so builds do not depend on a viewer's machine or
-   an external font provider. */
-@font-face {
-  font-family: 'JetBrains Sans';
-  src: url('/fonts/JetBrainsSans-VF.ttf') format('truetype');
-  font-style: normal;
-  font-weight: 100 900;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'JetBrains Mono';
-  src: url('/fonts/JetBrainsMono-Thin.ttf') format('truetype');
-  font-weight: 100;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'JetBrains Mono';
-  src: url('/fonts/JetBrainsMono-ExtraLight.ttf') format('truetype');
-  font-weight: 200;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'JetBrains Mono';
-  src: url('/fonts/JetBrainsMono-Light.ttf') format('truetype');
-  font-weight: 300;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'JetBrains Mono';
-  src: url('/fonts/JetBrainsMono-Regular.ttf') format('truetype');
-  font-weight: 400;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'JetBrains Mono';
-  src: url('/fonts/JetBrainsMono-Medium.ttf') format('truetype');
-  font-weight: 500;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'JetBrains Mono';
-  src: url('/fonts/JetBrainsMono-SemiBold.ttf') format('truetype');
-  font-weight: 600;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'JetBrains Mono';
-  src: url('/fonts/JetBrainsMono-Bold.ttf') format('truetype');
-  font-weight: 700;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'JetBrains Mono';
-  src: url('/fonts/JetBrainsMono-ExtraBold.ttf') format('truetype');
-  font-weight: 800;
-  font-display: swap;
-}
-
 /* Course-specific refinements on top of slidev-theme-kotlin. */
 :root {
-  --slidev-font-sans: 'JetBrains Sans', ui-sans-serif, system-ui, sans-serif;
-  --slidev-font-mono: 'JetBrains Mono', ui-monospace, monospace;
   --fundamentals-purple: #7954f6;
   --fundamentals-pink: #eb55e6;
   --fundamentals-ink: #1f2023;
   --drawn-annotation-color: var(--fundamentals-purple, #7954f6);
-  --editor-bg: #fff;
-  --editor-fg: #080808;
-  --editor-border: #d1d3d6;
-  --editor-muted: #6c707e;
-  --editor-shadow: rgb(31 32 35 / 12%);
-
-  /* Short snippets begin at this editor measure, while longer snippets may
-     grow only to the shared slide-width cap. */
-  --code-window-min-width: 80ch;
-  --code-window-max-width: 70cqw;
-  --code-window-columns: 80;
-  /* Reserve breathing room after a fitted line without changing editor
-     padding on any side. */
-  --code-window-end-gutter: 16px;
-  --code-window-inline-space: calc(8rem + 2px + var(--code-window-end-gutter));
 }
 
 html.dark {
   --fundamentals-ink: #f4f2f7;
-  --editor-bg: #2b2b2b;
-  --editor-fg: #a9b7c6;
-  --editor-border: #515151;
-  --editor-muted: #a5a5a5;
-  --editor-shadow: rgb(0 0 0 / 30%);
 }
 
 .slidev-vclick-target:not(.slidev-vclick-anim-none) {
@@ -122,13 +34,6 @@ html.dark {
 .slidev-layout h2 { margin-bottom: 1rem; }
 .slidev-layout pre { margin-top: 0.8rem; margin-bottom: 0.8rem; }
 
-/* The Kotlin theme owns code-window surfaces and language identity markers.
-   Keep only this deck's scale override; borders, titles, and toolbar placement
-   must remain under the theme's control. */
-.slidev-layout .slidev-code {
-  font-size: 1.53rem !important;
-  line-height: 1.42 !important;
-}
 .card { width: fit-content; max-width: 100%; }
 
 /* Blockquotes are used as compact slide annotations in this deck. Keep the
@@ -476,7 +381,6 @@ html.dark .boundary-capabilities li { background: #2b2b2b; color: #d5d0dc; }
 .transaction-code-grid { display: grid; grid-template-columns: 1.35fr 0.65fr; gap: 1.8rem; align-items: center; }
 .transaction-code { min-height: 11.5rem; padding: 1.25rem 1.45rem; }
 .transaction-code code { font-size: 0.96rem; line-height: 1.55; }
-.code-muted { color: var(--editor-muted); }
 .transaction-notes { display: grid; gap: 0.85rem; }
 .transaction-notes > div, .mapping-steps > div { padding: 0.95rem; border-left: 0.28rem solid var(--fundamentals-purple); background: rgb(121 84 246 / 7%); }
 .transaction-notes b, .transaction-notes span, .mapping-steps b, .mapping-steps span { display: block; }
