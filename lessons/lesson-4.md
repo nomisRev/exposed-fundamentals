@@ -67,6 +67,31 @@ ORDER BY bookmark_count DESC
 ```
 
 ---
+magic-move
+---
+
+# Keep only talks with 10+ bookmarks
+
+<DrawnAnnotation text="having" label="`having` after `groupBy` to filter the aggregate"  :geometry="{ label: { x: 0.6213, y: 0.4189, width: 0.3882 }, connector: { start: { x: 0.1425, y: 0.4315 }, end: { x: 0.5087, y: 0.4315 } } }"/>
+
+```kotlin
+val bookmarkCount = Bookmarks.talkId.count().alias("bookmark_count")
+
+Talks.leftJoin(Bookmarks)
+  .select(Talks.title, bookmarkCount)
+  .groupBy(Talks.id, Talks.title)
+  .having { bookmarkCount greaterEq 10 }
+  .orderBy(bookmarkCount, SortOrder.DESC)
+```
+```sql
+SELECT talks.title, COUNT(bookmarks.talk_id) bookmark_count
+FROM talks LEFT JOIN bookmarks ON talks.id = bookmarks.talk_id
+GROUP BY talks.id, talks.title
+HAVING COUNT(bookmarks.talk_id) >= 10
+ORDER BY bookmark_count DESC
+```
+
+---
 
 # Aggregates answer questions across rows
 
@@ -84,12 +109,13 @@ ORDER BY bookmark_count DESC
 # A query can become a value in another query
 
 ```kotlin
-fun talkIdsForTag(tag: String) = TalkTags.innerJoin(Tags)
-  .select(TalkTags.talkId)
-  .where { Tags.label eq tag }
+fun talkIdsForTag(tag: String): Query = 
+    TalkTags.innerJoin(Tags)
+        .select(TalkTags.talkId)
+        .where { Tags.label eq tag }
 
 Talks.select(Talks.title)
-  .where { Talks.id inSubQuery talkIdsForTag("kotlin") }
+    .where { Talks.id inSubQuery talkIdsForTag("kotlin") }
 ```
 
 - `inSubQuery` compares a value to query rows.
