@@ -6,19 +6,32 @@ kodee: wave
 
 # Lesson 5 — DAO over `UuidTable`s
 
-## An optional entity-oriented layer on the same relational model
+## An optional entity-oriented layer on the same meetup model
 
 ---
 
 # DAO starts with the table you already have
 
-```kotlin
-object Talks : UuidTable("talks") {
-  val speakerId = reference("speaker_id", ProfileTable)
-  val hostId = reference("host_id", ProfileTable)
-  val title = varchar("title", 200)
-}
+> DAO is a mapping layer, not a second schema.
 
+<DrawnAnnotation text="UuidEntity(id)" label="Ties Talk instance to the row `id: EntityID<Uuid>`" on="0" />
+<DrawnAnnotation text="UuidEntityClass<Talk>(Talks)" label="Bind the entity manager to the `IdTable`" on="1" />
+
+```kotlin
+class Talk(id: EntityID<Uuid>) : UuidEntity(id) {
+  companion object : UuidEntityClass<Talk>(Talks)
+}
+```
+
+---
+magic-move
+---
+
+# DAO starts with the table you already have
+
+<DrawnAnnotation text="by Talks.title" label="Kotlin Property Delegates reads, and writes the column" />
+
+```kotlin
 class Talk(id: EntityID<Uuid>) : UuidEntity(id) {
   companion object : UuidEntityClass<Talk>(Talks)
 
@@ -26,10 +39,8 @@ class Talk(id: EntityID<Uuid>) : UuidEntity(id) {
 }
 ```
 
-`UuidTable` → `UuidEntity` → `UuidEntityClass`
-
-> DAO is a mapping layer, not a second schema.
-
+---
+magic-move
 ---
 
 # Entity properties delegate to table columns
@@ -39,13 +50,12 @@ class Talk(id: EntityID<Uuid>) : UuidEntity(id) {
   companion object : UuidEntityClass<Talk>(Talks)
 
   var title by Talks.title
-  var published by Talks.isPublished
+  var slug by Talks.slug
+  var description by Talks.description
+  var startsAt by Talks.startsAt
+  var isPublished by Talks.isPublished
 }
 ```
-
-- `EntityID<Uuid>` is Exposed’s record ID wrapper.
-- `UuidEntityClass<Talk>(Talks)` binds the manager to its `IdTable`.
-- `by Talks.title` reads and writes the existing table column.
 
 ---
 
@@ -54,31 +64,31 @@ class Talk(id: EntityID<Uuid>) : UuidEntity(id) {
 ```kotlin
 transaction(database) {
   val talk = Talk.new {
-    title = draft.title
-    speaker = speakerEntity
-    host = hostEntity
-    published = false
+    title = newTalk.title
+    speaker = Profile.findById(newTalk.speakerId)!!
+    host = Profile.findById(newTalk.hostId)!!
+    isPublished = false
   }
 
-  Talk.findById(talk.id.value)?.let {
-    it.published = true
-    // it.delete()
-  }
+  val talkOrNull = Talk.findById(talk.id.value)
+  talkOrNull?.isPublished = true
+  // talkOrNull?.delete()  
 }
 ```
-
-DAO does not remove the transaction boundary. It changes the access style inside it.
 
 ---
 
 # Relations become navigable properties
 
+<DrawnAnnotation text="Profile" label="Profile is `UuidEntity` for `ProfileTable`" on="0"  :geometry="{ label: { x: 0.7953, y: 0.3557, width: 0.2236 }, connector: { start: { x: 0.3266, y: 0.3628 }, end: { x: 0.6899, y: 0.3601 } } }"/>
+<DrawnAnnotation text="referencedOn Talks.speakerId" label="Creates a Kotlin delegate that references `Profile` on `speakerId` as foreign key" on="1"  :geometry="{ label: { x: 0.6588, y: 0.4710, width: 0.4278 }, connector: { start: { x: 0.5913, y: 0.3719 }, end: { x: 0.5913, y: 0.4352 } } }"/>
+
 ```kotlin
 class Talk(id: EntityID<Uuid>) : UuidEntity(id) {
   companion object : UuidEntityClass<Talk>(Talks)
 
-  var speaker by Person referencedOn Talks.speakerId
-  var host by Person referencedOn Talks.hostId
+  var speaker by Profile referencedOn Talks.speakerId
+  var host by Profile referencedOn Talks.hostId
   var tags by Tag via TalkTags
 }
 ```
@@ -89,23 +99,49 @@ talk.host.name
 talk.tags.map(Tag::label)
 ```
 
-The delegates use the same foreign keys and join table as the SQL DSL.
+---
+
+# Navigable does not mean already loaded
+
+> References are lazy by default.
+
+```kotlin
+val talks: Iterable<Talk> = Talk
+  .find { Talks.isPublished eq true }
+```
 
 ---
 
 # Navigable does not mean already loaded
 
+> Avoid discovering relation queries one entity at a time in a loop
+
+<DrawnAnnotation text="talk.id" label="Every access results in a SELECT query so talks.size queries" />
+
+```kotlin
+val talks: Iterable<Talk> = Talk
+  .find { Talks.isPublished eq true }
+
+for(talk in talks) {
+  println("Speaker: ${talk.speaker}, Host: ${talk.host}")
+}
+```
+
+---
+
+# Navigable does not mean already loaded
+
+<DrawnAnnotation text="with" label="Eagerly load referenced properties in this collection"  :geometry="{ label: { x: 0.6038, y: 0.3640 }, connector: { start: { x: 0.1359, y: 0.3189 }, end: { x: 0.3532, y: 0.3603 } } }"/>
+
 ```kotlin
 val talks = Talk
   .find { Talks.isPublished eq true }
-  .with(Talk::speaker, Talk::host, Talk::tags)
+  .with(Talk::speaker, Talk::host)
+
+for(talk in talks) {
+  println("Speaker: ${talk.speaker}, Host: ${talk.host}")
+}
 ```
-
-- References are lazy by default.
-- The first relation access may query.
-- Use `with(...)` when a collection’s known relations are needed.
-
-> Avoid discovering relation queries one entity at a time in a loop: the N+1 problem.
 
 ---
 
@@ -161,7 +197,7 @@ val talks = Talk.wrapRows(query)
 - `UuidTable` → shared columns, keys, constraints
 - `UuidEntity` → delegated properties and relations
 - `transaction + cache` → lifecycle context
-- `DTO boundary` → ordinary application data
+- `TalkPreview` → ordinary application data
 
 > Model relationally, migrate deliberately, compose SQL visibly, and use DAO only when entity-oriented access earns its
 > lifecycle cost.
