@@ -114,8 +114,8 @@ magic-move
 
 ```kotlin
 object ProfileTable : Table("profiles") {
-    val id: Column<Long> = long("id")
-    val primaryKey = PrimaryKey(id)
+  val id: Column<Long> = long("id")
+  val primaryKey = PrimaryKey(id)
 }
 ```
 
@@ -129,9 +129,9 @@ magic-move
 
 ```kotlin
 object ProfileTable : Table("profiles") {
-    val id = long("id")
-    val primaryKey = PrimaryKey(id)
-    val name = varchar("name", 120)
+  val id = long("id")
+  val primaryKey = PrimaryKey(id)
+  val name = varchar("name", 120)
 }
 ```
 
@@ -145,9 +145,9 @@ magic-move
 
 ```kotlin
 object ProfileTable : Table("profiles") {
-    val id: Column<EntityID<Long>> = long("id").autoIncrement().entityId()
-    val primaryKey = PrimaryKey(id)
-    val name = varchar("name", 120)
+  val id: Column<EntityID<Long>> = long("id").autoIncrement().entityId()
+  val primaryKey = PrimaryKey(id)
+  val name = varchar("name", 120)
 }
 ```
 
@@ -163,9 +163,9 @@ magic-move
 
 ```kotlin
 object ProfileTable : IdTable<Long>("profiles") {
-    override val id = long("id").autoIncrement().entityId()
-    override val primaryKey = PrimaryKey(id)
-    val name = varchar("name", 120)
+  override val id = long("id").autoIncrement().entityId()
+  override val primaryKey = PrimaryKey(id)
+  val name = varchar("name", 120)
 }
 ```
 
@@ -179,7 +179,7 @@ magic-move
 
 ```kotlin
 object ProfileTable : LongIdTable("profiles") {
-    val name = varchar("name", 120)
+  val name = varchar("name", 120)
 }
 ```
 
@@ -193,13 +193,13 @@ magic-move
 
 ```kotlin
 object ProfileTable : LongIdTable("profiles") {
-    val name = varchar("name", 120)
+  val name = varchar("name", 120)
 }
 
 object TalksTable : LongIdTable("talks") {
-    val speakerId = reference("speaker_id", ProfileTable.id)
-    val title = varchar("title", 200)
-    val description = text("description")
+  val speakerId = reference("speaker_id", ProfileTable.id)
+  val title = varchar("title", 200)
+  val description = text("description")
 }
 ```
 
@@ -213,13 +213,13 @@ magic-move
 
 ```kotlin
 object ProfileTable : LongIdTable("profiles") {
-    val name = varchar("name", 120)
+  val name = varchar("name", 120)
 }
 
 object TalksTable : LongIdTable("talks") {
-    val speakerId = reference("speaker_id", ProfileTable)
-    val title = varchar("title", 200)
-    val description = text("description")
+  val speakerId = reference("speaker_id", ProfileTable)
+  val title = varchar("title", 200)
+  val description = text("description")
 }
 ```
 
@@ -234,18 +234,18 @@ magic-move
 
 ```kotlin
 object ProfileTable : LongIdTable("profiles") {
-    val name = varchar("name", 120)
+  val name = varchar("name", 120)
 }
 
 object TalksTable : LongIdTable("talks") {
-    val speakerId = reference(
-        "speaker_id",
-        ProfileTable,
-        onDelete = ReferenceOption.RESTRICT,
-        onUpdate = ReferenceOption.CASCADE,
-    )
-    val title = varchar("title", 200)
-    val description = text("description")
+  val speakerId = reference(
+    "speaker_id",
+    ProfileTable,
+    onDelete = ReferenceOption.RESTRICT,
+    onUpdate = ReferenceOption.CASCADE,
+  )
+  val title = varchar("title", 200)
+  val description = text("description")
 }
 ```
 
@@ -261,23 +261,23 @@ magic-move
 
 ```kotlin
 object ProfileTable : LongIdTable(
-    "profiles",
-    columnName = "id",
-    sequenceName = "profiles_id_seq"
+  "profiles",
+  columnName = "id",
+  sequenceName = "profiles_id_seq"
 ) {
-    val name = varchar("name", 120)
+  val name = varchar("name", 120)
 }
 
 object TalksTable : LongIdTable("talks") {
-    val speakerId = reference(
-        "speaker_id",
-        ProfileTable,
-        onDelete = ReferenceOption.RESTRICT,
-        onUpdate = ReferenceOption.CASCADE,
-        fkName = "fk_talks_speaker_id"
-    )
-    val title = varchar("title", 200)
-    val description = text("description")
+  val speakerId = reference(
+    "speaker_id",
+    ProfileTable,
+    onDelete = ReferenceOption.RESTRICT,
+    onUpdate = ReferenceOption.CASCADE,
+    fkName = "fk_talks_speaker_id"
+  )
+  val title = varchar("title", 200)
+  val description = text("description")
 }
 ```
 
@@ -330,8 +330,8 @@ layout: two-cols-header
 value class TalkTitle(val value: String)
 
 object Talks : Table("talks") {
-    val title: Column<TalkTitle> = varchar("title", 200)
-        .transform(::TalkTitle) { it.value }
+  val title: Column<TalkTitle> = varchar("title", 200)
+    .transform(::TalkTitle) { it.value }
 }
 ```
 
@@ -350,7 +350,6 @@ object Talks : Table("talks") {
 | `vector()`               | `FloatArray` / `IntArray`  |
 | `javaUUID()`             | `java.util.UUID`           |
 | `blob()`                 | `ExposedBlob(InputStream)` |
-
 
 ---
 
@@ -402,13 +401,11 @@ object Talks : Table("talks") {
 ```kotlin
 @Serializable
 data class ProfilesAttributes(
-    val name: String,
-    @SerialName("relationship_status")
-    val relationshipStatus: String,
+  val name: String,
+  @SerialName("relationship_status")
+  val relationshipStatus: String,
 )
 ```
-
-
 
 </div>
 

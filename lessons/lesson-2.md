@@ -47,7 +47,7 @@ magic-move
 
 ```kotlin
 Talks.select(Talks.id, Talks.title, Talks.startsAt)
-    .where { Talks.id eq id }
+  .where { Talks.id eq id }
 ```
 
 ```sql
@@ -64,8 +64,8 @@ magic-move
 
 ```kotlin
 Talks.select(Talks.id, Talks.title, Talks.startsAt)
-    .where { Talks.id eq id }
-    .orderBy(Talks.title, SortOrder.ASC)
+  .where { Talks.id eq id }
+  .orderBy(Talks.title, SortOrder.ASC)
 ```
 
 ```sql
@@ -83,17 +83,16 @@ magic-move
 
 ```kotlin
 Talks.select(Talks.id, Talks.title, Talks.startsAt)
-    .where { Talks.id eq id }
-    .orderBy(Talks.title, SortOrder.ASC)
-    .limit(10)
+  .where { Talks.id eq id }
+  .orderBy(Talks.title, SortOrder.ASC)
+  .limit(10)
 ```
 
 ```sql
 SELECT id, title, startsAt
 FROM talks
 WHERE id = :id
-ORDER BY title ASC
-LIMIT 10
+ORDER BY title ASC LIMIT 10
 ```
 
 ---
@@ -104,18 +103,17 @@ magic-move
 
 ```kotlin
 Talks.select(Talks.id, Talks.title, Talks.startsAt)
-    .where { Talks.id eq id }
-    .orderBy(Talks.title, SortOrder.ASC)
-    .limit(10)
-    .offset(30)
+  .where { Talks.id eq id }
+  .orderBy(Talks.title, SortOrder.ASC)
+  .limit(10)
+  .offset(30)
 ```
 
 ```sql
 SELECT id, title, startsAt
 FROM talks
 WHERE id = :id
-ORDER BY title ASC
-LIMIT 10
+ORDER BY title ASC LIMIT 10
 OFFSET 30
 ```
 
@@ -127,19 +125,18 @@ magic-move
 
 ```kotlin
 Talks.select(Talks.id, Talks.title, Talks.startsAt)
-    .where { Talks.id eq id }
-    .orderBy(Talks.title, SortOrder.ASC)
-    .limit(10)
-    .offset(30)
-    .orWhere { Talks.description like "%Kotlin%" }
+  .where { Talks.id eq id }
+  .orderBy(Talks.title, SortOrder.ASC)
+  .limit(10)
+  .offset(30)
+  .orWhere { Talks.description like "%Kotlin%" }
 ```
 
 ```sql
 SELECT id, title, startsAt
 FROM talks
 WHERE id = :id OR description LIKE '%Kotlin%'
-ORDER BY title ASC
-LIMIT 10
+ORDER BY title ASC LIMIT 10
 OFFSET 30
 ```
 
@@ -151,22 +148,21 @@ magic-move
 
 ```kotlin
 Talks.select(Talks.id, Talks.title, Talks.startsAt)
-    .where { Talks.id eq id }
-    .orderBy(Talks.title, SortOrder.ASC)
-    .limit(10)
-    .offset(30)
-    .orWhere { Talks.description like "%Kotlin%" }
-    .adjustSelect {
-        select(Talks.id, Talks.speakerId, Talks.title, Talks.description, Talks.startsAt)
-    }
+  .where { Talks.id eq id }
+  .orderBy(Talks.title, SortOrder.ASC)
+  .limit(10)
+  .offset(30)
+  .orWhere { Talks.description like "%Kotlin%" }
+  .adjustSelect {
+    select(Talks.id, Talks.speakerId, Talks.title, Talks.description, Talks.startsAt)
+  }
 ```
 
 ```sql
 SELECT id, speakerId, title, description, startsAt
 FROM talks
 WHERE id = :id OR description LIKE '%Kotlin%'
-ORDER BY title ASC
-LIMIT 10
+ORDER BY title ASC LIMIT 10
 OFFSET 30
 ```
 
@@ -180,6 +176,7 @@ OFFSET 30
 ```kotlin
 Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
 ```
+
 ```sql
 FROM talks
 INNER JOIN profiles ON profiles.id = talks.speaker_id
@@ -196,6 +193,7 @@ magic-move
 ```kotlin
 Talks.innerJoin(ProfileTable)
 ```
+
 ```sql
 FROM talks
 INNER JOIN profiles ON profiles.id = talks.speaker_id
@@ -209,7 +207,7 @@ magic-move
 
 ```kotlin
 Talks.innerJoin(ProfileTable)
-    .select(Talks.title, Talks.description, ProfileTable.name, ProfileTable.avatarUrl)
+  .select(Talks.title, Talks.description, ProfileTable.name, ProfileTable.avatarUrl)
 ```
 
 ```sql
@@ -227,8 +225,8 @@ magic-move
 
 ```kotlin
 Talks.innerJoin(ProfileTable)
-    .select(Talks.title, Talks.description, ProfileTable.name, ProfileTable.avatarUrl)
-    .where { Talks.isPublished eq true }
+  .select(Talks.title, Talks.description, ProfileTable.name, ProfileTable.avatarUrl)
+  .where { Talks.isPublished eq true }
 ```
 
 ```sql
@@ -246,9 +244,9 @@ WHERE talks.is_published = TRUE
 
 ```kotlin
 fun previews(): Query =
-    Talks.innerJoin(ProfileTable)
-        .select(Talks.title, Talks.description, ProfileTable.name, ProfileTable.avatarUrl)
-        .where { Talks.isPublished eq true }
+  Talks.innerJoin(ProfileTable)
+    .select(Talks.title, Talks.description, ProfileTable.name, ProfileTable.avatarUrl)
+    .where { Talks.isPublished eq true }
 ```
 
 ---
@@ -259,16 +257,16 @@ fun previews(): Query =
 
 ```kotlin jdbc
 class Query(...) :
-    SizedIterable<ResultRow>,
-    BlockingExecutable<ResultApi, Query>
+  SizedIterable<ResultRow>,
+  BlockingExecutable<ResultApi, Query>
 ```
 
 <DrawnAnnotation text="Suspend" label="R2DBC is a reactive driver" color="#06b6d4"  :geometry="{ label: { x: 0.2150, y: 0.5444 } }" />
 
 ```kotlin r2dbc
 class Query(...) :
-    SizedIterable<ResultRow>,
-    SuspendExecutable<ResultApi, Query>
+  SizedIterable<ResultRow>,
+  SuspendExecutable<ResultApi, Query>
 ```
 
 ---
@@ -279,10 +277,10 @@ class Query(...) :
 
 ```kotlin jdbc
 interface SizedIterable<out T> : Iterable<T> {
-    fun limit(count: Int): SizedIterable<T>
-    fun offset(start: Long): SizedIterable<T>
-    fun count(): Long
-    fun empty(): Boolean
+  fun limit(count: Int): SizedIterable<T>
+  fun offset(start: Long): SizedIterable<T>
+  fun count(): Long
+  fun empty(): Boolean
 }
 ```
 
@@ -292,10 +290,10 @@ interface SizedIterable<out T> : Iterable<T> {
 
 ```kotlin r2dbc
 interface SizedIterable<out T> : Flow<T> {
-    fun limit(count: Int): SizedIterable<T>
-    fun offset(start: Long): SizedIterable<T>
-    suspend fun count(): Long
-    suspend fun empty(): Boolean
+  fun limit(count: Int): SizedIterable<T>
+  fun offset(start: Long): SizedIterable<T>
+  suspend fun count(): Long
+  suspend fun empty(): Boolean
 }
 ```
 
@@ -362,16 +360,16 @@ import org.jetbrains.exposed.v1.r2dbc.Query
 
 ```kotlin
 fun talks(limit: Long = 10, offset: Long = 30): Query =
-    Talks.select(Talks.speakerId, Talks.title, Talks.description, Talks.startsAt)
-        .where { Talks.description like "%Kotlin%" }
-        .orderBy(Talks.title, SortOrder.ASC)
-        .limit(10)
-        .offset(30)
+  Talks.select(Talks.speakerId, Talks.title, Talks.description, Talks.startsAt)
+    .where { Talks.description like "%Kotlin%" }
+    .orderBy(Talks.title, SortOrder.ASC)
+    .limit(10)
+    .offset(30)
 
 fun previews(): Query =
-    Talks.innerJoin(ProfileTable)
-        .select(title, description, ProfileTable.name, ProfileTable.avatarUrl)
-        .where { Talks.isPublished eq true }
+  Talks.innerJoin(ProfileTable)
+    .select(title, description, ProfileTable.name, ProfileTable.avatarUrl)
+    .where { Talks.isPublished eq true }
 ```
 
 ---
@@ -380,9 +378,9 @@ fun previews(): Query =
 
 ```kotlin
 fun previews(): Query =
-    Talks.innerJoin(ProfileTable) { speakerId eq ProfileTable.id }
-        .select(title, description, ProfileTable.name, ProfileTable.avatarUrl)
-        .where { isPublished eq true }
+  Talks.innerJoin(ProfileTable) { speakerId eq ProfileTable.id }
+    .select(title, description, ProfileTable.name, ProfileTable.avatarUrl)
+    .where { isPublished eq true }
 ```
 
 ---
@@ -393,9 +391,9 @@ magic-move
 
 ```kotlin
 fun previews(): Iterable<ResultRow> =
-    Talks.innerJoin(ProfileTable) { speakerId eq ProfileTable.id }
-        .select(title, description, ProfileTable.name, ProfileTable.avatarUrl)
-        .where { isPublished eq true }
+  Talks.innerJoin(ProfileTable) { speakerId eq ProfileTable.id }
+    .select(title, description, ProfileTable.name, ProfileTable.avatarUrl)
+    .where { isPublished eq true }
 ```
 
 ---
@@ -406,10 +404,10 @@ magic-move
 
 ```kotlin
 fun previews(): List<?> =
-    Talks.innerJoin(ProfileTable) { speakerId eq ProfileTable.id }
-        .select(title, description, ProfileTable.name, ProfileTable.avatarUrl)
-        .where { isPublished eq true }
-        .map { row: ResultRow -> TODO("Return value") }
+  Talks.innerJoin(ProfileTable) { speakerId eq ProfileTable.id }
+    .select(title, description, ProfileTable.name, ProfileTable.avatarUrl)
+    .where { isPublished eq true }
+    .map { row: ResultRow -> TODO("Return value") }
 ```
 
 ---
@@ -420,16 +418,16 @@ magic-move
 
 ```kotlin
 fun previews(): List<TalkPreview> =
-    Talks.innerJoin(ProfileTable) { speakerId eq ProfileTable.id }
-        .select(title, description, ProfileTable.name, ProfileTable.avatarUrl)
-        .where { isPublished eq true }
-        .map { row: ResultRow -> row.toTalkPreview() }
+  Talks.innerJoin(ProfileTable) { speakerId eq ProfileTable.id }
+    .select(title, description, ProfileTable.name, ProfileTable.avatarUrl)
+    .where { isPublished eq true }
+    .map { row: ResultRow -> row.toTalkPreview() }
 
 data class TalkPreview(
-    val title: String,
-    val description: String,
-    val speakerName: Instant,
-    val speakerAvatarUrl: String,
+  val title: String,
+  val description: String,
+  val speakerName: Instant,
+  val speakerAvatarUrl: String,
 )
 ```
 
@@ -458,7 +456,7 @@ magic-move
 operator fun <A> ResultRow.get(key: Column<A>): A = TODO("Exposed internals")
 
 fun ResultRow.toTalkPreview() = TalkPreview(
-    title = this.get(Talks.title),
+  title = this.get(Talks.title),
 ) 
 ```
 
@@ -475,7 +473,7 @@ magic-move
 operator fun <A> ResultRow.get(key: Column<A>): A = TODO("Exposed internals")
 
 fun ResultRow.toTalkPreview() = TalkPreview(
-    title = this[Talks.title],
+  title = this[Talks.title],
 ) 
 ```
 
@@ -489,10 +487,10 @@ magic-move
 operator fun <A> ResultRow.get(key: Column<A>): A = TODO("Exposed internals")
 
 fun ResultRow.toTalkPreview() = TalkPreview(
-    title = this[Talks.title],
-    description = this[Talks.description],
-    speakerName = this[ProfileTable.name],
-    speakerAvatarUrl = this[ProfileTable.avatarUrl],
+  title = this[Talks.title],
+  description = this[Talks.description],
+  speakerName = this[ProfileTable.name],
+  speakerAvatarUrl = this[ProfileTable.avatarUrl],
 ) 
 ```
 
@@ -502,16 +500,16 @@ fun ResultRow.toTalkPreview() = TalkPreview(
 
 ```kotlin
 fun ResultRow.toTalkPreview() = TalkPreview(
-    title = this[Talks.title],
-    description = this[Talks.description],
-    speakerName = this[ProfileTable.name],
-    speakerAvatarUrl = this[ProfileTable.avatarUrl],
+  title = this[Talks.title],
+  description = this[Talks.description],
+  speakerName = this[ProfileTable.name],
+  speakerAvatarUrl = this[ProfileTable.avatarUrl],
 )
 
 fun previews(): List<TalkPreview> =
-    Talks.innerJoin(ProfileTable)
-        .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
-        .map { row: ResultRow -> row.toTalkPreview() }
+  Talks.innerJoin(ProfileTable)
+    .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
+    .map { row: ResultRow -> row.toTalkPreview() }
 ```
 
 <v-clicks>
@@ -538,13 +536,13 @@ fun previews(): List<TalkPreview> =
 
 ```kotlin jdbc
 transaction { /* Transaction.() -> Unit */
-    // Query can execute here
+  // Query can execute here
 }
 ```
 
 ```kotlin r2dbc
 suspendTransaction { /* Transaction.() -> Unit */
-    // Query can execute here
+  // Query can execute here
 }
 ```
 
@@ -556,9 +554,9 @@ suspendTransaction { /* Transaction.() -> Unit */
 
 ```kotlin
 fun previews(): List<TalkPreview> =
-    Talks.innerJoin(ProfileTable)
-        .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
-        .map { it.toTalkPreview() }
+  Talks.innerJoin(ProfileTable)
+    .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
+    .map { it.toTalkPreview() }
 ```
 
 ---
@@ -572,9 +570,9 @@ magic-move
 ```kotlin
 context(_: Transaction)
 fun previews(): List<TalkPreview> =
-    Talks.innerJoin(ProfileTable)
-        .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
-        .map { it.toTalkPreview() }
+  Talks.innerJoin(ProfileTable)
+    .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
+    .map { it.toTalkPreview() }
 ```
 
 ---
@@ -588,9 +586,9 @@ magic-move
 ```kotlin
 context(_: Transaction)
 fun previews(): List<TalkPreview> =
-    Talks.innerJoin(ProfileTable)
-        .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
-        .map { it.toTalkPreview() }
+  Talks.innerJoin(ProfileTable)
+    .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
+    .map { it.toTalkPreview() }
 
 fun example() = previews()
 ```
@@ -611,14 +609,14 @@ magic-move
 ```kotlin
 context(_: Transaction)
 fun previews(): List<TalkPreview> =
-    Talks.innerJoin(ProfileTable)
-        .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
-        .map { it.toTalkPreview() }
+  Talks.innerJoin(ProfileTable)
+    .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
+    .map { it.toTalkPreview() }
 
 fun example() = previews()
 
 fun example2() = transaction { /* Transaction.() -> Unit */
-    previews()
+  previews()
 }
 ```
 
@@ -645,9 +643,9 @@ fun example2() = transaction { /* Transaction.() -> Unit */
 ```kotlin
 context(_: Transaction)
 fun previews(): List<TalkPreview> =
-    Talks.innerJoin(ProfileTable)
-        .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
-        .map { it.toTalkPreview() }
+  Talks.innerJoin(ProfileTable)
+    .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
+    .map { it.toTalkPreview() }
 
 fun example(database: Database) = transaction(database) { previews() }
 ```
@@ -658,17 +656,17 @@ fun example(database: Database) = transaction(database) { previews() }
 
 ```kotlin jdbc
 val jdbc = Database.connect(
-    url = "jdbc:postgresql://localhost:5432/example",
-    user = "postgresql",
-    password = "password",
+  url = "jdbc:postgresql://localhost:5432/example",
+  user = "postgresql",
+  password = "password",
 )
 ```
 
 ```kotlin r2dbc
 val r2dbc = R2dbcDatabase.connect(
-    url = "r2dbc:postgresql://localhost:5432/example",
-    user = "postgresql",
-    password = "password",
+  url = "r2dbc:postgresql://localhost:5432/example",
+  user = "postgresql",
+  password = "password",
 )
 ```
 
@@ -680,25 +678,25 @@ magic-move
 
 ```kotlin jdbc
 val jdbc = Database.connect(
-    url = "jdbc:postgresql://localhost:5432/example",
-    user = "postgresql",
-    password = "password",
-    databaseConfig = DatabaseConfig {
-        sqlLogger = Slf4jSqlDebugLogger
-        defaultMaxAttempts = 1
-    }
+  url = "jdbc:postgresql://localhost:5432/example",
+  user = "postgresql",
+  password = "password",
+  databaseConfig = DatabaseConfig {
+    sqlLogger = Slf4jSqlDebugLogger
+    defaultMaxAttempts = 1
+  }
 )
 ```
 
 ```kotlin r2dbc
 val r2dbc = R2dbcDatabase.connect(
-    url = "r2dbc:postgresql://localhost:5432/example",
-    user = "postgresql",
-    password = "password",
-    databaseConfig = R2dbcDatabaseConfig {
-        sqlLogger = Slf4jSqlDebugLogger
-        defaultR2dbcIsolationLevel = IsolationLevel.READ_COMMITTED
-    }
+  url = "r2dbc:postgresql://localhost:5432/example",
+  user = "postgresql",
+  password = "password",
+  databaseConfig = R2dbcDatabaseConfig {
+    sqlLogger = Slf4jSqlDebugLogger
+    defaultR2dbcIsolationLevel = IsolationLevel.READ_COMMITTED
+  }
 )
 ```
 
@@ -712,9 +710,9 @@ val r2dbc = R2dbcDatabase.connect(
 ```kotlin
 context(_: Transaction)
 fun previews(): List<TalkPreview> =
-    Talks.innerJoin(ProfileTable)
-        .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
-        .map { it.toTalkPreview() }
+  Talks.innerJoin(ProfileTable)
+    .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
+    .map { it.toTalkPreview() }
 
 fun example(database: Database) = transaction(database) { previews() }
 
@@ -730,9 +728,9 @@ fun example() = transaction { previews() }
 ```kotlin
 @Transactional
 fun previews(): List<TalkPreview> =
-    Talks.innerJoin(ProfileTable)
-        .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
-        .map { it.toTalkPreview() }
+  Talks.innerJoin(ProfileTable)
+    .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
+    .map { it.toTalkPreview() }
 ```
 
 ---
@@ -744,9 +742,9 @@ fun previews(): List<TalkPreview> =
 ```kotlin
 context(_: Transaction)
 fun insert(title: String, speakerId: Long, startsAt: Instant) =
-    Talks.insert {
+  Talks.insert {
 
-    }
+  }
 ```
 
 ---
@@ -763,9 +761,9 @@ operator fun <S> InsertStatement.set(column: Column<S>, value: S) = TODO("")
 
 context(_: Transaction)
 fun insert(title: String, speakerId: Long, startsAt: Instant) =
-    Talks.insert {
-        it[Talks.title] = title
-    }
+  Talks.insert {
+    it[Talks.title] = title
+  }
 ```
 
 ---
@@ -777,11 +775,11 @@ fun insert(title: String, speakerId: Long, startsAt: Instant) =
 ```kotlin
 context(_: Transaction)
 fun insert(title: String, speakerId: Long, startsAt: Instant): InsertStatement<Number> =
-    Talks.insert {
-        it[Talks.title] = title
-        it[Talks.speakerId] = speakerId
-        it[Talks.startsAt] = startsAt
-    }
+  Talks.insert {
+    it[Talks.title] = title
+    it[Talks.speakerId] = speakerId
+    it[Talks.startsAt] = startsAt
+  }
 ```
 
 ---
@@ -793,12 +791,12 @@ fun insert(title: String, speakerId: Long, startsAt: Instant): InsertStatement<N
 ```kotlin
 context(_: Transaction)
 fun insertAndGetId(title: String, speakerId: Long, startsAt: Instant): EntityID<Long> =
-    Talks.insertAndGetId {
-        it[Talks.title] = title
-        it[Talks.slug] = title.toUniqueSlug()
-        it[Talks.speakerId] = speakerId
-        it[Talks.startsAt] = startsAt
-    }
+  Talks.insertAndGetId {
+    it[Talks.title] = title
+    it[Talks.slug] = title.toUniqueSlug()
+    it[Talks.speakerId] = speakerId
+    it[Talks.startsAt] = startsAt
+  }
 ```
 
 ---
@@ -812,12 +810,12 @@ magic-move
 ```kotlin
 context(_: Transaction)
 fun insertAndGetId(title: String, speakerId: Long, startsAt: Instant): Long =
-    Talks.insertAndGetId {
-        it[Talks.title] = title
-        it[Talks.slug] = title.toUniqueSlug()
-        it[Talks.speakerId] = speakerId
-        it[Talks.startsAt] = startsAt
-    }.value
+  Talks.insertAndGetId {
+    it[Talks.title] = title
+    it[Talks.slug] = title.toUniqueSlug()
+    it[Talks.speakerId] = speakerId
+    it[Talks.startsAt] = startsAt
+  }.value
 ```
 
 ---
@@ -829,16 +827,16 @@ fun insertAndGetId(title: String, speakerId: Long, startsAt: Instant): Long =
 ```kotlin
 context(_: Transaction)
 fun insertReturning(
-    title: String,
-    speakerId: Long,
-    startsAt: Instant
+  title: String,
+  speakerId: Long,
+  startsAt: Instant
 ): Iterable<ResultRow> =
-    Talks.insertReturning(listOf(Talks.id, Talks.createdAt, Talks.updatedAt)) {
-        it[Talks.title] = title
-        it[Talks.slug] = title.toUniqueSlug()
-        it[Talks.speakerId] = speakerId
-        it[Talks.startsAt] = startsAt
-    }
+  Talks.insertReturning(listOf(Talks.id, Talks.createdAt, Talks.updatedAt)) {
+    it[Talks.title] = title
+    it[Talks.slug] = title.toUniqueSlug()
+    it[Talks.speakerId] = speakerId
+    it[Talks.startsAt] = startsAt
+  }
 ```
 
 ---
@@ -847,21 +845,21 @@ magic-move
 
 # Insert a talk — return what you need
 
-<DrawnAnnotation text="[Talks.id, Talks.createdAt, Talks.updatedAt]" label="Use collection literals if you do!"  :geometry="{ label: { x: 0.7109, y: 0.5424, width: 0.2931 } }" />
+<DrawnAnnotation text="[Talks.id, Talks.createdAt, Talks.updatedAt]" label="Use collection literals if you do!"  :geometry="{ label: { x: 0.6998, y: 0.6204, width: 0.2931 }, connector: { start: { x: 0.5985, y: 0.5159 }, end: { x: 0.6756, y: 0.5787 } } }" />
 
 ```kotlin
 context(_: Transaction)
 fun insertReturning(
-    title: String,
-    speakerId: Long,
-    startsAt: Instant
+  title: String,
+  speakerId: Long,
+  startsAt: Instant
 ): Iterable<ResultRow> =
-    Talks.insertReturning([Talks.id, Talks.createdAt, Talks.updatedAt]) {
-        it[Talks.title] = title
-        it[Talks.slug] = title.toUniqueSlug()
-        it[Talks.speakerId] = speakerId
-        it[Talks.startsAt] = startsAt
-    }
+  Talks.insertReturning([Talks.id, Talks.createdAt, Talks.updatedAt]) {
+    it[Talks.title] = title
+    it[Talks.slug] = title.toUniqueSlug()
+    it[Talks.speakerId] = speakerId
+    it[Talks.startsAt] = startsAt
+  }
 ```
 
 ---
@@ -875,16 +873,16 @@ magic-move
 ```kotlin
 context(_: Transaction)
 fun insertReturning(
-    title: String,
-    speakerId: Long,
-    startsAt: Instant
+  title: String,
+  speakerId: Long,
+  startsAt: Instant
 ): Iterable<ResultRow> =
-    Talks.insertReturning {
-        it[Talks.title] = title
-        it[Talks.slug] = title.toUniqueSlug()
-        it[Talks.speakerId] = speakerId
-        it[Talks.startsAt] = startsAt
-    }
+  Talks.insertReturning {
+    it[Talks.title] = title
+    it[Talks.slug] = title.toUniqueSlug()
+    it[Talks.speakerId] = speakerId
+    it[Talks.startsAt] = startsAt
+  }
 ```
 
 ---
@@ -899,16 +897,16 @@ magic-move
 ```kotlin
 context(_: Transaction)
 fun insertReturning(
-    title: String,
-    speakerId: Long,
-    startsAt: Instant
+  title: String,
+  speakerId: Long,
+  startsAt: Instant
 ): List<TalkWithSpeakerId> =
-    Talks.insertReturning([Talks.id, Talks.createdAt, Talks.updatedAt]) {
-        it[Talks.title] = title
-        it[Talks.slug] = title.toUniqueSlug()
-        it[Talks.speakerId] = speakerId
-        it[Talks.startsAt] = startsAt
-    }.map(ResultRow::toTalkWithSpeakerId)
+  Talks.insertReturning([Talks.id, Talks.createdAt, Talks.updatedAt]) {
+    it[Talks.title] = title
+    it[Talks.slug] = title.toUniqueSlug()
+    it[Talks.speakerId] = speakerId
+    it[Talks.startsAt] = startsAt
+  }.map(ResultRow::toTalkWithSpeakerId)
 ```
 
 ---
@@ -917,16 +915,15 @@ fun insertReturning(
 
 ```kotlin
 Talks.insertIgnore {
-    it[Talks.title] = "Another title"
-    it[Talks.speakerId] = 99
-    it[Talks.startsAt] = Instant.parse("2026-10-01T10:00:00Z")
+  it[Talks.title] = "Another title"
+  it[Talks.speakerId] = 99
+  it[Talks.startsAt] = Instant.parse("2026-10-01T10:00:00Z")
 }
 ```
 
 ```sql
 INSERT INTO talks (title, speaker_id, starts_at)
-VALUES ('Another title', 99, TIMESTAMP '2026-10-01 10:00:00')
-ON CONFLICT DO NOTHING;
+VALUES ('Another title', 99, TIMESTAMP '2026-10-01 10:00:00') ON CONFLICT DO NOTHING;
 ```
 
 ---
@@ -937,16 +934,15 @@ magic-move
 
 ```kotlin
 Talks.insertIgnoreAndGetId {
-    it[Talks.title] = "Another title"
-    it[Talks.speakerId] = 99
-    it[Talks.startsAt] = Instant.parse("2026-10-01T10:00:00Z")
+  it[Talks.title] = "Another title"
+  it[Talks.speakerId] = 99
+  it[Talks.startsAt] = Instant.parse("2026-10-01T10:00:00Z")
 }
 ```
 
 ```sql
 INSERT INTO talks (title, speaker_id, starts_at)
-VALUES ('Another title', 99, TIMESTAMP '2026-10-01 10:00:00')
-ON CONFLICT DO NOTHING
+VALUES ('Another title', 99, TIMESTAMP '2026-10-01 10:00:00') ON CONFLICT DO NOTHING
 RETURNING id;
 ```
 
@@ -958,16 +954,15 @@ magic-move
 
 ```kotlin
 Talks.insertReturning([Talks.id, Talks.createdAt], ignoreErrors = true) {
-    it[Talks.title] = "Another title"
-    it[Talks.speakerId] = 99
-    it[Talks.startsAt] = Instant.parse("2026-10-01T10:00:00Z")
+  it[Talks.title] = "Another title"
+  it[Talks.speakerId] = 99
+  it[Talks.startsAt] = Instant.parse("2026-10-01T10:00:00Z")
 }
 ```
 
 ```sql
 INSERT INTO talks (title, speaker_id, starts_at)
-VALUES ('Another title', 99, TIMESTAMP '2026-10-01 10:00:00')
-ON CONFLICT DO NOTHING
+VALUES ('Another title', 99, TIMESTAMP '2026-10-01 10:00:00') ON CONFLICT DO NOTHING
 RETURNING id, createdAt;
 ```
 
@@ -978,11 +973,11 @@ RETURNING id, createdAt;
 ```kotlin
 context(_: Transaction)
 fun insertBatch(newTalk: List<NewTalk>) =
-    Talks.batchInsert(newTalk) { newTalk ->
-        this[Talks.title] = newTalk.title
-        this[Talks.speakerId] = newTalk.speakerId
-        this[Talks.startsAt] = newTalk.startsAt
-    }.map(ResultRow::toTalkWithoutSpeaker)
+  Talks.batchInsert(newTalk) { newTalk ->
+    this[Talks.title] = newTalk.title
+    this[Talks.speakerId] = newTalk.speakerId
+    this[Talks.startsAt] = newTalk.startsAt
+  }.map(ResultRow::toTalkWithoutSpeaker)
 ```
 
 ---
@@ -994,11 +989,11 @@ magic-move
 ```kotlin
 context(_: Transaction)
 fun insertBatch(newTalk: List<NewTalk>) {
-    Talks.batchInsert(newTalk, shouldReturnGeneratedValues = false) { newTalk ->
-        this[Talks.title] = newTalk.title
-        this[Talks.speakerId] = newTalk.speakerId
-        this[Talks.startsAt] = newTalk.startsAt
-    }
+  Talks.batchInsert(newTalk, shouldReturnGeneratedValues = false) { newTalk ->
+    this[Talks.title] = newTalk.title
+    this[Talks.speakerId] = newTalk.speakerId
+    this[Talks.startsAt] = newTalk.startsAt
+  }
 }
 ```
 
@@ -1010,9 +1005,9 @@ fun insertBatch(newTalk: List<NewTalk>) {
 
 ```kotlin
 fun update(talkId: Long, status: TalkStatus) {
-    Talks.update({ Talks.id eq talkId }) {
-        it[Talks.status] = TalkStatus.PUBLISHED
-    }
+  Talks.update({ Talks.id eq talkId }) {
+    it[Talks.status] = TalkStatus.PUBLISHED
+  }
 }
 ```
 
@@ -1026,9 +1021,9 @@ magic-move
 
 ```kotlin
 fun update(talkId: Long, status: TalkStatus) {
-    Talks.update({ Talks.id eq talkId }) {
-        it[Talks.status] = TalkStatus.PUBLISHED
-    }
+  Talks.update({ Talks.id eq talkId }) {
+    it[Talks.status] = TalkStatus.PUBLISHED
+  }
 }
 ```
 
@@ -1042,12 +1037,12 @@ magic-move
 
 ```kotlin
 fun update(talkId: Long, status: TalkStatus): TalkPreview? =
-    Talks.updateReturning(
-        [Talks.speakerId, Talks.title, Talks.startsAt],
-        { Talks.id eq talkId }
-    ) {
-        it[Talks.status] = TalkStatus.PUBLISHED
-    }.singleOrNull()?.toTalkPreview()
+  Talks.updateReturning(
+    [Talks.speakerId, Talks.title, Talks.startsAt],
+    { Talks.id eq talkId }
+  ) {
+    it[Talks.status] = TalkStatus.PUBLISHED
+  }.singleOrNull()?.toTalkPreview()
 ```
 
 ---
@@ -1061,12 +1056,12 @@ magic-move
 
 ```kotlin
 fun update(talkId: Long, status: TalkStatus): TalkPreview? =
-    Talks.updateReturning(
-        [Talks.speakerId, Talks.title, Talks.startsAt],
-        { Talks.id eq talkId }
-    ) {
-        it[Talks.status] = TalkStatus.PUBLISHED
-    }.singleOrNull()?.toTalkPreview()
+  Talks.updateReturning(
+    [Talks.speakerId, Talks.title, Talks.startsAt],
+    { Talks.id eq talkId }
+  ) {
+    it[Talks.status] = TalkStatus.PUBLISHED
+  }.singleOrNull()?.toTalkPreview()
 ```
 
 ---
@@ -1075,21 +1070,20 @@ fun update(talkId: Long, status: TalkStatus): TalkPreview? =
 
 ```kotlin
 Talks.upsert {
-    it[Talks.slug] = slug
-    it[Talks.title] = title
-    it[Talks.speakerId] = speakerId
-    it[Talks.startsAt] = startsAt
+  it[Talks.slug] = slug
+  it[Talks.title] = title
+  it[Talks.speakerId] = speakerId
+  it[Talks.startsAt] = startsAt
 }
 ```
 
 ```sql
 INSERT INTO talks (slug, title, speaker_id, starts_at)
-VALUES ('intro-to-kotlin', 'Kotlin: A Practical Introduction', 15, TIMESTAMP '2026-09-01 11:00:00')
-ON CONFLICT DO
+VALUES ('intro-to-kotlin', 'Kotlin: A Practical Introduction', 15, TIMESTAMP '2026-09-01 11:00:00') ON CONFLICT DO
 UPDATE SET
-    title = EXCLUDED.title,
-    speaker_id = EXCLUDED.speaker_id,
-    starts_at = EXCLUDED.starts_at;
+  title = EXCLUDED.title,
+  speaker_id = EXCLUDED.speaker_id,
+  starts_at = EXCLUDED.starts_at;
 ```
 
 ---
@@ -1103,20 +1097,21 @@ magic-move
 
 ```kotlin
 Talks.upsert(Talks.slug) {
-    it[Talks.slug] = slug
-    it[Talks.title] = title
-    it[Talks.speakerId] = speakerId
-    it[Talks.startsAt] = startsAt
+  it[Talks.slug] = slug
+  it[Talks.title] = title
+  it[Talks.speakerId] = speakerId
+  it[Talks.startsAt] = startsAt
 }
 ```
+
 ```sql
 INSERT INTO talks (slug, title, speaker_id, starts_at)
-VALUES ('intro-to-kotlin', 'Kotlin: A Practical Introduction', 15, TIMESTAMP '2026-09-01 11:00:00')
-ON CONFLICT (slug) DO
+VALUES ('intro-to-kotlin', 'Kotlin: A Practical Introduction', 15,
+        TIMESTAMP '2026-09-01 11:00:00') ON CONFLICT (slug) DO
 UPDATE SET
-    title = EXCLUDED.title,
-    speaker_id = EXCLUDED.speaker_id,
-    starts_at = EXCLUDED.starts_at;
+  title = EXCLUDED.title,
+  speaker_id = EXCLUDED.speaker_id,
+  starts_at = EXCLUDED.starts_at;
 ```
 
 ---
@@ -1127,22 +1122,22 @@ magic-move
 
 ```kotlin
 Talks.upsertReturning(Talks.slug) {
-    it[Talks.slug] = slug
-    it[Talks.title] = title
-    it[Talks.speakerId] = speakerId
-    it[Talks.startsAt] = startsAt
+  it[Talks.slug] = slug
+  it[Talks.title] = title
+  it[Talks.speakerId] = speakerId
+  it[Talks.startsAt] = startsAt
 }
 ```
 
 ```sql
 INSERT INTO talks (slug, title, speaker_id, starts_at)
-VALUES ('intro-to-kotlin', 'Kotlin: A Practical Introduction', 15, TIMESTAMP '2026-09-01 11:00:00')
-ON CONFLICT (slug) DO
+VALUES ('intro-to-kotlin', 'Kotlin: A Practical Introduction', 15,
+        TIMESTAMP '2026-09-01 11:00:00') ON CONFLICT (slug) DO
 UPDATE SET
-    title = EXCLUDED.title,
-    speaker_id = EXCLUDED.speaker_id,
-    starts_at = EXCLUDED.starts_at
-    RETURNING *;
+  title = EXCLUDED.title,
+  speaker_id = EXCLUDED.speaker_id,
+  starts_at = EXCLUDED.starts_at
+  RETURNING *;
 ```
 
 ---
@@ -1153,22 +1148,22 @@ magic-move
 
 ```kotlin
 Talks.upsertReturning(Talks.slug, returning = [Talks.id, Talks.updatedAt]) {
-    it[Talks.slug] = slug
-    it[Talks.title] = title
-    it[Talks.speakerId] = speakerId
-    it[Talks.startsAt] = startsAt
+  it[Talks.slug] = slug
+  it[Talks.title] = title
+  it[Talks.speakerId] = speakerId
+  it[Talks.startsAt] = startsAt
 }
 ```
 
 ```sql
 INSERT INTO talks (slug, title, speaker_id, starts_at)
-VALUES ('intro-to-kotlin', 'Kotlin: A Practical Introduction', 15, TIMESTAMP '2026-09-01 11:00:00')
-ON CONFLICT (slug) DO
+VALUES ('intro-to-kotlin', 'Kotlin: A Practical Introduction', 15,
+        TIMESTAMP '2026-09-01 11:00:00') ON CONFLICT (slug) DO
 UPDATE SET
-    title = EXCLUDED.title,
-    speaker_id = EXCLUDED.speaker_id,
-    starts_at = EXCLUDED.starts_at
-    RETURNING id, updatedAt;
+  title = EXCLUDED.title,
+  speaker_id = EXCLUDED.speaker_id,
+  starts_at = EXCLUDED.starts_at
+  RETURNING id, updatedAt;
 ```
 
 ---
@@ -1201,8 +1196,8 @@ magic-move
 
 ```kotlin
 val removed: Iterable<TalkPreview> =
-    Talks.deleteReturning { Talks.id eq talkId }
-        .map { it.toTalkPreview() }
+  Talks.deleteReturning { Talks.id eq talkId }
+    .map { it.toTalkPreview() }
 ```
 
 ---
@@ -1211,10 +1206,10 @@ val removed: Iterable<TalkPreview> =
 
 ```kotlin
 transaction(database) {
-    addLogger(StdOutSqlLogger)
-    Talks.select(Talks.title)
-        .where { Talks.isPublished eq true }
-        .toList()
+  addLogger(StdOutSqlLogger)
+  Talks.select(Talks.title)
+    .where { Talks.isPublished eq true }
+    .toList()
 }
 ```
 

@@ -21,6 +21,7 @@ object Talks : UuidTable("talks") {
 
 class Talk(id: EntityID<Uuid>) : UuidEntity(id) {
   companion object : UuidEntityClass<Talk>(Talks)
+
   var title by Talks.title
 }
 ```
@@ -144,12 +145,12 @@ val talks = Talk.wrapRows(query)
 
 # Choose the access style for the job
 
-| Prefer SQL DSL | Consider DAO |
-| --- | --- |
-| Projections and DTO responses | Record-oriented CRUD |
-| Reporting, aggregates, window functions | Navigable relationships |
-| Complex joins, aliases, subqueries | Transaction-scoped entity cache |
-| Explicit SQL-shaped query control | Carefully managed lazy/eager loading |
+| Prefer SQL DSL                          | Consider DAO                         |
+|-----------------------------------------|--------------------------------------|
+| Projections and DTO responses           | Record-oriented CRUD                 |
+| Reporting, aggregates, window functions | Navigable relationships              |
+| Complex joins, aliases, subqueries      | Transaction-scoped entity cache      |
+| Explicit SQL-shaped query control       | Carefully managed lazy/eager loading |
 
 > Neither API replaces relational design. Choose the one that makes the operation’s shape and lifecycle clearest.
 
@@ -162,4 +163,5 @@ val talks = Talk.wrapRows(query)
 - `transaction + cache` → lifecycle context
 - `DTO boundary` → ordinary application data
 
-> Model relationally, migrate deliberately, compose SQL visibly, and use DAO only when entity-oriented access earns its lifecycle cost.
+> Model relationally, migrate deliberately, compose SQL visibly, and use DAO only when entity-oriented access earns its
+> lifecycle cost.

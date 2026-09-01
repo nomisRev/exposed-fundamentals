@@ -36,9 +36,11 @@ Talks.leftJoin(Bookmarks)
   .groupBy(Talks.id, Talks.title)
   .orderBy(bookmarkCount, SortOrder.DESC)
 ```
+
 ```sql
 SELECT talks.title, COUNT(bookmarks.talk_id) bookmark_count
-FROM talks LEFT JOIN bookmarks ON talks.id = bookmarks.talk_id
+FROM talks
+       LEFT JOIN bookmarks ON talks.id = bookmarks.talk_id
 GROUP BY talks.id, talks.title
 ORDER BY bookmark_count DESC
 ```
@@ -59,9 +61,11 @@ Talks.leftJoin(Bookmarks)
 
 fun ResultRow.bookmarkCount(): Int = this[bookmarkCount]
 ```
+
 ```sql
 SELECT talks.title, COUNT(bookmarks.talk_id) bookmark_count
-FROM talks LEFT JOIN bookmarks ON talks.id = bookmarks.talk_id
+FROM talks
+       LEFT JOIN bookmarks ON talks.id = bookmarks.talk_id
 GROUP BY talks.id, talks.title
 ORDER BY bookmark_count DESC
 ```
@@ -83,9 +87,11 @@ Talks.leftJoin(Bookmarks)
   .having { bookmarkCount greaterEq 10 }
   .orderBy(bookmarkCount, SortOrder.DESC)
 ```
+
 ```sql
 SELECT talks.title, COUNT(bookmarks.talk_id) bookmark_count
-FROM talks LEFT JOIN bookmarks ON talks.id = bookmarks.talk_id
+FROM talks
+       LEFT JOIN bookmarks ON talks.id = bookmarks.talk_id
 GROUP BY talks.id, talks.title
 HAVING COUNT(bookmarks.talk_id) >= 10
 ORDER BY bookmark_count DESC
@@ -97,25 +103,25 @@ ORDER BY bookmark_count DESC
 
 > `where` filters input rows → `groupBy` forms groups → `having` filters groups.
 
-| Expression | Question | Example |
-| --- | --- | --- |
-| `count()` | How many? | Bookmarks per talk |
-| `sum()` | What total? | Ticket revenue |
-| `average()` | What typical value? | Session rating |
-| `having { ... }` | Which groups? | Talks with 10+ bookmarks |
+| Expression       | Question            | Example                  |
+|------------------|---------------------|--------------------------|
+| `count()`        | How many?           | Bookmarks per talk       |
+| `sum()`          | What total?         | Ticket revenue           |
+| `average()`      | What typical value? | Session rating           |
+| `having { ... }` | Which groups?       | Talks with 10+ bookmarks |
 
 ---
 
 # A query can become a value in another query
 
 ```kotlin
-fun talkIdsForTag(tag: String): Query = 
-    TalkTags.innerJoin(Tags)
-        .select(TalkTags.talkId)
-        .where { Tags.label eq tag }
+fun talkIdsForTag(tag: String): Query =
+  TalkTags.innerJoin(Tags)
+    .select(TalkTags.talkId)
+    .where { Tags.label eq tag }
 
 Talks.select(Talks.title)
-    .where { Talks.id inSubQuery talkIdsForTag("kotlin") }
+  .where { Talks.id inSubQuery talkIdsForTag("kotlin") }
 ```
 
 - `inSubQuery` compares a value to query rows.
@@ -181,4 +187,5 @@ Select `TotalCount`, then read `row[TotalCount]`. Custom emitted SQL is your dia
 - `subquery` / `Op<Boolean>` — typed API filters
 - `Function<T>` — carefully extend SQL when built-ins are insufficient
 
-> **Exercise:** List upcoming talks with speaker, host, tag count, bookmark count, optional tag filter, and bookmark-count ordering.
+> **Exercise:** List upcoming talks with speaker, host, tag count, bookmark count, optional tag filter, and
+> bookmark-count ordering.

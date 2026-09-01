@@ -12,8 +12,8 @@ kodee: wave
 
 # Two models, one production schema
 
-| Kotlin + Exposed | Flyway + PostgreSQL |
-| --- | --- |
+| Kotlin + Exposed                                         | Flyway + PostgreSQL                        |
+|----------------------------------------------------------|--------------------------------------------|
 | Describes types, columns, keys, constraints, and queries | Evolves reviewed, versioned schema changes |
 
 > **Exposed tables model the database.** Flyway owns production database evolution.
@@ -39,9 +39,10 @@ kodee: wave
 # Migration files own the DDL
 
 ```sql
-CREATE TABLE profiles (
-  id UUID PRIMARY KEY,
-  name TEXT NOT NULL,
+CREATE TABLE profiles
+(
+  id    UUID PRIMARY KEY,
+  name  TEXT NOT NULL,
   email TEXT NOT NULL UNIQUE
 );
 ```
@@ -66,7 +67,7 @@ Kotlin table model → compare / generate / validate → reviewed Flyway SQL →
 
 ```kotlin gradle
 plugins {
-    id("org.jetbrains.exposed.plugin") version "1.4.0"
+  id("org.jetbrains.exposed.plugin") version "1.4.0"
 }
 ```
 
@@ -78,17 +79,16 @@ magic-move
 
 ```kotlin gradle
 plugins {
-    id("org.jetbrains.exposed.plugin") version "1.4.0"
+  id("org.jetbrains.exposed.plugin") version "1.4.0"
 }
 
 exposed {
-    migrations {
-        // Optional configuration naming, fileDirectory, etc.
-        // By default, follows Flyway standards
-    }
+  migrations {
+    // Optional configuration naming, fileDirectory, etc.
+    // By default, follows Flyway standards
+  }
 }
 ```
-
 
 <v-clicks at="1">
 <DrawnAnnotation text="generateMigrations" label="Writes migration files to src/main/resources/db/migration" at="1" />
@@ -96,7 +96,6 @@ exposed {
 ```bash
 ./gradlew generateMigrations
 ```
-
 
 </v-clicks>
 
@@ -106,20 +105,21 @@ exposed {
 
 ```kotlin gradle
 buildscript {
-    repositories { mavenCentral() }
-    dependencies { classpath("org.flywaydb:flyway-database-postgresql:13.3.0") }
+  repositories { mavenCentral() }
+  dependencies { classpath("org.flywaydb:flyway-database-postgresql:13.3.0") }
 }
 
-plugins {  alias(libs.plugins.flyway) }
+plugins { alias(libs.plugins.flyway) }
 
 flyway {
-    url = "jdbc:postgresql://localhost:5432/postgres"
-    user = "postgres"
-    password = ""
-    baselineOnMigrate = true
-    validateOnMigrate = true
+  url = "jdbc:postgresql://localhost:5432/postgres"
+  user = "postgres"
+  password = ""
+  baselineOnMigrate = true
+  validateOnMigrate = true
 }
 ```
+
 ```bash
 ./gradlew flywayMigrate
 ```
@@ -132,25 +132,26 @@ flyway {
 
 ```kotlin
 fun migrate(dataSource: HikariDataSource): MigrateResult =
-    Flyway.configure()
-        .dataSource(dataSource)
-        .baselineOnMigrate(true)
-        .validateOnMigrate(true)
-        .load()
-        .migrate()
+  Flyway.configure()
+    .dataSource(dataSource)
+    .baselineOnMigrate(true)
+    .validateOnMigrate(true)
+    .load()
+    .migrate()
 ```
 
 ---
 
 # Each artifact has a different job
 
-| Artifact | Authority |
-| --- | --- |
-| Flyway history | Which reviewed changes run, and in what order |
-| PostgreSQL schema | What the database enforces now |
-| Exposed tables | How Kotlin maps to and queries that schema |
+| Artifact          | Authority                                     |
+|-------------------|-----------------------------------------------|
+| Flyway history    | Which reviewed changes run, and in what order |
+| PostgreSQL schema | What the database enforces now                |
+| Exposed tables    | How Kotlin maps to and queries that schema    |
 
-Keep the definitions aligned and validate drift. Calling all three “the single source of truth” hides their different responsibilities.
+Keep the definitions aligned and validate drift. Calling all three “the single source of truth” hides their different
+responsibilities.
 
 ---
 
@@ -164,7 +165,9 @@ object Bookmarks : Table("bookmarks") {
 
   override val primaryKey = PrimaryKey(personId, talkId)
 
-  init { index("bookmarks_talk_idx", false, talkId) }
+  init {
+    index("bookmarks_talk_idx", false, talkId)
+  }
 }
 ```
 
@@ -174,13 +177,14 @@ Migration SQL remains the production DDL. Mirror the constraints that Kotlin que
 
 # Generation has three separate questions
 
-| Question | Application-side answer | Database-side answer |
-| --- | --- | --- |
-| Who computes the value? | Kotlin code | SQL function, default, sequence, or trigger |
-| When can Kotlin know it? | Before the insert | From `RETURNING` or a later read |
-| Who applies it consistently? | Every writing application | Every writer that omits the column |
+| Question                     | Application-side answer   | Database-side answer                        |
+|------------------------------|---------------------------|---------------------------------------------|
+| Who computes the value?      | Kotlin code               | SQL function, default, sequence, or trigger |
+| When can Kotlin know it?     | Before the insert         | From `RETURNING` or a later read            |
+| Who applies it consistently? | Every writing application | Every writer that omits the column          |
 
-> “Generated by the database” is not automatically better, and “generated by the application” is not automatically simpler. Choose per value and system boundary.
+> “Generated by the database” is not automatically better, and “generated by the application” is not automatically
+> simpler. Choose per value and system boundary.
 
 ---
 
@@ -255,12 +259,12 @@ object Talks : UuidTable(
 
 # Compare ID strategies
 
-| Strategy | Kotlin knows ID | Coordination / coupling | Cost |
-| --- | --- | --- | --- |
-| DB sequence | After insert | Central sequence | Compact; round-trip |
-| App UUID v4 | Before insert | None | Random; 128-bit |
-| App UUID v7 | Before insert | UUID algorithm | Ordered; leaks time |
-| DB `uuidv7()` | After insert | PostgreSQL / extension | Default for all writers |
+| Strategy      | Kotlin knows ID | Coordination / coupling | Cost                    |
+|---------------|-----------------|-------------------------|-------------------------|
+| DB sequence   | After insert    | Central sequence        | Compact; round-trip     |
+| App UUID v4   | Before insert   | None                    | Random; 128-bit         |
+| App UUID v7   | Before insert   | UUID algorithm          | Ordered; leaks time     |
+| DB `uuidv7()` | After insert    | PostgreSQL / extension  | Default for all writers |
 
 Consider offline creation, multiple writers, portability, key size, and when the ID is needed.
 
@@ -269,8 +273,9 @@ Consider offline creation, multiple writers, portability, key size, and when the
 # PostgreSQL 18 can provide the default
 
 ```sql
-CREATE TABLE talks (
-  id UUID PRIMARY KEY DEFAULT uuidv7(),
+CREATE TABLE talks
+(
+  id    UUID PRIMARY KEY DEFAULT uuidv7(),
   title TEXT NOT NULL
 );
 ```
@@ -323,10 +328,11 @@ val created = Talks.insertReturning(
 
 # Timestamps have the same trade-off
 
-| Application-managed | Database-managed |
-| --- | --- |
+| Application-managed               | Database-managed                         |
+|-----------------------------------|------------------------------------------|
 | Use an explicit, injectable clock | Use `CURRENT_TIMESTAMP` for every writer |
-| Know the value before writing | May need `RETURNING` for the final value |
-| Every write path applies the rule | Defaults/triggers cover other writers |
+| Know the value before writing     | May need `RETURNING` for the final value |
+| Every write path applies the rule | Defaults/triggers cover other writers    |
 
-Choose one owner per rule. If a trigger owns `updated_at`, model that behaviour in Exposed and retrieve the final value when needed.
+Choose one owner per rule. If a trigger owns `updated_at`, model that behaviour in Exposed and retrieve the final value
+when needed.

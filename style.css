@@ -4,6 +4,7 @@
   --fundamentals-pink: #eb55e6;
   --fundamentals-ink: #1f2023;
   --drawn-annotation-color: var(--fundamentals-purple, #7954f6);
+  --code-window-columns: 80;
 }
 
 html.dark {

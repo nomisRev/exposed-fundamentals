@@ -19,6 +19,7 @@
 - **Compose** → use typed SQL DSL expressions for the query shape
 - **Choose** → use DAO when its entity lifecycle fits the operation
 
-> **Exposed is Kotlin for relational work.** Keep SQL visible, make ownership explicit, and map persistence data deliberately at the application boundary.
+> **Exposed is Kotlin for relational work.** Keep SQL visible, make ownership explicit, and map persistence data
+> deliberately at the application boundary.
 
 ## Thank you · Questions · Build the upcoming-talks query
