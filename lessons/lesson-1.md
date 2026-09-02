@@ -76,6 +76,25 @@ kodee: welcome
 - **Integrations** -- `exposed-java-time`, `exposed-json`, `exposed-money`, ...
 
 ---
+layout: full
+class: database-landscape-slide
+kodee: false
+---
+
+<div class="database-landscape" role="img" aria-label="What is Exposed? Exposed connects Kotlin applications to PostgreSQL, Microsoft SQL Server, MySQL, Amazon Redshift, MariaDB, Oracle, SQLite, and H2">
+  <h1 class="database-landscape-title">What is Exposed?</h1>
+  <img class="database-landscape-exposed" src="/Exposed icon.svg" alt="" aria-hidden="true">
+  <img class="database-logo database-logo-postgresql" src="/postgresql.svg" alt="PostgreSQL">
+  <img class="database-logo database-logo-microsoft-sql-server" src="/microsoft-sql-server.svg" alt="Microsoft SQL Server">
+  <img class="database-logo database-logo-mysql" src="/mysql.svg" alt="MySQL">
+  <img class="database-logo database-logo-redshift" src="/amazon-redshift.svg" alt="Amazon Redshift">
+  <img class="database-logo database-logo-mariadb" src="/mariadb.svg" alt="MariaDB">
+  <img class="database-logo database-logo-oracle" src="/oracle.svg" alt="Oracle">
+  <img class="database-logo database-logo-sqlite" src="/sqlite.svg" alt="SQLite">
+  <img class="database-logo database-logo-h2" src="/h2.svg" alt="H2">
+</div>
+
+---
 
 # One table foundation, two access styles
 
@@ -87,7 +106,7 @@ kodee: welcome
 
 # Defining our Tables
 
-<DrawnAnnotation text="Table(&quot;Profile&quot;)" label="Default `tableName =` className - `Table` suffix => Profile"  :geometry="{ label: { x: 0.3972, y: 0.3123 }, connector: { start: { x: 0.3566, y: 0.2303 }, end: { x: 0.3576, y: 0.2737 } } }" />
+<DrawnAnnotation text="Table(&quot;Profile&quot;)" label="Default `tableName =` className - `Table` suffix => Profile" on="0" :geometry="{ label: { x: 0.3972, y: 0.3123 }, connector: { start: { x: 0.3566, y: 0.2303 }, end: { x: 0.3576, y: 0.2737 } } }" />
 
 ```kotlin
 object ProfileTable : Table("Profile")
@@ -99,7 +118,7 @@ magic-move
 
 # Defining our Tables
 
-<DrawnAnnotation text="Table(&quot;profiles&quot;)" label="Follow database conventions"  :geometry="{ label: { x: 0.5228, y: 0.3274 } }" />
+<DrawnAnnotation text="Table(&quot;profiles&quot;)" label="PostgreSQL conventions are plural lower snake_case. Automatically folds all unquoted identifiers to lowercase"  :geometry="{ label: { x: 0.5228, y: 0.3274 } }" />
 
 ```kotlin
 object ProfileTable : Table("profiles")
@@ -134,6 +153,7 @@ object ProfileTable : Table("profiles") {
   val id = long("id")
   val primaryKey = PrimaryKey(id)
   val name = varchar("name", 120)
+  val bio = text("bio").nullable()
 }
 ```
 
@@ -150,6 +170,7 @@ object ProfileTable : Table("profiles") {
   val id: Column<EntityID<Long>> = long("id").autoIncrement().entityId()
   val primaryKey = PrimaryKey(id)
   val name = varchar("name", 120)
+  val bio = text("bio").nullable()
 }
 ```
 
@@ -161,13 +182,14 @@ magic-move
 
 <DrawnAnnotation text="IdTable<Long>" color="var(--drawn-annotation-color)" :sequential="false" />
 <DrawnAnnotation text="override" color="var(--drawn-annotation-color)" :sequential="false" />
-<DrawnAnnotation text="override" occurrence=2 label="Auto-incrementing database identifier as `EntityID`"  color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.3339, y: 0.4825, width: 0.4632 }, connector: { type: 'quadratic', start: { x: 0.1667, y: 0.3249 }, control: { x: 0.1688, y: 0.4006 }, end: { x: 0.1900, y: 0.4527 } } }" />
+<DrawnAnnotation text="override" occurrence=2 label="Enforces auto-incrementing `EntityID` as 'contract' with `IdTable`"  color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.4840, y: 0.4834, width: 0.6791 }, connector: { type: 'quadratic', start: { x: 0.1667, y: 0.3249 }, control: { x: 0.1688, y: 0.4006 }, end: { x: 0.1900, y: 0.4527 } } }" />
 
 ```kotlin
 object ProfileTable : IdTable<Long>("profiles") {
   override val id = long("id").autoIncrement().entityId()
   override val primaryKey = PrimaryKey(id)
   val name = varchar("name", 120)
+  val bio = text("bio").nullable()
 }
 ```
 
@@ -182,6 +204,7 @@ magic-move
 ```kotlin
 object ProfileTable : LongIdTable("profiles") {
   val name = varchar("name", 120)
+  val bio = text("bio").nullable()
 }
 ```
 
@@ -191,11 +214,12 @@ magic-move
 
 # Defining our Tables
 
-<DrawnAnnotation text="reference(&quot;speaker_id&quot;, ProfileTable.id)" label="Referencing a table requires the `EntityID` for the table"  :geometry="{ label: { x: 0.6195, y: 0.6672 }, connector: { start: { x: 0.5503, y: 0.4746 }, end: { x: 0.5909, y: 0.6285 } } }" />
+<DrawnAnnotation text="reference(&quot;speaker_id&quot;, ProfileTable.id)" label="Referencing a 'foreign' table requires the `EntityID` for the referenced `Table`"  :geometry="{ label: { x: 0.6195, y: 0.6672 }, connector: { start: { x: 0.5503, y: 0.4746 }, end: { x: 0.5909, y: 0.6285 } } }" />
 
 ```kotlin
 object ProfileTable : LongIdTable("profiles") {
   val name = varchar("name", 120)
+  val bio = text("bio").nullable()
 }
 
 object TalksTable : LongIdTable("talks") {
@@ -216,6 +240,7 @@ magic-move
 ```kotlin
 object ProfileTable : LongIdTable("profiles") {
   val name = varchar("name", 120)
+  val bio = text("bio").nullable()
 }
 
 object TalksTable : LongIdTable("talks") {
@@ -237,6 +262,7 @@ magic-move
 ```kotlin
 object ProfileTable : LongIdTable("profiles") {
   val name = varchar("name", 120)
+  val bio = text("bio").nullable()
 }
 
 object TalksTable : LongIdTable("talks") {
@@ -268,6 +294,7 @@ object ProfileTable : LongIdTable(
   sequenceName = "profiles_id_seq"
 ) {
   val name = varchar("name", 120)
+  val bio = text("bio").nullable()
 }
 
 object TalksTable : LongIdTable("talks") {
@@ -324,8 +351,9 @@ layout: two-cols-header
 
 # Columns can expose domain types
 
-<DrawnAnnotation text="Column<TalkTitle>" label="Kotlin sees `TalkTitle`"  :geometry="{ label: { x: 0.2937, y: 0.5805 }, connector: { type: 'quadratic', start: { x: 0.3190, y: 0.5356 }, control: { x: 0.3564, y: 0.4959 }, end: { x: 0.3588, y: 0.4276 } } }" />
-<DrawnAnnotation text="varchar(&quot;title&quot;, 200)" label="Database stores `varchar`"  :geometry="{ label: { x: 0.7655, y: 0.4677 }, connector: { type: 'quadratic', start: { x: 0.5568, y: 0.4260 }, control: { x: 0.5736, y: 0.4764 }, end: { x: 0.6392, y: 0.4694 } } }" />
+<DrawnAnnotation text="Column<TalkTitle>" label="Kotlin sees `TalkTitle`" on="0" :geometry="{ label: { x: 0.2937, y: 0.5805 }, connector: { type: 'quadratic', start: { x: 0.3190, y: 0.5356 }, control: { x: 0.3564, y: 0.4959 }, end: { x: 0.3588, y: 0.4276 } } }" />
+<DrawnAnnotation text="varchar(&quot;title&quot;, 200)" label="Database stores `varchar`" on="0" :geometry="{ label: { x: 0.7655, y: 0.4677 }, connector: { type: 'quadratic', start: { x: 0.5568, y: 0.4260 }, control: { x: 0.5736, y: 0.4764 }, end: { x: 0.6392, y: 0.4694 } } }" />
+<DrawnAnnotation text="Column<TalkTitle>" label="Can complicate defining complex `String` expressions" on="1"  :geometry="{ label: { x: 0.5906, y: 0.5520 } }"/>
 
 ```kotlin
 @JvmInline

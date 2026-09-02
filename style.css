@@ -742,3 +742,43 @@ html.dark .stacktrace-link { color: #b9bbc2; }
     letter-spacing: 0.16em;
     text-transform: uppercase;
 }
+
+/* Keynote slide 13: database-dialect collage. Coordinates are scaled from the
+   original 1920 × 1080 canvas to this deck's 1440 × 810 canvas. */
+.slidev-layout.database-landscape-slide {
+  padding: 0;
+  overflow: hidden;
+}
+.database-landscape {
+  position: relative;
+  width: 1440px;
+  height: 810px;
+  overflow: hidden;
+}
+.database-landscape-title,
+.database-landscape-exposed,
+.database-logo {
+  position: absolute;
+  display: block;
+}
+.database-landscape-exposed,
+.database-logo {
+  transform: translateX(44px);
+}
+.database-landscape-title {
+  z-index: 1;
+  left: 64px;
+  top: 48px;
+  margin: 0 !important;
+  font-size: 3.65rem !important;
+  line-height: 1.08;
+}
+.database-landscape-exposed { left: 249px; top: -295.5px; width: 1130.25px; height: 1085.25px; }
+.database-logo-postgresql { left: 147.75px; top: 357px; width: 96px; height: 96px; }
+.database-logo-microsoft-sql-server { left: 215.25px; top: 447px; width: 96px; height: 96px; }
+.database-logo-mysql { left: 298.5px; top: 500.25px; width: 96px; height: 96px; }
+.database-logo-redshift { left: 294px; top: 599.25px; width: 60px; height: 60px; }
+.database-logo-mariadb { left: 372px; top: 594px; width: 96px; height: 96px; }
+.database-logo-oracle { left: 237px; top: 661.5px; width: 116.25px; height: 116.25px; }
+.database-logo-sqlite { left: 372px; top: 686.25px; width: 96px; height: 96px; }
+.database-logo-h2 { left: 453px; top: 677.25px; width: 155.25px; height: 155.25px; }

@@ -84,13 +84,14 @@ CREATE TABLE profiles
 
 # Exposed can assist — it does not deploy
 
+> Generated SQL can include destructive changes.
+>
+> **Review it before it reaches a real database.**
+
+
 ```text
 Kotlin table model → compare / generate → reviewed Flyway SQL → PostgreSQL
 ```
-
-> Generated SQL can include destructive changes.
-> 
-> **Review it before it reaches a real database.**
 
 ---
 
@@ -98,7 +99,7 @@ Kotlin table model → compare / generate → reviewed Flyway SQL → PostgreSQL
 
 ```kotlin gradle
 plugins {
-  id("org.jetbrains.exposed.plugin") version "1.4.0"
+  id("org.jetbrains.exposed.plugin") version "1.5.0"
 }
 ```
 
@@ -110,7 +111,7 @@ magic-move
 
 ```kotlin gradle
 plugins {
-  id("org.jetbrains.exposed.plugin") version "1.4.0"
+  id("org.jetbrains.exposed.plugin") version "1.5.0"
 }
 
 exposed {
@@ -196,103 +197,27 @@ fun migrate(dataSource: HikariDataSource): MigrateResult =
 
 # Exposed supports several default styles
 
+<DrawnAnnotation text="defaultExpression(CurrentTimestamp)" label="CURRENT_TIMESTAMP" on="1"  :geometry="{ label: { x: 0.7102, y: 0.4024 } }"/>
+<DrawnAnnotation text="databaseGenerated" label="Custom SQL i.e. PostgreSQL `TRIGGER`" on="2"  :geometry="{ label: { x: 0.3230, y: 0.6135 }, connector: { start: { x: 0.2020, y: 0.5629 }, end: { x: 0.2378, y: 0.5985 } } }"/>
+<DrawnAnnotation text="databaseGenerated" label="Allows omitting value when inserting" on="3"/>
+
 ```kotlin
-val appCreatedAt = timestamp("app_created_at")
+val appUpdatedAt = timestamp("app_updated_at")
   .clientDefault { Clock.System.now() }
 
-val sqlCreatedAt = timestamp("sql_created_at")
+val sqlUpdatedAt = timestamp("sql_updated_at")
   .defaultExpression(CurrentTimestamp)
 
-val managedCreatedAt = timestamp("managed_created_at")
+val managedUpdatedAt = timestamp("managed_created_at")
   .databaseGenerated()
 ```
 
 ---
 
-# UUID v7 is one useful ID shape
+# Custom Function for default expression
 
-- Time-sortable, with better index locality than random v4
-- Globally unique without coordinating a sequence
-- Can be generated before or during an insert
-- Reveals approximate creation order and time
-- Wider than integer keys and indexes
-
----
-
-# Tables keep the relational model visible
-
-```kotlin
-object ProfileTable : UuidTable("profiles") {
-  val name = varchar("name", 120)
-}
-
-object Talks : UuidTable("talks") {
-  val speakerId = reference("speaker_id", ProfileTable)
-  val hostId = reference("host_id", ProfileTable)
-  val title = varchar("title", 200)
-}
-```
-
-- `UuidTable` is an `IdTable` with a Kotlin `Uuid` key.
-- `reference()` makes foreign keys explicit.
-- `varchar()` keeps type and length in the model.
-
----
-
-# Kotlin UUIDs and Exposed UUID tables
-
-- Kotlin 2.4: `kotlin.uuid.Uuid` is stable.
-- Kotlin 2.4: `Uuid.generateV7()` is experimental (`@ExperimentalUuidApi`).
-
-```kotlin
-object Talks : UuidTable(
-  name = "talks",
-  uuidVersion = UuidVersion.V7,
-) {
-  val title = varchar("title", 200)
-}
-```
-
-> `UuidTable` generates v4 by default; `UuidVersion.V7` opts into application-generated v7.
-
----
-
-# Compare ID strategies
-
-| Strategy      | Kotlin knows ID | Coordination / coupling | Cost                    |
-|---------------|-----------------|-------------------------|-------------------------|
-| DB sequence   | After insert    | Central sequence        | Compact; round-trip     |
-| App UUID v4   | Before insert   | None                    | Random; 128-bit         |
-| App UUID v7   | Before insert   | UUID algorithm          | Ordered; leaks time     |
-| DB `uuidv7()` | After insert    | PostgreSQL / extension  | Default for all writers |
-
-Consider offline creation, multiple writers, portability, key size, and when the ID is needed.
-
----
-
-# PostgreSQL 18 can provide the default
-
-```sql
-CREATE TABLE talks
-(
-  id    UUID PRIMARY KEY DEFAULT uuidv7(),
-  title TEXT NOT NULL
-);
-```
-
-```kotlin
-object Talks : Table("talks") {
-  val id = uuid("id").databaseGenerated()
-  val title = varchar("title", 200)
-  override val primaryKey = PrimaryKey(id)
-}
-```
-
-PostgreSQL 17 and older need an extension or custom function; `uuidv7()` is not portable PostgreSQL syntax.
-
----
-
-# Or Exposed can request a database expression
+<DrawnAnnotation text="defaultExpression(GenerateUuidV7)" label="DEFAULT uuidv7()" />
+<DrawnAnnotation text="q { +&quot;uuidv7()&quot; }" label="Specialised DSL for building custom functions" on="1" />
 
 ```kotlin
 object GenerateUuidV7 : Function<Uuid>(UuidColumnType()) {
@@ -302,37 +227,28 @@ object GenerateUuidV7 : Function<Uuid>(UuidColumnType()) {
 val id = uuid("id").defaultExpression(GenerateUuidV7)
 ```
 
-- PostgreSQL computes the value.
-- Exposed places the expression in its statement.
-- DDL `DEFAULT uuidv7()` also covers other clients that omit `id`.
-
-> Computation location and default ownership are separate choices.
-
 ---
 
 # Read database-generated values deliberately
 
 ```kotlin
 val created = Talks.insertReturning(
-  listOf(Talks.id, Talks.createdAt),
+  listOf(Talks.id, Talks.createdAt, Talks.updatedAt),
 ) {
   it[title] = draft.title
 }.single()
 ```
 
-- `databaseGenerated()` lets an insert omit the column.
-- `insertReturning` retrieves the final value immediately.
-- After a trigger runs, use `updateReturning` where supported or re-read.
-
 ---
 
-# Timestamps have the same trade-off
+# All generated values have the same trade-off
+
+> Choose one owner per rule.
+>
+> If a trigger owns `updated_at`, model that behaviour in Exposed and retrieve the final value when needed.
 
 | Application-managed               | Database-managed                         |
 |-----------------------------------|------------------------------------------|
 | Use an explicit, injectable clock | Use `CURRENT_TIMESTAMP` for every writer |
-| Know the value before writing     | May need `RETURNING` for the final value |
+| Know the value before writing     | Need `RETURNING` for the final value     |
 | Every write path applies the rule | Defaults/triggers cover other writers    |
-
-Choose one owner per rule. If a trigger owns `updated_at`, model that behaviour in Exposed and retrieve the final value
-when needed.

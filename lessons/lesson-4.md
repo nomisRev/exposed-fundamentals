@@ -76,8 +76,8 @@ magic-move
 
 # Keep only talks with 10+ bookmarks
 
-<DrawnAnnotation text="having" label="`having` after `groupBy` to filter the aggregate" on="1" :geometry="{ label: { x: 0.2621, y: 0.9141, width: 0.7196 }, connector: { start: { x: 0.0661, y: 0.4606 }, end: { x: 0.0485, y: 0.8983 } } }"/>
-<DrawnAnnotation text="Bookmarks.talkId.count()" occurrence="2" label="PostgreSQL doesn't make SELECT aliases available but doesn't run it twice" on="2" :geometry="{ label: { x: 0.7603, y: 0.2904, width: 0.3836 }, connector: { start: { x: 0.4638, y: 0.4611 }, end: { x: 0.7692, y: 0.3351 } } }"/>
+<DrawnAnnotation text="having" label="`having` after `groupBy` to filter the aggregate" on="0" :geometry="{ label: { x: 0.2621, y: 0.9141, width: 0.7196 }, connector: { start: { x: 0.0661, y: 0.4606 }, end: { x: 0.0485, y: 0.8983 } } }"/>
+<DrawnAnnotation text="Bookmarks.talkId.count()" occurrence="2" label="PostgreSQL doesn't make SELECT aliases available but doesn't run it twice" on="1" :geometry="{ label: { x: 0.7603, y: 0.2904, width: 0.3836 }, connector: { start: { x: 0.4638, y: 0.4611 }, end: { x: 0.7692, y: 0.3351 } } }"/>
 
 ```kotlin
 val bookmarkCount = Bookmarks.talkId.count().alias("bookmark_count")
@@ -102,7 +102,7 @@ ORDER BY bookmark_count DESC
 
 # Aggregates answer questions across rows
 
-> `where` filters input rows → `groupBy` forms groups → `having` filters groups.
+> `where` filters → `groupBy` groups → `having` filters groups
 
 | Expression       | Question            | Example                  |
 |------------------|---------------------|--------------------------|
@@ -187,18 +187,36 @@ WHERE EXISTS (
 
 # Expressions can call SQL functions
 
-<DrawnAnnotation text="Talks.title.lowerCase()" label="Reference expressions in custom functions, works with aliases" on="0" />
-<DrawnAnnotation text="unaccent" label="Requires `exec(&quot;CREATE EXTENSION IF NOT EXISTS unaccent;&quot;)`" on="1" :geometry="{ label: { x: 0.5886, y: 0.5310 }, connector: { start: { x: 0.5877, y: 0.3738 }, end: { x: 0.5873, y: 0.4986 } } }"/>
+<DrawnAnnotation text="ProfileTable.name.trim().lowerCase()" label="Create complex expressions by composing functions" on="0" />
+
+```kotlin
+val normalizedName = ProfileTable.name.trim().lowerCase()
+  .alias("normalized_name")
+```
+
+---
+
+# Expressions can call SQL functions
+
+<DrawnAnnotation text="Expression<T>.unaccent()" on="0"  :geometry="{ label: { x: 0.6858, y: 0.2590 }, connector: { start: { x: 0.5382, y: 0.5926 }, end: { x: 0.6131, y: 0.5261 } } }"/>
+<DrawnAnnotation text=".unaccent()" occurrence="2" on="0" label="Create custom SQL functions with elegant syntax"/>
+<DrawnAnnotation text="&quot;unaccent&quot;" label="`exec(&quot;CREATE EXTENSION IF NOT EXISTS unaccent;&quot;)`" on="1"  :geometry="{ label: { x: 0.7005, y: 0.4401, width: 0.6166 }, connector: { start: { x: 0.4267, y: 0.4145 }, end: { x: 0.4443, y: 0.4249 } } }"/>
+
 
 ```kotlin
 val normalizedName = ProfileTable.name.trim().lowerCase()
   .alias("normalized_name")
 
-val normalizedTitle = CustomStringFunction("unaccent", Talks.title.lowerCase())
+fun <T : String?>  Expression<T>.unaccent() =
+  CustomStringFunction("unaccent", this.lowerCase())
+
+val normalizedTitle = Talks.title.lowerCase().unaccent()
   .alias("normalized_title")
 ```
 
 ---
+
+# Expressions can call SQL functions
 
 <DrawnAnnotation text="normalizedName, normalizedTitle" label="Reference them in select"  :geometry="{ label: { x: 0.7094, y: 0.4752 } }"/>
 <DrawnAnnotation text="LOWER(TRIM(profiles.&quot;name&quot;)) normalized_name" />
@@ -206,11 +224,9 @@ val normalizedTitle = CustomStringFunction("unaccent", Talks.title.lowerCase())
 
 
 ```kotlin
-val normalizedName = ProfileTable.name.trim().lowerCase()
-  .alias("normalized_name")
+val normalizedName = ProfileTable.name.trim().lowerCase().alias("normalized_name")
 
-val normalizedTitle = CustomStringFunction("unaccent", Talks.title.lowerCase())
-  .alias("normalized_title")
+val normalizedTitle = Talks.title.lowerCase().unaccent().alias("normalized_title")
 
 Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
   .select(normalizedName, normalizedTitle)
@@ -227,8 +243,10 @@ ORDER BY normalized_title ASC
 
 ---
 
+# Expressions can call SQL functions
+
 <DrawnAnnotation text="normalizedName" occurrence="3" /> 
-<DrawnAnnotation text="normalizedTitle" occurrence="4" label="Reference them in the ResultRow"  :geometry="{ label: { x: 0.7231, y: 0.3131 } }"/> 
+<DrawnAnnotation text="normalizedTitle" occurrence="4" label="Reference them in the ResultRow"  :geometry="{ label: { x: 0.7251, y: 0.3820 } }"/> 
 
 ```kotlin
 Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
@@ -270,7 +288,7 @@ private object TotalCount : ExpressionWithColumnType<Long>() {
 ---
 
 <DrawnAnnotation text="TotalCount" />
-<DrawnAnnotation text="row[TotalCount]" label="Returns `Long` due to `ExpressionWithColumnType<Long>`"  :geometry="{ label: { x: 0.6709, y: 0.4581, width: 0.4627 }, connector: { start: { x: 0.4383, y: 0.4221 }, end: { x: 0.5534, y: 0.4451 } } }"/>
+<DrawnAnnotation text="row[TotalCount]" label="Returns `Long` through `ExpressionWithColumnType<Long>`"  :geometry="{ label: { x: 0.6709, y: 0.4581, width: 0.4627 }, connector: { start: { x: 0.4383, y: 0.4221 }, end: { x: 0.5534, y: 0.4451 } } }"/>
 
 ```kotlin
 Talks.select(Talks.id, Talks.title, TotalCount)

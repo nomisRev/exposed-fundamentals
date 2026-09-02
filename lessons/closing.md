@@ -22,4 +22,4 @@
 > **Exposed is Kotlin for relational work.** Keep SQL visible, make ownership explicit, and map persistence data
 > deliberately at the application boundary.
 
-## Thank you · Questions · Build the upcoming-talks query
+## Thank you · Questions 

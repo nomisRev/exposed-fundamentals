@@ -174,8 +174,9 @@ OFFSET 30
 
 # SQL-shaped Kotlin
 
-<DrawnAnnotation text="innerJoin" color="var(--drawn-annotation-color)" :sequential="false" />
-<DrawnAnnotation text="INNER JOIN" label="`rightJoin leftJoin fullJoin crossJoin`" color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.2159, y: 0.5098, width: 0.1646 }, connector: { type: 'quadratic', start: { x: 0.1131, y: 0.3743 }, control: { x: 0.1207, y: 0.4586 }, end: { x: 0.1570, y: 0.5017 } } }" />
+<DrawnAnnotation text="innerJoin" color="var(--drawn-annotation-color)" on="0" />
+<DrawnAnnotation text="INNER JOIN" label="`rightJoin leftJoin fullJoin crossJoin`" color="var(--drawn-annotation-color)" on="0" :geometry="{ label: { x: 0.2159, y: 0.5098, width: 0.1646 }, connector: { type: 'quadratic', start: { x: 0.1131, y: 0.3743 }, control: { x: 0.1207, y: 0.4586 }, end: { x: 0.1570, y: 0.5017 } } }" />
+<DrawnAnnotation text="{ Talks.speakerId eq ProfileTable.id }" on="1" label="Can be omitted **if** `Talks` only has 1 `reference` to `ProfileTable` but prefer being explicit"  :geometry="{ label: { x: 0.6802, y: 0.5054, width: 0.7271 }, connector: { start: { x: 0.7048, y: 0.2301 }, end: { x: 0.7048, y: 0.4512 } } }"/>
 
 ```kotlin
 Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
@@ -469,6 +470,8 @@ magic-move
 ---
 
 # Accessing the data
+
+<DrawnAnnotation text="this[ProfileTable.avatarUrl]" label="Access all 'select' columns from our join by referencing multiple tables" />
 
 ```kotlin
 operator fun <A> ResultRow.get(key: Column<A>): A = TODO("Exposed internals")
@@ -983,6 +986,8 @@ RETURNING id, createdAt;
 
 # Insert collections with `batchInsert`
 
+<DrawnAnnotation text="ResultRow::toTalkWithoutSpeaker" label="Batch insert while returning all inserted data" />
+
 ```kotlin
 context(_: Transaction)
 fun insertBatch(newTalk: List<NewTalk>) =
@@ -999,6 +1004,8 @@ magic-move
 
 # Insert collections with `batchInsert`
 
+<DrawnAnnotation text="shouldReturnGeneratedValues = false" label="Reduce overhead of returning `ResultRow` from batch"  :geometry="{ label: { x: 0.6557, y: 0.5081 }, connector: { start: { x: 0.5850, y: 0.3285 }, end: { x: 0.6164, y: 0.4801 } } }"/>
+
 ```kotlin
 context(_: Transaction)
 fun insertBatch(newTalk: List<NewTalk>) {
@@ -1014,7 +1021,7 @@ fun insertBatch(newTalk: List<NewTalk>) {
 
 # Update states its scope
 
-<DrawnAnnotation text="{ Talks.id eq talkId }" label="Without a precise predicate can affect many rows."  :geometry="{ label: { x: 0.5373, y: 0.4937, width: 0.4722 }, connector: { type: 'quadratic', start: { x: 0.3050, y: 0.2788 }, control: { x: 0.3011, y: 0.3777 }, end: { x: 0.3173, y: 0.4632 } } }" />
+<DrawnAnnotation text="{ Talks.id eq talkId }" label="Without a precise predicate can affect many rows"  :geometry="{ label: { x: 0.5373, y: 0.4937, width: 0.4722 }, connector: { type: 'quadratic', start: { x: 0.3050, y: 0.2788 }, control: { x: 0.3011, y: 0.3777 }, end: { x: 0.3173, y: 0.4632 } } }" />
 
 ```kotlin
 fun update(talkId: Long, status: TalkStatus) {
@@ -1081,6 +1088,9 @@ fun update(talkId: Long, status: TalkStatus): TalkPreview? =
 
 # Upsert states the conflict key
 
+<DrawnAnnotation text="ON CONFLICT DO" label="Primary keys, and unique fields"  :geometry="{ label: { x: 0.5226, y: 0.6686 }, connector: { start: { x: 0.2142, y: 0.6264 }, end: { x: 0.3758, y: 0.6684 } } }"/>
+<DrawnAnnotation text="UPDATE SET" />
+
 ```kotlin
 Talks.upsert {
   it[Talks.slug] = slug
@@ -1134,6 +1144,9 @@ magic-move
 
 # Upsert states the conflict key
 
+<DrawnAnnotation text="Returning" />
+<DrawnAnnotation text="RETURNING *" />
+
 ```kotlin
 Talks.upsertReturning(Talks.slug) {
   it[Talks.slug] = slug
@@ -1160,6 +1173,10 @@ magic-move
 
 # Upsert states the conflict key
 
+<DrawnAnnotation text="Returning" />
+<DrawnAnnotation text="[Talks.id, Talks.updatedAt]" />
+<DrawnAnnotation text="RETURNING id, updatedAt" />
+
 ```kotlin
 Talks.upsertReturning(Talks.slug, returning = [Talks.id, Talks.updatedAt]) {
   it[Talks.slug] = slug
@@ -1184,7 +1201,7 @@ UPDATE SET
 
 # Delete states its scope
 
-<DrawnAnnotation text="{ Talks.id eq talkId }" label="A broad predicate might delete too many rows." on="0" color="red"  :geometry="{ label: { x: 0.5875, y: 0.2815, width: 0.7182 } }"/>
+<DrawnAnnotation text="{ Talks.id eq talkId }" label="Without a precise predicate can affect many rows" on="0" color="red"  :geometry="{ label: { x: 0.5875, y: 0.2815, width: 0.7182 } }"/>
 <DrawnAnnotation text="removed" label="`deleteWhere` returns the affected row count" on="1" />
 
 ```kotlin

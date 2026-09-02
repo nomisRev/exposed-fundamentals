@@ -1,3 +1,5 @@
+<script setup>
+</script>
 <template>
   <div
     class="architecture-graph"
@@ -23,6 +25,8 @@
       <span>Table</span>
       <i>/</i>
       <span>IdTable</span>
+      <i>/</i>
+      <span>Column<_></span>
     </div>
 
     <div class="graph-card graph-card--api graph-card--dsl">SQL DSL</div>
