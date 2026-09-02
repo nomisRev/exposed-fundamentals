@@ -72,7 +72,7 @@ kodee: welcome
 - **Type-safe SQL DSL** — `exposed-core`
 - **Optional DAO API** — `exposed-dao`
 - **JDBC or R2DBC** — `exposed-jdbc` or `exposed-r2dbc`
-- **Spring starters** — `exposed-spring-boot-starter`, `spring-transaction`
+- **Spring starters** — `exposed-spring-boot4-starter`, `spring-transaction`
 - **Integrations** -- `exposed-java-time`, `exposed-json`, `exposed-money`, ...
 
 ---
@@ -146,7 +146,8 @@ magic-move
 
 # Defining our Tables
 
-<DrawnAnnotation text="val name" label="Create properties to match the shape of table"  :geometry="{ label: { x: 0.3608, y: 0.4888 }, connector: { start: { x: 0.1546, y: 0.3749 }, end: { x: 0.1727, y: 0.4624 } } }" />
+<DrawnAnnotation text="val name" />
+<DrawnAnnotation text="val bio" label="Create properties to match the shape of table"  />
 
 ```kotlin
 object ProfileTable : Table("profiles") {
@@ -182,7 +183,7 @@ magic-move
 
 <DrawnAnnotation text="IdTable<Long>" color="var(--drawn-annotation-color)" :sequential="false" />
 <DrawnAnnotation text="override" color="var(--drawn-annotation-color)" :sequential="false" />
-<DrawnAnnotation text="override" occurrence=2 label="Enforces auto-incrementing `EntityID` as 'contract' with `IdTable`"  color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.4840, y: 0.4834, width: 0.6791 }, connector: { type: 'quadratic', start: { x: 0.1667, y: 0.3249 }, control: { x: 0.1688, y: 0.4006 }, end: { x: 0.1900, y: 0.4527 } } }" />
+<DrawnAnnotation text="override" occurrence=2 label="Enforces auto-incrementing `EntityID` as 'contract' with `IdTable`"  color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.4853, y: 0.5033, width: 0.6791 }, connector: { type: 'quadratic', start: { x: 0.1667, y: 0.3249 }, control: { x: 0.1688, y: 0.4006 }, end: { x: 0.1900, y: 0.4527 } } }" />
 
 ```kotlin
 object ProfileTable : IdTable<Long>("profiles") {
@@ -214,7 +215,7 @@ magic-move
 
 # Defining our Tables
 
-<DrawnAnnotation text="reference(&quot;speaker_id&quot;, ProfileTable.id)" label="Referencing a 'foreign' table requires the `EntityID` for the referenced `Table`"  :geometry="{ label: { x: 0.6195, y: 0.6672 }, connector: { start: { x: 0.5503, y: 0.4746 }, end: { x: 0.5909, y: 0.6285 } } }" />
+<DrawnAnnotation text="reference(&quot;speaker_id&quot;, ProfileTable.id)" label="Referencing a 'foreign' table requires the `EntityID` for the referenced `Table`"  :geometry="{ label: { x: 0.6192, y: 0.7158 }, connector: { start: { x: 0.5496, y: 0.5208 }, end: { x: 0.5902, y: 0.6747 } } }" />
 
 ```kotlin
 object ProfileTable : LongIdTable("profiles") {
@@ -235,7 +236,7 @@ magic-move
 
 # Defining our Tables
 
-<DrawnAnnotation text="ProfileTable" occurrence=2 label="`(Long)IdTable` has specialised syntax for referencing, joins, DAO, and more"  :geometry="{ label: { x: 0.5608, y: 0.6561 } }" />
+<DrawnAnnotation text="ProfileTable" occurrence=2 label="`(Long)IdTable` has specialised syntax for referencing, joins, DAO, and more"  :geometry="{ label: { x: 0.5613, y: 0.6980 } }" />
 
 ```kotlin
 object ProfileTable : LongIdTable("profiles") {
@@ -257,7 +258,7 @@ magic-move
 # Defining our Tables
 
 <DrawnAnnotation text="ReferenceOption" color="var(--drawn-annotation-color)" :sequential="false" />
-<DrawnAnnotation text="ReferenceOption" label="`CASCADE, SET_NULL, RESTRICT, NO_ACTION, SET_DEFAULT;`" occurrence=2  color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.6232, y: 0.7100, width: 0.1234 }, connector: { type: 'quadratic', start: { x: 0.3924, y: 0.6624 }, control: { x: 0.4731, y: 0.7118 }, end: { x: 0.5544, y: 0.7057 } } }" />
+<DrawnAnnotation text="ReferenceOption" label="`CASCADE, SET_NULL, RESTRICT, NO_ACTION, SET_DEFAULT;`" occurrence=2  color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.6232, y: 0.7100, width: 0.1234 }, connector: { type: 'quadratic', start: { x: 0.3931, y: 0.6974 }, control: { x: 0.4738, y: 0.7468 }, end: { x: 0.5551, y: 0.7407 } } }" />
 
 ```kotlin
 object ProfileTable : LongIdTable("profiles") {
@@ -339,8 +340,9 @@ layout: two-cols-header
 
 # `exposed-core` Kotlin types
 
-| `char()` / `char(length)`     | `Char`             |
+| `char()`                      | `Char`             |
 |-------------------------------|--------------------|
+| `char(length)`                | `String`           |
 | `varchar()`                   | `String`           |
 | `text()`                      | `String`           |
 | `binary()` / `binary(length)` | `ByteArray`        |
@@ -419,6 +421,12 @@ object Talks : Table("talks") {
 
 # `exposed-json`
 
+<DrawnAnnotation text="json<T>()" on="0" />
+<DrawnAnnotation text="jsonb<T>()" on="0" />
+
+<DrawnAnnotation text="json<T>(serialize, deserialize)" on="1" />
+<DrawnAnnotation text="jsonb<T>(serialize, deserialize)" on="1" />
+
 | `json<T>()` / `json<T>(serialize, deserialize)`   | `T` |
 |---------------------------------------------------|-----|
 | `jsonb<T>()` / `jsonb<T>(serialize, deserialize)` | `T` |
@@ -426,7 +434,7 @@ object Talks : Table("talks") {
 <div class="code-swap">
 <div v-click.hide="1">
 
-<DrawnAnnotation text="@Serializable" label="Works based on kotlinx.serialization" until="1" :geometry="{ label: { x: 0.6945, y: 0.4483 }, connector: { type: 'quadratic', start: { x: 0.1983, y: 0.4161 }, control: { x: 0.3895, y: 0.4026 }, end: { x: 0.5163, y: 0.4484 } } }" />
+<DrawnAnnotation text="@Serializable" label="Works based on kotlinx.serialization" :geometry="{ label: { x: 0.6945, y: 0.4483 }, connector: { type: 'quadratic', start: { x: 0.1983, y: 0.4161 }, control: { x: 0.3895, y: 0.4026 }, end: { x: 0.5163, y: 0.4484 } } }" />
 
 ```kotlin
 @Serializable

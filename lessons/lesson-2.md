@@ -7,9 +7,9 @@ kodee: wave
 
 <div class="lesson-number">Topic 2</div>
 
-# Everyday SQL DSL
+# SQL DSL
 
-## Write ordinary queries deliberately
+## Write queries deliberately
 
 ---
 
@@ -289,7 +289,7 @@ interface SizedIterable<out T> : Flow<T> {
 
 # Executing the query
 
-> Effectively Iterable for JDBC and Flow for R2DBC
+> Effectively `Iterable` for JDBC and `Flow` for R2DBC
 
 ```kotlin jdbc
 class Query(...) : Iterable<ResultRow>

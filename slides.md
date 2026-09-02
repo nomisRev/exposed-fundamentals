@@ -28,11 +28,9 @@ kodee: wave
 # Today’s route
 
 1. What is Exposed?
-2. Defining your data
-3. Transactions and the SQL DSL
-4. Relational and advanced queries
-5. Data Access Objects &#40;DAO&#41;
-6. Schema's and migration
+2. SQL DSL
+3. Advanced queries
+4. Migration & database generated values
 
 
 ---
