@@ -731,6 +731,96 @@ html.dark .stacktrace-link { color: #b9bbc2; }
 .dao-recap-path span { margin-top: 0.4rem; color: #665f71; font-size: 0.65rem; line-height: 1.25; }
 .dao-recap-message { margin: auto; font-size: 0.98rem; }
 
+/* Closing: one calm, generous moment after the denser technical material. */
+.slidev-layout.closing-slide {
+  position: relative;
+  isolation: isolate;
+  padding: 0;
+  overflow: hidden;
+}
+.closing-slide::before,
+.closing-slide::after {
+  position: absolute;
+  z-index: -1;
+  border-radius: 999px;
+  content: '';
+  pointer-events: none;
+}
+.closing-slide::before {
+  top: -21rem;
+  right: -14rem;
+  width: 43rem;
+  height: 43rem;
+  background: radial-gradient(circle, rgb(121 84 246 / 15%) 0%, rgb(121 84 246 / 5%) 42%, transparent 70%);
+}
+.closing-slide::after {
+  bottom: -26rem;
+  left: 11%;
+  width: 46rem;
+  height: 46rem;
+  background: radial-gradient(circle, rgb(235 85 230 / 11%) 0%, transparent 69%);
+}
+.closing-content {
+  width: min(100% - 12rem, 64rem);
+  margin: auto;
+  text-align: center;
+}
+.closing-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-bottom: 1.45rem;
+}
+.closing-mark span {
+  display: block;
+  width: 3.7rem;
+  height: 0.2rem;
+  border-radius: 1rem;
+  background: linear-gradient(90deg, var(--fundamentals-purple), var(--fundamentals-pink));
+}
+.closing-mark img { width: 2.55rem; height: 2.55rem; object-fit: contain; }
+.closing-eyebrow {
+  margin: 0 0 0.55rem;
+  color: var(--fundamentals-purple);
+  font-family: var(--slidev-font-mono);
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.closing-slide h1 {
+  margin: 0;
+  color: var(--fundamentals-ink);
+  font-size: 5.55rem !important;
+  font-weight: 750;
+  letter-spacing: -0.065em;
+  line-height: 0.96;
+}
+.closing-slide h1 span {
+  background: linear-gradient(100deg, var(--fundamentals-purple), var(--fundamentals-pink));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+.closing-rule {
+  width: 6.7rem;
+  height: 0.24rem;
+  margin: 2.1rem auto 1.65rem;
+  border-radius: 1rem;
+  background: linear-gradient(90deg, var(--fundamentals-purple), var(--fundamentals-pink));
+}
+.closing-question {
+  margin: 0;
+  color: var(--fundamentals-ink);
+  font-size: 2.15rem;
+  font-weight: 680;
+  letter-spacing: -0.03em;
+}
+.closing-question span { color: var(--fundamentals-pink); }
+html.dark .closing-slide::before { background: radial-gradient(circle, rgb(121 84 246 / 24%) 0%, rgb(121 84 246 / 7%) 42%, transparent 70%); }
+html.dark .closing-slide::after { background: radial-gradient(circle, rgb(235 85 230 / 18%) 0%, transparent 69%); }
+
 @media (prefers-reduced-motion: reduce) {
   .slidev-vclick-target, ::view-transition-old(root), ::view-transition-new(root), ::view-transition-group(root) { transition-duration: 1ms !important; transition-delay: 0ms !important; animation-duration: 1ms !important; }
 }
