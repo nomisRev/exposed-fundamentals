@@ -40,7 +40,7 @@ object Talks : UuidTable(name = "talks", uuidVersion = UuidVersion.V7) {
     val startsAt = timestamp("starts_at")
     val isPublished = bool("is_published").default(false)
     val createdAt = timestamp("created_at").defaultExpression(CurrentTimestamp)
-    val updatedAt = timestamp("updated_at").databaseGenerated()
+    val updatedAt = timestamp("updated_at").defaultExpression(CurrentTimestamp)
 }
 
 @OptIn(ExperimentalUuidApi::class)

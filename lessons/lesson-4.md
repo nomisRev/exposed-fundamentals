@@ -208,7 +208,7 @@ val normalizedName = ProfileTable.name.trim().lowerCase()
   .alias("normalized_name")
 
 fun <T : String?>  Expression<T>.unaccent() =
-  CustomStringFunction("unaccent", this.lowerCase())
+  CustomStringFunction("unaccent", this)
 
 val normalizedTitle = Talks.title.lowerCase().unaccent()
   .alias("normalized_title")

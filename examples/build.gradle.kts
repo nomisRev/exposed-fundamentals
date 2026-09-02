@@ -58,6 +58,7 @@ application {
 
 kotlin {
     jvmToolchain(21)
+  compilerOptions.freeCompilerArgs.add("-Xcollection-literals")
 }
 
 tasks.test {

@@ -496,8 +496,6 @@ object ProfileTable : LongIdTable("profiles") {
 
 # `exposed-money`
 
-> DAO, transport, migration, and Spring modules add no column value mappings.
-
 <DrawnAnnotation text="compositeMoney" color="var(--drawn-annotation-color)" :sequential="false" />
 <DrawnAnnotation text="compositeMoney" occurrence=2 label="`MonetaryAmount` value backed by 2 columns `BigDecimal` & `CurrencyUnit`" color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.4943, y: 0.8808, width: 0.4574 }, connector: { type: 'quadratic', start: { x: 0.2526, y: 0.5876 }, control: { x: 0.4187, y: 0.7023 }, end: { x: 0.4521, y: 0.8144 } } }" />
 
