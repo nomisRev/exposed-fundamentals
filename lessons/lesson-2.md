@@ -1067,6 +1067,7 @@ RETURNING id, createdAt;
 # Insert collections with `batchInsert`
 
 <DrawnAnnotation text="ResultRow::toTalkWithoutSpeaker" label="Batch insert while returning all inserted data"  :geometry="{ label: { x: 0.7393, y: 0.4750 }, connector: { start: { x: 0.4938, y: 0.5017 }, end: { x: 0.5291, y: 0.4829 } } }"/>
+<DrawnAnnotation text="RETURNING *" label="JDBC `RETURN_GENERATED_KEYS`: the PostgreSQL driver appends `RETURNING *` itself" on="0" />
 
 ```kotlin
 context(_: Transaction)
@@ -1078,11 +1079,12 @@ fun insertBatch(newTalk: List<NewTalk>) =
   }.map(ResultRow::toTalkWithoutSpeaker)
 ```
 
-<!--
-`batchInsert` with generated values has no single portable SQL equivalent: its batching and
-key-retrieval strategy depend on the Exposed dialect and JDBC driver. `StdOutSqlLogger` logs
-Exposed statements before the PostgreSQL driver may rewrite a JDBC batch on the wire.
--->
+```sql
+INSERT INTO talks (title, speaker_id, starts_at)
+VALUES (:title, :speakerId, :startsAt)
+RETURNING *
+```
+
 
 ---
 magic-move
@@ -1090,7 +1092,7 @@ magic-move
 
 # Insert collections with `batchInsert`
 
-<DrawnAnnotation text="shouldReturnGeneratedValues = false" label="Reduce overhead of returning `ResultRow` from batch"  :geometry="{ label: { x: 0.6557, y: 0.5081 }, connector: { start: { x: 0.5850, y: 0.3285 }, end: { x: 0.6164, y: 0.4801 } } }"/>
+<DrawnAnnotation text="shouldReturnGeneratedValues = false" label="The PostgreSQL driver merges the JDBC batch into multi-row statements `reWriteBatchedInserts=true`"  :geometry="{ label: { x: 0.6125, y: 0.5222, width: 0.7326 }, connector: { start: { x: 0.5850, y: 0.3285 }, end: { x: 0.6164, y: 0.4801 } } }"/>
 
 ```kotlin
 context(_: Transaction)
@@ -1101,6 +1103,12 @@ fun insertBatch(newTalk: List<NewTalk>) {
     this[Talks.startsAt] = newTalk.startsAt
   }
 }
+```
+
+```sql
+INSERT INTO talks (title, speaker_id, starts_at)
+VALUES (:title1, :speakerId1, :startsAt1),
+       (:title2, :speakerId2, :startsAt2)
 ```
 
 ---
@@ -1198,7 +1206,7 @@ RETURNING speaker_id, title, starts_at
 
 # Upsert states the conflict key
 
-<DrawnAnnotation text="ON CONFLICT DO" label="Primary keys, and unique fields"  :geometry="{ label: { x: 0.4623, y: 0.7625 }, connector: { start: { x: 0.2142, y: 0.7230 }, end: { x: 0.3135, y: 0.7599 } } }"/>
+<DrawnAnnotation text="ON CONFLICT DO" label="All unique fields"  :geometry="{ label: { x: 0.60, y: 0.66 }, connector: { start: { x: 0.22, y: 0.68 }, end: { x: 0.44, y: 0.66 } } }"/>
 <DrawnAnnotation text="UPDATE SET" />
 
 ```kotlin
@@ -1216,6 +1224,7 @@ INSERT INTO talks (slug, title, speaker_id, starts_at)
 VALUES (:slug, :title, :speakerId, :startsAt)
 ON CONFLICT DO
 UPDATE SET
+  slug = EXCLUDED.slug,
   title = EXCLUDED.title,
   speaker_id = EXCLUDED.speaker_id,
   starts_at = EXCLUDED.starts_at
@@ -1249,6 +1258,92 @@ UPDATE SET
   speaker_id = EXCLUDED.speaker_id,
   starts_at = EXCLUDED.starts_at
 ```
+
+---
+magic-move
+---
+
+# Upsert states the conflict key
+
+<DrawnAnnotation text="onUpdateExclude" label="By default every inserted column is updated, except the conflict key" on="0" :geometry="{ label: { x: 0.7158, y: 0.3958, width: 0.4959 }, connector: { start: { x: 0.4484, y: 0.2864 }, end: { x: 0.5500, y: 0.3800 } } }" />
+
+```kotlin
+fun upsert(slug: String, title: String, speakerId: Long, startsAt: Instant) =
+  Talks.upsert(Talks.slug, onUpdateExclude = [Talks.speakerId]) {
+    it[Talks.slug] = slug
+    it[Talks.title] = title
+    it[Talks.speakerId] = speakerId
+    it[Talks.startsAt] = startsAt
+  }
+```
+
+```sql
+INSERT INTO talks (slug, title, speaker_id, starts_at)
+VALUES (:slug, :title, :speakerId, :startsAt)
+ON CONFLICT (slug) DO
+UPDATE SET
+  title = EXCLUDED.title,
+  starts_at = EXCLUDED.starts_at
+```
+
+---
+magic-move
+---
+
+# Upsert states the conflict key
+
+<DrawnAnnotation text="[Talks.id," label="Application-generated values (`clientDefault`, `UuidTable` id) are inserted too, so exclude them" on="0" :geometry="{ label: { x: 0.7158, y: 0.3958, width: 0.4959 }, connector: { start: { x: 0.4484, y: 0.2864 }, end: { x: 0.5500, y: 0.3800 } } }"/>
+
+```kotlin
+fun upsert(slug: String, title: String, speakerId: Long, startsAt: Instant) =
+  Talks.upsert(Talks.slug, onUpdateExclude = [Talks.id, Talks.speakerId]) {
+    it[Talks.slug] = slug
+    it[Talks.title] = title
+    it[Talks.speakerId] = speakerId
+    it[Talks.startsAt] = startsAt
+  }
+```
+
+```sql
+INSERT INTO talks (slug, title, speaker_id, starts_at)
+VALUES (:slug, :title, :speakerId, :startsAt)
+ON CONFLICT (slug) DO
+UPDATE SET
+  title = EXCLUDED.title,
+  starts_at = EXCLUDED.starts_at
+```
+
+
+---
+magic-move
+---
+
+# Upsert states the conflict key
+
+<DrawnAnnotation text="onUpdate" label="Take full control of update" on="0"  :geometry="{ label: { x: 0.7024, y: 0.2681 }, connector: { start: { x: 0.4485, y: 0.2664 }, end: { x: 0.5797, y: 0.2710 } } }"/>
+
+```kotlin
+fun upsert(slug: String, title: String, speakerId: Long, startsAt: Instant) =
+  Talks.upsert(Talks.slug, onUpdate = {
+    it[Talks.title] = insertValue(Talks.title)
+    it[Talks.updatedAt] = CurrentTimestamp
+  }) {
+    it[Talks.slug] = slug
+    it[Talks.title] = title
+    it[Talks.speakerId] = speakerId
+    it[Talks.startsAt] = startsAt
+  }
+```
+
+```sql
+INSERT INTO talks (slug, title, speaker_id, starts_at)
+VALUES (:slug, :title, :speakerId, :startsAt)
+ON CONFLICT (slug) DO
+UPDATE SET
+  title = EXCLUDED.title,
+  updated_at = CURRENT_TIMESTAMP
+```
+
 
 ---
 magic-move
@@ -1367,6 +1462,8 @@ RETURNING *
 ---
 
 # Keep generated SQL visible
+
+<DrawnAnnotation text="StdOutSqlLogger" label="Before driver optimisations"  :geometry="{ label: { x: 0.5962, y: 0.2978 } }"/>
 
 ```kotlin
 transaction(database) {

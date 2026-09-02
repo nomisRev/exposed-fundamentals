@@ -225,7 +225,7 @@ object ProfileTable : LongIdTable("profiles") {
 
 object TalksTable : LongIdTable("talks") {
   val speakerId = reference("speaker_id", ProfileTable.id)
-  val title = varchar("title", 200)
+  val title = varchar("title", 200).unique()
   val description = text("description")
 }
 ```
@@ -246,7 +246,7 @@ object ProfileTable : LongIdTable("profiles") {
 
 object TalksTable : LongIdTable("talks") {
   val speakerId = reference("speaker_id", ProfileTable)
-  val title = varchar("title", 200)
+  val title = varchar("title", 200).unique()
   val description = text("description")
 }
 ```
@@ -273,7 +273,7 @@ object TalksTable : LongIdTable("talks") {
     onDelete = ReferenceOption.RESTRICT,
     onUpdate = ReferenceOption.CASCADE,
   )
-  val title = varchar("title", 200)
+  val title = varchar("title", 200).unique()
   val description = text("description")
 }
 ```
@@ -306,7 +306,7 @@ object TalksTable : LongIdTable("talks") {
     onUpdate = ReferenceOption.CASCADE,
     fkName = "fk_talks_speaker_id"
   )
-  val title = varchar("title", 200)
+  val title = varchar("title", 200).unique()
   val description = text("description")
 }
 ```
@@ -362,7 +362,7 @@ layout: two-cols-header
 value class TalkTitle(val value: String)
 
 object Talks : Table("talks") {
-  val title: Column<TalkTitle> = varchar("title", 200)
+  val title: Column<TalkTitle> = varchar("title", 200).unique()
     .transform(::TalkTitle) { it.value }
 }
 ```

@@ -1,49 +1,17 @@
 package org.jetbrains.exposed.example
 
+import org.jetbrains.exposed.v1.core.*
+import org.jetbrains.exposed.v1.datetime.CurrentTimestamp
+import org.jetbrains.exposed.v1.jdbc.*
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+import org.testcontainers.containers.PostgreSQLContainer
 import java.sql.DriverManager
 import kotlin.time.Clock
-import kotlin.time.Instant
 import kotlin.uuid.Uuid
-import org.jetbrains.exposed.v1.core.Column
-import org.jetbrains.exposed.v1.core.CustomStringFunction
-import org.jetbrains.exposed.v1.core.Expression
-import org.jetbrains.exposed.v1.core.ExpressionWithColumnType
-import org.jetbrains.exposed.v1.core.LongColumnType
-import org.jetbrains.exposed.v1.core.QueryBuilder
-import org.jetbrains.exposed.v1.core.ResultRow
-import org.jetbrains.exposed.v1.core.SortOrder
-import org.jetbrains.exposed.v1.core.StdOutSqlLogger
-import org.jetbrains.exposed.v1.core.alias
-import org.jetbrains.exposed.v1.core.and
-import org.jetbrains.exposed.v1.core.count
-import org.jetbrains.exposed.v1.core.eq
-import org.jetbrains.exposed.v1.core.exists
-import org.jetbrains.exposed.v1.core.greaterEq
-import org.jetbrains.exposed.v1.core.inSubQuery
-import org.jetbrains.exposed.v1.core.innerJoin
-import org.jetbrains.exposed.v1.core.leftJoin
-import org.jetbrains.exposed.v1.core.like
-import org.jetbrains.exposed.v1.core.lowerCase
-import org.jetbrains.exposed.v1.core.trim
-import org.jetbrains.exposed.v1.jdbc.Database
-import org.jetbrains.exposed.v1.jdbc.JdbcTransaction
-import org.jetbrains.exposed.v1.jdbc.Query
-import org.jetbrains.exposed.v1.jdbc.SchemaUtils
-import org.jetbrains.exposed.v1.jdbc.batchInsert
-import org.jetbrains.exposed.v1.jdbc.deleteReturning
-import org.jetbrains.exposed.v1.jdbc.deleteWhere
-import org.jetbrains.exposed.v1.jdbc.insert
-import org.jetbrains.exposed.v1.jdbc.select
-import org.jetbrains.exposed.v1.jdbc.transactions.transaction
-import org.jetbrains.exposed.v1.jdbc.update
-import org.jetbrains.exposed.v1.jdbc.updateReturning
-import org.jetbrains.exposed.v1.jdbc.upsert
-import org.jetbrains.exposed.v1.jdbc.upsertReturning
-import org.testcontainers.containers.PostgreSQLContainer
 
 /** A custom SQL function from lesson 4. PostgreSQL needs its `unaccent` extension installed first. */
 fun <T : String?> Expression<T>.unaccent() =
-  CustomStringFunction("unaccent", this.lowerCase())
+  CustomStringFunction("unaccent", this)
 
 /** The window expression from lesson 4, kept as an Exposed expression rather than raw query text. */
 private object TotalCount : ExpressionWithColumnType<Long>() {
@@ -115,7 +83,9 @@ private fun JdbcTransaction.lesson2UpdateReturning(talkId: Uuid): List<ResultRow
 
 // lesson 2 — upsert variants. The real Talks table uses the unique slug as its conflict key.
 private fun JdbcTransaction.lesson2Upsert(talk: NewTalk) {
-  Talks.upsert(Talks.slug, onUpdateExclude = [Talks.id]) {
+  Talks.upsert(Talks.slug, onUpdateExclude = [Talks.id], onUpdate = {
+
+  }) {
     it[Talks.slug] = talk.slug
     it[Talks.speakerId] = talk.speakerId
     it[Talks.hostId] = talk.hostId
@@ -129,6 +99,13 @@ private fun JdbcTransaction.lesson2UpsertReturning(talk: NewTalk): List<ResultRo
   Talks.upsertReturning(
     keys = arrayOf(Talks.slug),
     returning = listOf(Talks.id, Talks.updatedAt),
+    // onUpdate replaces the default SET list, so restate the columns a conflict should take from EXCLUDED.
+    onUpdate = {
+      it[Talks.title] = insertValue(Talks.title)
+      it[Talks.description] = insertValue(Talks.description)
+      it[Talks.startsAt] = insertValue(Talks.startsAt)
+      it[Talks.updatedAt] = CurrentTimestamp
+    },
   ) {
     it[Talks.slug] = talk.slug
     it[Talks.speakerId] = talk.speakerId
@@ -208,9 +185,18 @@ private fun JdbcTransaction.insertTalk(
   }.let { (it get Talks.id).value }
 }
 
+class MyPostgreSQLContainer : PostgreSQLContainer<MyPostgreSQLContainer>("postgres:18-alpine") {
+  override fun configure() {
+    addEnv("POSTGRES_DB", databaseName)
+    addEnv("POSTGRES_USER", username)
+    addEnv("POSTGRES_PASSWORD", password)
+  }
+}
+
 fun main() {
-  PostgreSQLContainer("postgres:13.2")
+  MyPostgreSQLContainer()
     .withCommand("postgres", "-c", "log_statement=all")
+
     .apply { start() }
     .use { container ->
       val jdbcUrl = "${container.jdbcUrl}?reWriteBatchedInserts=true"
