@@ -1066,7 +1066,7 @@ RETURNING id, createdAt;
 
 # Insert collections with `batchInsert`
 
-<DrawnAnnotation text="ResultRow::toTalkWithoutSpeaker" label="Batch insert while returning all inserted data" />
+<DrawnAnnotation text="ResultRow::toTalkWithoutSpeaker" label="Batch insert while returning all inserted data"  :geometry="{ label: { x: 0.7393, y: 0.4750 }, connector: { start: { x: 0.4938, y: 0.5017 }, end: { x: 0.5291, y: 0.4829 } } }"/>
 
 ```kotlin
 context(_: Transaction)
@@ -1077,6 +1077,12 @@ fun insertBatch(newTalk: List<NewTalk>) =
     this[Talks.startsAt] = newTalk.startsAt
   }.map(ResultRow::toTalkWithoutSpeaker)
 ```
+
+<!--
+`batchInsert` with generated values has no single portable SQL equivalent: its batching and
+key-retrieval strategy depend on the Exposed dialect and JDBC driver. `StdOutSqlLogger` logs
+Exposed statements before the PostgreSQL driver may rewrite a JDBC batch on the wire.
+-->
 
 ---
 magic-move
@@ -1101,14 +1107,19 @@ fun insertBatch(newTalk: List<NewTalk>) {
 
 # Update states its scope
 
-<DrawnAnnotation text="{ Talks.id eq talkId }" label="Without a precise predicate can affect many rows"  :geometry="{ label: { x: 0.5373, y: 0.4937, width: 0.4722 }, connector: { type: 'quadratic', start: { x: 0.3050, y: 0.2788 }, control: { x: 0.3011, y: 0.3777 }, end: { x: 0.3173, y: 0.4632 } } }" />
+<DrawnAnnotation text="{ Talks.id eq talkId }" label="Without a precise predicate can affect many rows"  :geometry="{ label: { x: 0.5046, y: 0.3477, width: 0.4722 }, connector: { start: { x: 0.3012, y: 0.2769 }, end: { x: 0.3012, y: 0.3179 } } }" />
 
 ```kotlin
-fun update(talkId: Long, status: TalkStatus) {
+fun update(talkId: Long, status: TalkStatus) =
   Talks.update({ Talks.id eq talkId }) {
-    it[Talks.status] = TalkStatus.PUBLISHED
+    it[Talks.status] = status
   }
-}
+```
+
+```sql
+UPDATE talks
+SET status = :status
+WHERE id = :talkId
 ```
 
 ---
@@ -1117,14 +1128,19 @@ magic-move
 
 # Update states its scope
 
-<DrawnAnnotation text="it[Talks.status] = TalkStatus.PUBLISHED" label="Same DSL as insert"  :geometry="{ label: { x: 0.4476, y: 0.3693, width: 0.1764 } }" />
+<DrawnAnnotation text="it[Talks.status] = status" label="Same DSL as insert"  :geometry="{ label: { x: 0.5105, y: 0.3388, width: 0.1764 }, connector: { start: { x: 0.3820, y: 0.3171 }, end: { x: 0.4182, y: 0.3377 } } }" />
 
 ```kotlin
-fun update(talkId: Long, status: TalkStatus) {
+fun update(talkId: Long, status: TalkStatus) =
   Talks.update({ Talks.id eq talkId }) {
-    it[Talks.status] = TalkStatus.PUBLISHED
+    it[Talks.status] = status
   }
-}
+```
+
+```sql
+UPDATE talks
+SET status = :status
+WHERE id = :talkId
 ```
 
 ---
@@ -1133,7 +1149,7 @@ magic-move
 
 # Update states its scope
 
-<DrawnAnnotation text="[Talks.speakerId, Talks.title, Talks.startsAt]" label="Use `*Returning` variant to return selected columns"  :geometry="{ label: { x: 0.6590, y: 0.5519, width: 0.4826 }, connector: { type: 'quadratic', start: { x: 0.5267, y: 0.3269 }, control: { x: 0.5818, y: 0.4112 }, end: { x: 0.5819, y: 0.5328 } } }" />
+<DrawnAnnotation text="[Talks.speakerId, Talks.title, Talks.startsAt]" label="Use `*Returning` variant to return selected columns"  :geometry="{ label: { x: 0.6756, y: 0.4016, width: 0.4826 } }" />
 
 ```kotlin
 fun update(talkId: Long, status: TalkStatus): TalkPreview? =
@@ -1141,8 +1157,15 @@ fun update(talkId: Long, status: TalkStatus): TalkPreview? =
     [Talks.speakerId, Talks.title, Talks.startsAt],
     { Talks.id eq talkId }
   ) {
-    it[Talks.status] = TalkStatus.PUBLISHED
+    it[Talks.status] = status
   }.singleOrNull()?.toTalkPreview()
+```
+
+```sql
+UPDATE talks
+SET status = :status
+WHERE id = :talkId
+RETURNING speaker_id, title, starts_at
 ```
 
 ---
@@ -1151,8 +1174,8 @@ magic-move
 
 # Update states its scope
 
-<DrawnAnnotation text="{ Talks.id eq talkId }" color="var(--drawn-annotation-color)" />
-<DrawnAnnotation text="singleOrNull()" label="Predicate guarantees 1 or 0 rows will be affected" color="var(--drawn-annotation-color)" :geometry="{ label: { x: 0.3942, y: 0.5889, width: 0.4562 }, connector: { start: { x: 0.1822, y: 0.5193 }, end: { x: 0.2084, y: 0.5635 } } }" />
+<DrawnAnnotation text="{ Talks.id eq talkId }" label="Predicate guarantees 1 or 0 rows will be affected"  :geometry="{ label: { x: 0.6356, y: 0.4099 }, connector: { start: { x: 0.3484, y: 0.3613 }, end: { x: 0.4022, y: 0.3901 } } }"/>
+<DrawnAnnotation text="singleOrNull()"/>
 
 ```kotlin
 fun update(talkId: Long, status: TalkStatus): TalkPreview? =
@@ -1160,34 +1183,42 @@ fun update(talkId: Long, status: TalkStatus): TalkPreview? =
     [Talks.speakerId, Talks.title, Talks.startsAt],
     { Talks.id eq talkId }
   ) {
-    it[Talks.status] = TalkStatus.PUBLISHED
+    it[Talks.status] = status
   }.singleOrNull()?.toTalkPreview()
+```
+
+```sql
+UPDATE talks
+SET status = :status
+WHERE id = :talkId
+RETURNING speaker_id, title, starts_at
 ```
 
 ---
 
 # Upsert states the conflict key
 
-<DrawnAnnotation text="ON CONFLICT DO" label="Primary keys, and unique fields"  :geometry="{ label: { x: 0.5226, y: 0.6686 }, connector: { start: { x: 0.2142, y: 0.6264 }, end: { x: 0.3758, y: 0.6684 } } }"/>
+<DrawnAnnotation text="ON CONFLICT DO" label="Primary keys, and unique fields"  :geometry="{ label: { x: 0.4623, y: 0.7625 }, connector: { start: { x: 0.2142, y: 0.7230 }, end: { x: 0.3135, y: 0.7599 } } }"/>
 <DrawnAnnotation text="UPDATE SET" />
 
 ```kotlin
-Talks.upsert {
-  it[Talks.slug] = slug
-  it[Talks.title] = title
-  it[Talks.speakerId] = speakerId
-  it[Talks.startsAt] = startsAt
-}
+fun upsert(slug: String, title: String, speakerId: Long, startsAt: Instant) =
+  Talks.upsert {
+    it[Talks.slug] = slug
+    it[Talks.title] = title
+    it[Talks.speakerId] = speakerId
+    it[Talks.startsAt] = startsAt
+  }
 ```
 
 ```sql
 INSERT INTO talks (slug, title, speaker_id, starts_at)
-VALUES ('intro-to-kotlin', 'Kotlin: A Practical Introduction', 15, TIMESTAMP '2026-09-01 11:00:00')
+VALUES (:slug, :title, :speakerId, :startsAt)
 ON CONFLICT DO
 UPDATE SET
   title = EXCLUDED.title,
   speaker_id = EXCLUDED.speaker_id,
-  starts_at = EXCLUDED.starts_at;
+  starts_at = EXCLUDED.starts_at
 ```
 
 ---
@@ -1196,26 +1227,27 @@ magic-move
 
 # Upsert states the conflict key
 
-<DrawnAnnotation text="Talks.slug" label="Specify unique key on which to update the row on conflict" color="var(--drawn-annotation-color)" :geometry="{ label: { x: 0.5858, y: 0.2859, width: 0.3896 }, connector: { type: 'quadratic', start: { x: 0.3157, y: 0.2285 }, control: { x: 0.4226, y: 0.2439 }, end: { x: 0.4403, y: 0.2728 } } }" />
-<DrawnAnnotation text="(slug)" label="Must have `UNIQUE` constraint" color="var(--drawn-annotation-color)" :geometry="{ label: { x: 0.6039, y: 0.7084, width: 0.2715 }, connector: { type: 'quadratic', start: { x: 0.2613, y: 0.6380 }, control: { x: 0.3688, y: 0.6441 }, end: { x: 0.4620, y: 0.6818 } } }" />
+<DrawnAnnotation text="Talks.slug" label="Specify unique key on which to update the row on conflict"  :geometry="{ label: { x: 0.6542, y: 0.3427 }, connector: { start: { x: 0.3397, y: 0.2780 }, end: { x: 0.3709, y: 0.3169 } } }"/>
+<DrawnAnnotation text="(slug)" label="Must have `UNIQUE` constraint"  :geometry="{ label: { x: 0.4897, y: 0.7424 }, connector: { start: { x: 0.2585, y: 0.6949 }, end: { x: 0.3420, y: 0.7338 } } }"/>
 
 ```kotlin
-Talks.upsert(Talks.slug) {
-  it[Talks.slug] = slug
-  it[Talks.title] = title
-  it[Talks.speakerId] = speakerId
-  it[Talks.startsAt] = startsAt
-}
+fun upsert(slug: String, title: String, speakerId: Long, startsAt: Instant) =
+  Talks.upsert(Talks.slug) {
+    it[Talks.slug] = slug
+    it[Talks.title] = title
+    it[Talks.speakerId] = speakerId
+    it[Talks.startsAt] = startsAt
+  }
 ```
 
 ```sql
 INSERT INTO talks (slug, title, speaker_id, starts_at)
-VALUES ('intro-to-kotlin', 'Kotlin: A Practical Introduction', 15, TIMESTAMP '2026-09-01 11:00:00')
+VALUES (:slug, :title, :speakerId, :startsAt)
 ON CONFLICT (slug) DO
 UPDATE SET
   title = EXCLUDED.title,
   speaker_id = EXCLUDED.speaker_id,
-  starts_at = EXCLUDED.starts_at;
+  starts_at = EXCLUDED.starts_at
 ```
 
 ---
@@ -1224,27 +1256,28 @@ magic-move
 
 # Upsert states the conflict key
 
-<DrawnAnnotation text="Returning" />
+<DrawnAnnotation text=".upsertReturning" />
 <DrawnAnnotation text="RETURNING *" />
 
 ```kotlin
-Talks.upsertReturning(Talks.slug) {
-  it[Talks.slug] = slug
-  it[Talks.title] = title
-  it[Talks.speakerId] = speakerId
-  it[Talks.startsAt] = startsAt
-}
+fun upsertReturning(slug: String, title: String, speakerId: Long, startsAt: Instant) =
+  Talks.upsertReturning(Talks.slug) {
+    it[Talks.slug] = slug
+    it[Talks.title] = title
+    it[Talks.speakerId] = speakerId
+    it[Talks.startsAt] = startsAt
+  }
 ```
 
 ```sql
 INSERT INTO talks (slug, title, speaker_id, starts_at)
-VALUES ('intro-to-kotlin', 'Kotlin: A Practical Introduction', 15, TIMESTAMP '2026-09-01 11:00:00')
+VALUES (:slug, :title, :speakerId, :startsAt)
 ON CONFLICT (slug) DO
 UPDATE SET
   title = EXCLUDED.title,
   speaker_id = EXCLUDED.speaker_id,
   starts_at = EXCLUDED.starts_at
-  RETURNING *;
+RETURNING *
 ```
 
 ---
@@ -1253,39 +1286,44 @@ magic-move
 
 # Upsert states the conflict key
 
-<DrawnAnnotation text="Returning" />
 <DrawnAnnotation text="[Talks.id, Talks.updatedAt]" />
-<DrawnAnnotation text="RETURNING id, updatedAt" />
+<DrawnAnnotation text="id, updated_at" />
 
 ```kotlin
-Talks.upsertReturning(Talks.slug, returning = [Talks.id, Talks.updatedAt]) {
-  it[Talks.slug] = slug
-  it[Talks.title] = title
-  it[Talks.speakerId] = speakerId
-  it[Talks.startsAt] = startsAt
-}
+fun upsertReturning(slug: String, title: String, speakerId: Long, startsAt: Instant) =
+  Talks.upsertReturning(Talks.slug, returning = [Talks.id, Talks.updatedAt]) {
+    it[Talks.slug] = slug
+    it[Talks.title] = title
+    it[Talks.speakerId] = speakerId
+    it[Talks.startsAt] = startsAt
+  }
 ```
 
 ```sql
 INSERT INTO talks (slug, title, speaker_id, starts_at)
-VALUES ('intro-to-kotlin', 'Kotlin: A Practical Introduction', 15, TIMESTAMP '2026-09-01 11:00:00')
-ON CONFLICT (slug) DO
-UPDATE SET
+VALUES (:slug, :title, :speakerId, :startsAt)
+ON CONFLICT (slug) DO UPDATE SET
   title = EXCLUDED.title,
   speaker_id = EXCLUDED.speaker_id,
   starts_at = EXCLUDED.starts_at
-  RETURNING id, updatedAt;
+RETURNING id, updated_at
 ```
 
 ---
 
 # Delete states its scope
 
-<DrawnAnnotation text="{ Talks.id eq talkId }" label="Without a precise predicate can affect many rows" on="0" color="red"  :geometry="{ label: { x: 0.5875, y: 0.2815, width: 0.7182 } }"/>
-<DrawnAnnotation text="removed" label="`deleteWhere` returns the affected row count" on="1" />
+<DrawnAnnotation text="{ Talks.id eq talkId }" label="Without a precise predicate can affect many rows" on="0" color="red"  :geometry="{ label: { x: 0.5875, y: 0.3523, width: 0.7182 } }"/>
+<DrawnAnnotation text=": Int" label="`deleteWhere` returns the affected row count" on="1"  :geometry="{ label: { x: 0.6579, y: 0.1886 }, connector: { start: { x: 0.3840, y: 0.2208 }, end: { x: 0.4469, y: 0.2034 } } }"/>
 
 ```kotlin
-val removed: Int = Talks.deleteWhere { Talks.id eq talkId }
+fun delete(talkId: Long): Int =
+  Talks.deleteWhere { Talks.id eq talkId }
+```
+
+```sql
+DELETE FROM talks
+WHERE id = :talkId
 ```
 
 ---
@@ -1294,13 +1332,20 @@ magic-move
 
 # Delete states its scope
 
-<DrawnAnnotation text="deleteReturning" label="Use `deleteReturning` to return affected rows"   :geometry="{ label: { x: 0.5459, y: 0.3481 }, connector: { start: { x: 0.2517, y: 0.2917 }, end: { x: 0.3158, y: 0.3416 } } }"/>
+<DrawnAnnotation text="deleteReturning" label="Use `deleteReturning` to return affected rows" :connect="false" :geometry="{ label: { x: 0.5459, y: 0.3481 } }"/>
+<DrawnAnnotation text="RETURNING *" />
 
 ```kotlin
-val removed: Iterable<ResultRow> =
+fun deleteReturning(talkId: Long): Iterable<ResultRow> =
   Talks.deleteReturning { Talks.id eq talkId }
 ```
 
+```sql
+DELETE FROM talks
+WHERE id = :talkId
+RETURNING *
+```
+
 ---
 magic-move
 ---
@@ -1308,9 +1353,15 @@ magic-move
 # Delete states its scope
 
 ```kotlin
-val removed: Iterable<TalkPreview> =
+fun deleteReturning(talkId: Long): List<TalkPreview> =
   Talks.deleteReturning { Talks.id eq talkId }
     .map { it.toTalkPreview() }
+```
+
+```sql
+DELETE FROM talks
+WHERE id = :talkId
+RETURNING *
 ```
 
 ---

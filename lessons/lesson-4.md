@@ -76,8 +76,8 @@ magic-move
 
 # Keep only talks with 10+ bookmarks
 
-<DrawnAnnotation text="having" label="`having` after `groupBy` to filter the aggregate" on="0" :geometry="{ label: { x: 0.2621, y: 0.9141, width: 0.7196 }, connector: { start: { x: 0.0661, y: 0.4606 }, end: { x: 0.0485, y: 0.8983 } } }"/>
-<DrawnAnnotation text="Bookmarks.talkId.count()" occurrence="2" label="PostgreSQL doesn't make SELECT aliases available but doesn't run it twice" on="1" :geometry="{ label: { x: 0.7603, y: 0.2904, width: 0.3836 }, connector: { start: { x: 0.4638, y: 0.4611 }, end: { x: 0.7692, y: 0.3351 } } }"/>
+<DrawnAnnotation text="having" :connect="false" label="`having` after `groupBy` to filter the aggregate" on="0" :geometry="{ label: { x: 0.6802, y: 0.3743, width: 0.7196 } }"/>
+<DrawnAnnotation text="Bookmarks.talkId.count()" label="PostgreSQL doesn't make SELECT aliases available but doesn't run it twice" occurrence="2" :connect="false" on="1" :geometry="{ label: { x: 0.7591, y: 0.3499, width: 0.3836 } }"/>
 
 ```kotlin
 val bookmarkCount = Bookmarks.talkId.count().alias("bookmark_count")
@@ -317,6 +317,3 @@ WHERE talks.is_published = TRUE
 - `groupBy` / `having` — aggregates at a clear output grain
 - `subquery` / `Op<Boolean>` — typed API filters
 - `Function<T>` — carefully extend SQL when built-ins are insufficient
-
-> **Exercise:** List upcoming talks with speaker, host, tag count, bookmark count, optional tag filter, and
-> bookmark-count ordering.

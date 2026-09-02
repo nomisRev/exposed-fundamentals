@@ -187,11 +187,11 @@ fun migrate(dataSource: HikariDataSource): MigrateResult =
 
 # Generation has three separate questions
 
-| Question                     | Application-side answer   | Database-side answer                        |
-|------------------------------|---------------------------|---------------------------------------------|
-| Who computes the value?      | Kotlin code               | SQL function, default, sequence, or trigger |
-| When can Kotlin know it?     | Before the insert         | From `RETURNING` or a later read            |
-| Who applies it consistently? | Every writing application | Every writer that omits the column          |
+| Question                    | Application-side   | Database-side                              |
+|-----------------------------|--------------------------|--------------------------------------------|
+| Who computes?               | Kotlin code              | function, default, sequence, or trigger    |
+| When can we read?           | Before the insert        | From `RETURNING` or a later read           |
+| Who applies it? | Every writing application | Every writer that omits the column         |
 
 ---
 
