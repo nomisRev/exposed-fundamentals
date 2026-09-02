@@ -21,7 +21,6 @@ fun <T : String?>  Expression<T>.unaccent() =
 fun main() {
   Talks.title.lowerCase().unaccent().alias("lower")
 
-
   PostgreSQLContainer("postgres:13.2")
     .apply { start() }
     .use {
