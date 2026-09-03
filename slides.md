@@ -6,11 +6,15 @@ layout: cover
 class: fundamentals-cover
 canvasWidth: 1440
 aspectRatio: 16/9
-colorSchema: both
 highlighter: shiki
 themeConfig:
   kodee: greeting
   siteUrl: https://nomisrev.github.io/exposed-fundamentals/
+  snippets:
+    dir: src/main/kotlin/presentation/snippets
+    package: presentation.snippets
+    imports:
+      - presentation.support.*
 kodee: welcome
 ---
 

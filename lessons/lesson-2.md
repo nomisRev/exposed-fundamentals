@@ -290,7 +290,7 @@ fun previews(): Query =
 
 <DrawnAnnotation text="Blocking" label="JDBC is a blocking driver" color="#f59e0b"  :geometry="{ label: { x: 0.5960, y: 0.2338 }, connector: { type: 'quadratic', start: { x: 0.1853, y: 0.3160 }, control: { x: 0.5448, y: 0.3221 }, end: { x: 0.5757, y: 0.2641 } } }" />
 
-```kotlin jdbc
+```kotlin jdbc no-compile
 class Query(...) :
   SizedIterable<ResultRow>,
   BlockingExecutable<ResultApi, Query>
@@ -298,7 +298,7 @@ class Query(...) :
 
 <DrawnAnnotation text="Suspend" label="R2DBC is a reactive driver" color="#06b6d4"  :geometry="{ label: { x: 0.1692, y: 0.5695 } }" />
 
-```kotlin r2dbc
+```kotlin r2dbc no-compile
 class Query(...) :
   SizedIterable<ResultRow>,
   SuspendExecutable<ResultApi, Query>
@@ -324,6 +324,8 @@ interface SizedIterable<out T> : Iterable<T> {
 <DrawnAnnotation text="suspend" occurrence=2 label="R2DBC suspends like reactive types" color="#06b6d4"  :geometry="{ label: { x: 0.2343, y: 0.8620 }, connector: { start: { x: 0.1150, y: 0.7465 }, end: { x: 0.1368, y: 0.8298 } } }" />
 
 ```kotlin r2dbc
+import kotlinx.coroutines.flow.Flow
+
 interface SizedIterable<out T> : Flow<T> {
   fun limit(count: Int): SizedIterable<T>
   fun offset(start: Long): SizedIterable<T>
@@ -338,11 +340,11 @@ interface SizedIterable<out T> : Flow<T> {
 
 > Effectively `Iterable` for JDBC and `Flow` for R2DBC
 
-```kotlin jdbc
+```kotlin jdbc no-compile
 class Query(...) : Iterable<ResultRow>
 ```
 
-```kotlin r2dbc
+```kotlin r2dbc no-compile
 class Query(...) : Flow<ResultRow>
 ```
 
@@ -380,13 +382,13 @@ fun r2dbc(id: Long) =
 <DrawnAnnotation text="jdbc" color="#f59e0b" />
 <DrawnAnnotation text="r2dbc" color="#06b6d4" label="R2DBC and JDBC live alongside each other" :connect="false" :geometry="{ label: { x: 0.5462, y: 0.5702 } }" />
 
-```kotlin jdbc
+```kotlin jdbc no-compile
 package org.jetbrains.exposed.v1.jdbc
 
 class Query(...) : Iterable<ResultRow>
 ```
 
-```kotlin r2dbc
+```kotlin r2dbc no-compile
 package org.jetbrains.exposed.v1.r2dbc
 
 class Query(...) : Flow<ResultRow>
@@ -430,7 +432,7 @@ import org.jetbrains.exposed.v1.core.like
 import org.jetbrains.exposed.v1.jdbc.Query
 import org.jetbrains.exposed.v1.jdbc.select
 
-fun talks(limit: Long = 10, offset: Long = 30): Query =
+fun talks(limit: Int = 10, offset: Long = 30): Query =
   Talks.select(Talks.speakerId, Talks.title, Talks.description, Talks.startsAt)
     .where { Talks.description like "%Kotlin%" }
     .orderBy(Talks.title, SortOrder.ASC)
@@ -439,7 +441,7 @@ fun talks(limit: Long = 10, offset: Long = 30): Query =
 
 fun previews(): Query =
   Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
-    .select(title, description, ProfileTable.name, ProfileTable.avatarUrl)
+    .select(Talks.title, Talks.description, ProfileTable.name, ProfileTable.avatarUrl)
     .where { Talks.isPublished eq true }
 ```
 
@@ -455,8 +457,8 @@ import org.jetbrains.exposed.v1.jdbc.select
 
 fun previews(): Query =
   Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
-    .select(title, description, ProfileTable.name, ProfileTable.avatarUrl)
-    .where { isPublished eq true }
+    .select(Talks.title, Talks.description, ProfileTable.name, ProfileTable.avatarUrl)
+    .where { Talks.isPublished eq true }
 ```
 
 ---
@@ -473,8 +475,8 @@ import org.jetbrains.exposed.v1.jdbc.select
 
 fun previews(): Iterable<ResultRow> =
   Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
-    .select(title, description, ProfileTable.name, ProfileTable.avatarUrl)
-    .where { isPublished eq true }
+    .select(Talks.title, Talks.description, ProfileTable.name, ProfileTable.avatarUrl)
+    .where { Talks.isPublished eq true }
 ```
 
 ---
@@ -489,10 +491,10 @@ import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.innerJoin
 import org.jetbrains.exposed.v1.jdbc.select
 
-fun previews(): List<?> =
+fun previews(): List<Any> =
   Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
-    .select(title, description, ProfileTable.name, ProfileTable.avatarUrl)
-    .where { isPublished eq true }
+    .select(Talks.title, Talks.description, ProfileTable.name, ProfileTable.avatarUrl)
+    .where { Talks.isPublished eq true }
     .map { row: ResultRow -> TODO("Return value") }
 ```
 
@@ -509,17 +511,25 @@ import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.innerJoin
 import org.jetbrains.exposed.v1.jdbc.select
 
+fun ResultRow.toTalkPreview() = TalkPreview(
+  title = this[Talks.title],
+  description = this[Talks.description],
+  speakerName = this[ProfileTable.name],
+  speakerAvatarUrl = this[ProfileTable.avatarUrl],
+)
+
+// Example
 fun previews(): List<TalkPreview> =
   Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
-    .select(title, description, ProfileTable.name, ProfileTable.avatarUrl)
-    .where { isPublished eq true }
+    .select(Talks.title, Talks.description, ProfileTable.name, ProfileTable.avatarUrl)
+    .where { Talks.isPublished eq true }
     .map { row: ResultRow -> row.toTalkPreview() }
 
 data class TalkPreview(
   val title: String,
   val description: String,
-  val speakerName: Instant,
-  val speakerAvatarUrl: String,
+  val speakerName: String,
+  val speakerAvatarUrl: String?,
 )
 ```
 
@@ -535,7 +545,7 @@ import org.jetbrains.exposed.v1.core.ResultRow
 
 operator fun <A> ResultRow.get(key: Column<A>): A = TODO("Exposed internals")
 
-fun ResultRow.toTalkPreview(): TalkPreview
+fun ResultRow.toTalkPreview(): TalkPreview = TODO()
 ```
 
 ---
@@ -547,7 +557,7 @@ magic-move
 <DrawnAnnotation text="title = " label="Expects `String`" color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.1588, y: 0.4849, width: 0.1926 }, connector: { start: { x: 0.1248, y: 0.3758 }, end: { x: 0.1174, y: 0.4542 } } }" />
 <DrawnAnnotation text="Talks.title" label="`Column<String>`"  :geometry="{ label: { x: 0.3554, y: 0.4771, width: 0.1521 }, connector: { start: { x: 0.3208, y: 0.3773 }, end: { x: 0.3205, y: 0.4444 } } }" />
 
-```kotlin
+```kotlin no-compile
 import org.jetbrains.exposed.v1.core.Column
 import org.jetbrains.exposed.v1.core.ResultRow
 
@@ -567,7 +577,7 @@ magic-move
 <DrawnAnnotation text="operator" color="var(--drawn-annotation-color)" :sequential="false" />
 <DrawnAnnotation text="[Talks.title]" label="Kotlin index access operator" color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.4534, y: 0.4627 } }" />
 
-```kotlin
+```kotlin no-compile
 import org.jetbrains.exposed.v1.core.Column
 import org.jetbrains.exposed.v1.core.ResultRow
 
@@ -619,7 +629,7 @@ fun ResultRow.toTalkPreview() = TalkPreview(
 
 fun previews(): List<TalkPreview> =
   Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
-    .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
+    .select(Talks.id, Talks.title, Talks.slug, Talks.startsAt, ProfileTable.name)
     .map { row: ResultRow -> row.toTalkPreview() }
 ```
 
@@ -677,7 +687,7 @@ import org.jetbrains.exposed.v1.jdbc.select
 
 fun previews(): List<TalkPreview> =
   Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
-    .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
+    .select(Talks.id, Talks.title, Talks.slug, Talks.startsAt, ProfileTable.name)
     .map { it.toTalkPreview() }
 ```
 
@@ -698,7 +708,7 @@ import org.jetbrains.exposed.v1.jdbc.select
 context(_: Transaction)
 fun previews(): List<TalkPreview> =
   Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
-    .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
+    .select(Talks.id, Talks.title, Talks.slug, Talks.startsAt, ProfileTable.name)
     .map { it.toTalkPreview() }
 ```
 
@@ -719,7 +729,7 @@ import org.jetbrains.exposed.v1.jdbc.select
 context(_: Transaction)
 fun previews(): List<TalkPreview> =
   Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
-    .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
+    .select(Talks.id, Talks.title, Talks.slug, Talks.startsAt, ProfileTable.name)
     .map { it.toTalkPreview() }
 
 fun example() = previews()
@@ -748,7 +758,7 @@ import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 context(_: Transaction)
 fun previews(): List<TalkPreview> =
   Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
-    .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
+    .select(Talks.id, Talks.title, Talks.slug, Talks.startsAt, ProfileTable.name)
     .map { it.toTalkPreview() }
 
 fun example() = previews()
@@ -789,7 +799,7 @@ import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 context(_: Transaction)
 fun previews(): List<TalkPreview> =
   Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
-    .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
+    .select(Talks.id, Talks.title, Talks.slug, Talks.startsAt, ProfileTable.name)
     .map { it.toTalkPreview() }
 
 fun example(database: Database) = transaction(database) { previews() }
@@ -876,7 +886,7 @@ import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 context(_: Transaction)
 fun previews(): List<TalkPreview> =
   Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
-    .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
+    .select(Talks.id, Talks.title, Talks.slug, Talks.startsAt, ProfileTable.name)
     .map { it.toTalkPreview() }
 
 fun example(database: Database) = transaction(database) { previews() }
@@ -899,7 +909,7 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 fun previews(): List<TalkPreview> =
   Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
-    .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
+    .select(Talks.id, Talks.title, Talks.slug, Talks.startsAt, ProfileTable.name)
     .map { it.toTalkPreview() }
 ```
 
@@ -944,7 +954,7 @@ import org.jetbrains.exposed.v1.core.Transaction
 import org.jetbrains.exposed.v1.core.statements.InsertStatement
 import org.jetbrains.exposed.v1.jdbc.insert
 
-operator fun <S> InsertStatement.set(column: Column<S>, value: S) = TODO("")
+operator fun <S: Any> InsertStatement<S>.set(column: Column<S>, value: S): Unit = TODO("Exposed internals")
 
 context(_: Transaction)
 fun insert(

@@ -72,7 +72,7 @@ Talks.leftJoin(Bookmarks)
   .groupBy(Talks.id, Talks.title)
   .orderBy(bookmarkCount, SortOrder.DESC)
 
-fun ResultRow.bookmarkCount(): Int = this[bookmarkCount]
+fun ResultRow.bookmarkCount(): Long = this[bookmarkCount]
 ```
 
 ```sql

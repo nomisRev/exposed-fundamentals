@@ -13,22 +13,25 @@ npm run dev
 
 ## Compile-check Kotlin snippets
 
-[KotlinX Knit](https://github.com/Kotlin/kotlinx-knit) generates Kotlin sources
-from `presentation-snippets.md`. The generated files under
-`src/main/kotlin/presentation/snippets/` are committed and compile against the
-same Kotlin 2.4 / Exposed 1.4.0 API advertised by the deck.
+`slidev-kotlin-snippets` (shipped by `slidev-theme-kotlin`) generates one
+Kotlin file per Kotlin fence in `lessons/*.md` under
+`src/main/kotlin/presentation/snippets/`, with the fence's own imports plus
+`presentation.support.*`, the hand-written package holding the tables and
+types the slides use without defining them. The generated files are committed
+and compile against the same Kotlin 2.4 / Exposed 1.5.0 API the deck
+advertises.
 
-After changing a checked Kotlin card:
+After changing a Kotlin fence:
 
 ```bash
-npm run check:snippets # confirms the companion Knit snippet still matches the Slidev card
-./gradlew knit         # regenerates src/main/kotlin/presentation/snippets/
-./gradlew check        # verifies generated sources are current and compile
+npm run snippets       # regenerates src/main/kotlin/presentation/snippets/
+./gradlew build        # compiles the snippets
 ```
 
-`./gradlew check` runs `knitCheck`; CI also runs the Slidev-source sync check.
-Add each new Kotlin card to `presentation-snippets.md` with a `KNIT` directive
-and any required hidden imports/context.
+`snippetsCheck` fails when the generated
+sources no longer match the slides. Mark a fence that is not meant to compile
+(library internals, an intermediate step) with `no-compile`, and add whatever a
+new snippet needs from its surroundings to `src/main/kotlin/presentation/support/`.
 
 ## Build and export
 

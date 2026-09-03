@@ -143,7 +143,7 @@ import org.jetbrains.exposed.v1.core.Table
 
 object ProfileTable : Table("profiles") {
   val id: Column<Long> = long("id")
-  val primaryKey = PrimaryKey(id)
+  override val primaryKey = PrimaryKey(id)
 }
 ```
 
@@ -161,7 +161,7 @@ import org.jetbrains.exposed.v1.core.Table
 
 object ProfileTable : Table("profiles") {
   val id = long("id")
-  val primaryKey = PrimaryKey(id)
+  override val primaryKey = PrimaryKey(id)
   val name = varchar("name", 120)
   val bio = text("bio").nullable()
 }
@@ -182,7 +182,7 @@ import org.jetbrains.exposed.v1.core.dao.id.EntityID
 
 object ProfileTable : Table("profiles") {
   val id: Column<EntityID<Long>> = long("id").autoIncrement().entityId()
-  val primaryKey = PrimaryKey(id)
+  override val primaryKey = PrimaryKey(id)
   val name = varchar("name", 120)
   val bio = text("bio").nullable()
 }
@@ -244,7 +244,7 @@ object ProfileTable : LongIdTable("profiles") {
 
 object TalksTable : LongIdTable("talks") {
   val speakerId = reference("speaker_id", ProfileTable.id)
-  val title = varchar("title", 200).unique()
+  val title = varchar("title", 200).uniqueIndex()
   val description = text("description")
 }
 ```
@@ -267,7 +267,7 @@ object ProfileTable : LongIdTable("profiles") {
 
 object TalksTable : LongIdTable("talks") {
   val speakerId = reference("speaker_id", ProfileTable)
-  val title = varchar("title", 200).unique()
+  val title = varchar("title", 200).uniqueIndex()
   val description = text("description")
 }
 ```
@@ -297,7 +297,7 @@ object TalksTable : LongIdTable("talks") {
     onDelete = ReferenceOption.RESTRICT,
     onUpdate = ReferenceOption.CASCADE,
   )
-  val title = varchar("title", 200).unique()
+  val title = varchar("title", 200).uniqueIndex()
   val description = text("description")
 }
 ```
@@ -333,7 +333,7 @@ object TalksTable : LongIdTable("talks") {
     onUpdate = ReferenceOption.CASCADE,
     fkName = "fk_talks_speaker_id"
   )
-  val title = varchar("title", 200).unique()
+  val title = varchar("title", 200).uniqueIndex()
   val description = text("description")
 }
 ```
@@ -392,7 +392,7 @@ import org.jetbrains.exposed.v1.core.Table
 value class TalkTitle(val value: String)
 
 object Talks : Table("talks") {
-  val title: Column<TalkTitle> = varchar("title", 200).unique()
+  val title: Column<TalkTitle> = varchar("title", 200).uniqueIndex()
     .transform(::TalkTitle) { it.value }
 }
 ```
