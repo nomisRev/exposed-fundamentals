@@ -164,6 +164,10 @@ flyway {
 <DrawnAnnotation text="migrate" label="Idempotent operation so we can execute on server start-up"  :geometry="{ label: { x: 0.3537, y: 0.6057 }, connector: { start: { x: 0.0688, y: 0.2224 }, end: { x: 0.0724, y: 0.5713 } } }"/>
 
 ```kotlin
+import com.zaxxer.hikari.HikariDataSource
+import org.flywaydb.core.Flyway
+import org.flywaydb.core.api.output.MigrateResult
+
 fun migrate(dataSource: HikariDataSource): MigrateResult =
   Flyway.configure()
     .dataSource(dataSource)

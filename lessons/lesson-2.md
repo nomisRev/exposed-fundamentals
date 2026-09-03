@@ -16,6 +16,8 @@ kodee: wave
 # SQL-shaped Kotlin
 
 ```kotlin
+import org.jetbrains.exposed.v1.jdbc.selectAll
+
 Talks.selectAll()
 ```
 
@@ -31,6 +33,8 @@ magic-move
 # SQL-shaped Kotlin
 
 ```kotlin
+import org.jetbrains.exposed.v1.jdbc.select
+
 Talks.select(Talks.id, Talks.title, Talks.startsAt)
 ```
 
@@ -46,6 +50,9 @@ magic-move
 # SQL-shaped Kotlin
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.select
+
 Talks.select(Talks.id, Talks.title, Talks.startsAt)
   .where { Talks.id eq id }
 ```
@@ -63,6 +70,10 @@ magic-move
 # SQL-shaped Kotlin
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.SortOrder
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.select
+
 Talks.select(Talks.id, Talks.title, Talks.startsAt)
   .where { Talks.id eq id }
   .orderBy(Talks.title, SortOrder.ASC)
@@ -82,6 +93,10 @@ magic-move
 # SQL-shaped Kotlin
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.SortOrder
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.select
+
 Talks.select(Talks.id, Talks.title, Talks.startsAt)
   .where { Talks.id eq id }
   .orderBy(Talks.title, SortOrder.ASC)
@@ -103,6 +118,10 @@ magic-move
 # SQL-shaped Kotlin
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.SortOrder
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.select
+
 Talks.select(Talks.id, Talks.title, Talks.startsAt)
   .where { Talks.id eq id }
   .orderBy(Talks.title, SortOrder.ASC)
@@ -126,6 +145,12 @@ magic-move
 # SQL-shaped Kotlin
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.SortOrder
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.like
+import org.jetbrains.exposed.v1.jdbc.orWhere
+import org.jetbrains.exposed.v1.jdbc.select
+
 Talks.select(Talks.id, Talks.title, Talks.startsAt)
   .where { Talks.id eq id }
   .orderBy(Talks.title, SortOrder.ASC)
@@ -150,6 +175,12 @@ magic-move
 # SQL-shaped Kotlin
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.SortOrder
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.like
+import org.jetbrains.exposed.v1.jdbc.orWhere
+import org.jetbrains.exposed.v1.jdbc.select
+
 Talks.select(Talks.id, Talks.title, Talks.startsAt)
   .where { Talks.id eq id }
   .orderBy(Talks.title, SortOrder.ASC)
@@ -179,6 +210,9 @@ OFFSET 30
 <DrawnAnnotation text="{ Talks.speakerId eq ProfileTable.id }" on="1" label="Can be omitted **if** `Talks` only has 1 `reference` to `ProfileTable` but prefer being explicit"  :geometry="{ label: { x: 0.6802, y: 0.5054, width: 0.7271 }, connector: { start: { x: 0.7048, y: 0.2301 }, end: { x: 0.7048, y: 0.4512 } } }"/>
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.innerJoin
+
 Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
 ```
 
@@ -194,6 +228,10 @@ magic-move
 # SQL-shaped Kotlin
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.innerJoin
+import org.jetbrains.exposed.v1.jdbc.select
+
 Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
   .select(Talks.title, Talks.description, ProfileTable.name, ProfileTable.avatarUrl)
 ```
@@ -212,6 +250,10 @@ magic-move
 # SQL-shaped Kotlin
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.innerJoin
+import org.jetbrains.exposed.v1.jdbc.select
+
 Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
   .select(Talks.title, Talks.description, ProfileTable.name, ProfileTable.avatarUrl)
   .where { Talks.isPublished eq true }
@@ -231,6 +273,11 @@ WHERE talks.is_published = TRUE
 <DrawnAnnotation text="Query" label="Lazy mutable builder allows building SQL" :geometry="{ label: { x: 0.5240, y: 0.1091 }, connector: { type: 'quadratic', start: { x: 0.2942, y: 0.2235 }, control: { x: 0.3516, y: 0.1998 }, end: { x: 0.3908, y: 0.1462 } } }" />
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.innerJoin
+import org.jetbrains.exposed.v1.jdbc.Query
+import org.jetbrains.exposed.v1.jdbc.select
+
 fun previews(): Query =
   Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
     .select(Talks.title, Talks.description, ProfileTable.name, ProfileTable.avatarUrl)
@@ -311,7 +358,7 @@ class Query(...) : Flow<ResultRow>
 <DrawnAnnotation text="jdbcSelectAll()" color="red" />
 <DrawnAnnotation text="r2dbcSelectAll()" color="red"/>
 
-```kotlin
+```kotlin show-imports
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.selectAll as jdbcSelectAll
 import org.jetbrains.exposed.v1.r2dbc.selectAll as r2dbcSelectAll
@@ -349,7 +396,7 @@ class Query(...) : Flow<ResultRow>
 
 # Minimal differences
 
-```kotlin{5-7} jdbc 
+```kotlin{5-7} show-imports jdbc
 import org.jetbrains.exposed.v1.core.SortOrder
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.innerJoin
@@ -359,7 +406,7 @@ import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.Query
 ```
 
-```kotlin{5-7} r2dbc 
+```kotlin{5-7} show-imports r2dbc
 import org.jetbrains.exposed.v1.core.SortOrder
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.innerJoin
@@ -376,6 +423,13 @@ import org.jetbrains.exposed.v1.r2dbc.Query
 > Same code different imports
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.SortOrder
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.innerJoin
+import org.jetbrains.exposed.v1.core.like
+import org.jetbrains.exposed.v1.jdbc.Query
+import org.jetbrains.exposed.v1.jdbc.select
+
 fun talks(limit: Long = 10, offset: Long = 30): Query =
   Talks.select(Talks.speakerId, Talks.title, Talks.description, Talks.startsAt)
     .where { Talks.description like "%Kotlin%" }
@@ -394,6 +448,11 @@ fun previews(): Query =
 # Accessing the data
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.innerJoin
+import org.jetbrains.exposed.v1.jdbc.Query
+import org.jetbrains.exposed.v1.jdbc.select
+
 fun previews(): Query =
   Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
     .select(title, description, ProfileTable.name, ProfileTable.avatarUrl)
@@ -407,6 +466,11 @@ magic-move
 # Accessing the data
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.innerJoin
+import org.jetbrains.exposed.v1.jdbc.select
+
 fun previews(): Iterable<ResultRow> =
   Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
     .select(title, description, ProfileTable.name, ProfileTable.avatarUrl)
@@ -420,6 +484,11 @@ magic-move
 # Accessing the data
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.innerJoin
+import org.jetbrains.exposed.v1.jdbc.select
+
 fun previews(): List<?> =
   Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
     .select(title, description, ProfileTable.name, ProfileTable.avatarUrl)
@@ -434,6 +503,12 @@ magic-move
 # Accessing the data
 
 ```kotlin
+import kotlin.time.Instant
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.innerJoin
+import org.jetbrains.exposed.v1.jdbc.select
+
 fun previews(): List<TalkPreview> =
   Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
     .select(title, description, ProfileTable.name, ProfileTable.avatarUrl)
@@ -455,6 +530,9 @@ data class TalkPreview(
 <DrawnAnnotation text="Column<A>): A" label="Typed data retrieval from `ResultRow`"  :geometry="{ label: { x: 0.6103, y: 0.3744, width: 0.4137 } }" />
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.Column
+import org.jetbrains.exposed.v1.core.ResultRow
+
 operator fun <A> ResultRow.get(key: Column<A>): A = TODO("Exposed internals")
 
 fun ResultRow.toTalkPreview(): TalkPreview
@@ -470,6 +548,9 @@ magic-move
 <DrawnAnnotation text="Talks.title" label="`Column<String>`"  :geometry="{ label: { x: 0.3554, y: 0.4771, width: 0.1521 }, connector: { start: { x: 0.3208, y: 0.3773 }, end: { x: 0.3205, y: 0.4444 } } }" />
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.Column
+import org.jetbrains.exposed.v1.core.ResultRow
+
 operator fun <A> ResultRow.get(key: Column<A>): A = TODO("Exposed internals")
 
 fun ResultRow.toTalkPreview() = TalkPreview(
@@ -487,6 +568,9 @@ magic-move
 <DrawnAnnotation text="[Talks.title]" label="Kotlin index access operator" color="var(--drawn-annotation-color)" :sequential="false" :geometry="{ label: { x: 0.4534, y: 0.4627 } }" />
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.Column
+import org.jetbrains.exposed.v1.core.ResultRow
+
 operator fun <A> ResultRow.get(key: Column<A>): A = TODO("Exposed internals")
 
 fun ResultRow.toTalkPreview() = TalkPreview(
@@ -503,6 +587,9 @@ magic-move
 <DrawnAnnotation text="this[ProfileTable.avatarUrl]" label="Access all 'select' columns from our join by referencing multiple tables"  :geometry="{ label: { x: 0.4421, y: 0.6113 } }"/>
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.Column
+import org.jetbrains.exposed.v1.core.ResultRow
+
 operator fun <A> ResultRow.get(key: Column<A>): A = TODO("Exposed internals")
 
 fun ResultRow.toTalkPreview() = TalkPreview(
@@ -518,6 +605,11 @@ fun ResultRow.toTalkPreview() = TalkPreview(
 # Accessing the data
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.innerJoin
+import org.jetbrains.exposed.v1.jdbc.select
+
 fun ResultRow.toTalkPreview() = TalkPreview(
   title = this[Talks.title],
   description = this[Talks.description],
@@ -557,12 +649,16 @@ fun previews(): List<TalkPreview> =
 <DrawnAnnotation text=" R2dbcTransaction.()" />
 
 ```kotlin jdbc
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+
 transaction { /* JdbcTransaction.() -> Unit */
   // Query can execute here
 }
 ```
 
 ```kotlin r2dbc
+import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
+
 suspendTransaction { /* R2dbcTransaction.() -> Unit */
   // Query can execute here
 }
@@ -575,6 +671,10 @@ suspendTransaction { /* R2dbcTransaction.() -> Unit */
 <DrawnAnnotation text="previews" :connect="false" label="Can be called from anywhere resulting in java.lang.IllegalStateException: No transaction in context." color="red"  :geometry="{ label: { x: 0.3899, y: 0.4873, width: 0.5693 }, connector: { type: 'quadratic', start: { x: 0.0821, y: 0.2209 }, control: { x: 0.1248, y: 0.4257 }, end: { x: 0.2179, y: 0.4845 } } }" />
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.innerJoin
+import org.jetbrains.exposed.v1.jdbc.select
+
 fun previews(): List<TalkPreview> =
   Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
     .select(Talks.id, Talks.title, Talks.slug, Talks.startAt, ProfileTable.name)
@@ -590,6 +690,11 @@ magic-move
 <DrawnAnnotation text="context(_: Transaction)" label="Compile-time guarantee it's called inside a `Transaction` (common supertype)"  :geometry="{ label: { x: 0.4139, y: 0.5362, width: 0.7506 }, connector: { type: 'quadratic', start: { x: 0.0496, y: 0.2369 }, control: { x: 0.0130, y: 0.3788 }, end: { x: 0.0789, y: 0.4924 } } }" />
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.Transaction
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.innerJoin
+import org.jetbrains.exposed.v1.jdbc.select
+
 context(_: Transaction)
 fun previews(): List<TalkPreview> =
   Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
@@ -606,6 +711,11 @@ magic-move
 <InlineCompilerError text="previews" occurrence=2 message="No context argument for '_: Transaction' found">
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.Transaction
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.innerJoin
+import org.jetbrains.exposed.v1.jdbc.select
+
 context(_: Transaction)
 fun previews(): List<TalkPreview> =
   Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
@@ -629,6 +739,12 @@ magic-move
 <DrawnAnnotation text="Please call Database.connect() first or specify a database explicitly in the transaction call" at="1"  />
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.Transaction
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.innerJoin
+import org.jetbrains.exposed.v1.jdbc.select
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+
 context(_: Transaction)
 fun previews(): List<TalkPreview> =
   Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
@@ -663,6 +779,13 @@ fun example2() = transaction { /* JdbcTransaction.() -> Unit */
 <DrawnAnnotation text="(database: Database)" label="But where is `Database` coming from?" on="1"  :geometry="{ label: { x: 0.2649, y: 0.6217 }, connector: { start: { x: 0.2649, y: 0.5216 }, end: { x: 0.2649, y: 0.5912 } } }" />
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.Transaction
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.innerJoin
+import org.jetbrains.exposed.v1.jdbc.Database
+import org.jetbrains.exposed.v1.jdbc.select
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+
 context(_: Transaction)
 fun previews(): List<TalkPreview> =
   Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
@@ -677,6 +800,8 @@ fun example(database: Database) = transaction(database) { previews() }
 # Connecting a database
 
 ```kotlin jdbc
+import org.jetbrains.exposed.v1.jdbc.Database
+
 val jdbc = Database.connect(
   url = "jdbc:postgresql://localhost:5432/example",
   user = "postgresql",
@@ -685,6 +810,8 @@ val jdbc = Database.connect(
 ```
 
 ```kotlin r2dbc
+import org.jetbrains.exposed.v1.r2dbc.R2dbcDatabase
+
 val r2dbc = R2dbcDatabase.connect(
   url = "r2dbc:postgresql://localhost:5432/example",
   user = "postgresql",
@@ -699,6 +826,10 @@ magic-move
 # Connecting a database
 
 ```kotlin jdbc
+import org.jetbrains.exposed.v1.core.DatabaseConfig
+import org.jetbrains.exposed.v1.core.Slf4jSqlDebugLogger
+import org.jetbrains.exposed.v1.jdbc.Database
+
 val jdbc = Database.connect(
   url = "jdbc:postgresql://localhost:5432/example",
   user = "postgresql",
@@ -711,6 +842,11 @@ val jdbc = Database.connect(
 ```
 
 ```kotlin r2dbc
+import io.r2dbc.spi.IsolationLevel
+import org.jetbrains.exposed.v1.core.Slf4jSqlDebugLogger
+import org.jetbrains.exposed.v1.r2dbc.R2dbcDatabase
+import org.jetbrains.exposed.v1.r2dbc.R2dbcDatabaseConfig
+
 val r2dbc = R2dbcDatabase.connect(
   url = "r2dbc:postgresql://localhost:5432/example",
   user = "postgresql",
@@ -730,6 +866,13 @@ val r2dbc = R2dbcDatabase.connect(
 <DrawnAnnotation text="transaction(database)" label="Prefer explicitly passing database instead of relying on implicit resolution"  :geometry="{ label: { x: 0.7216, y: 0.7197, width: 0.4910 }, connector: { start: { x: 0.5509, y: 0.5191 }, end: { x: 0.6255, y: 0.6776 } } }" />
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.Transaction
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.innerJoin
+import org.jetbrains.exposed.v1.jdbc.Database
+import org.jetbrains.exposed.v1.jdbc.select
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+
 context(_: Transaction)
 fun previews(): List<TalkPreview> =
   Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
@@ -748,6 +891,11 @@ fun example() = transaction { previews() }
 <DrawnAnnotation text="@Transactional" label="Spring's `@Transactional` can also provide Exposed `Transaction`"  :geometry="{ label: { x: 0.3657, y: 0.4912, width: 0.6311 }, connector: { type: 'quadratic', start: { x: 0.0426, y: 0.2194 }, control: { x: 0.0212, y: 0.3626 }, end: { x: 0.0553, y: 0.4803 } } }" />
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.innerJoin
+import org.jetbrains.exposed.v1.jdbc.select
+import org.springframework.transaction.annotation.Transactional
+
 @Transactional
 fun previews(): List<TalkPreview> =
   Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
@@ -762,6 +910,10 @@ fun previews(): List<TalkPreview> =
 <DrawnAnnotation text="insert" occurrence=2 label="`InsertStatement.() -> Unit` builder"  :geometry="{ label: { x: 0.4500, y: 0.5148, width: 0.3736 }, connector: { type: 'quadratic', start: { x: 0.1938, y: 0.4732 }, control: { x: 0.2046, y: 0.5192 }, end: { x: 0.2655, y: 0.5144 } } }" />
 
 ```kotlin
+import kotlin.time.Instant
+import org.jetbrains.exposed.v1.core.Transaction
+import org.jetbrains.exposed.v1.jdbc.insert
+
 context(_: Transaction)
 fun insert(
   title: String,
@@ -786,6 +938,12 @@ VALUES (:title, :speakerId, :startsAt)
 <DrawnAnnotation text="it[Talks.title] = title" label="Typesafe operator setter using `Column<String>`" color="var(--drawn-annotation-color)" sequential="false" :geometry="{ label: { x: 0.6161, y: 0.5807, width: 0.5215 }, connector: { start: { x: 0.3598, y: 0.5983 }, end: { x: 0.3880, y: 0.5828 } } }" />
 
 ```kotlin
+import kotlin.time.Instant
+import org.jetbrains.exposed.v1.core.Column
+import org.jetbrains.exposed.v1.core.Transaction
+import org.jetbrains.exposed.v1.core.statements.InsertStatement
+import org.jetbrains.exposed.v1.jdbc.insert
+
 operator fun <S> InsertStatement.set(column: Column<S>, value: S) = TODO("")
 
 context(_: Transaction)
@@ -809,6 +967,11 @@ VALUES (:title, :speakerId, :startsAt)
 <DrawnAnnotation text="InsertStatement" label="The executed insert statement, providing the affected-row count and any available generated values"  :geometry="{ label: { x: 0.6443, y: 0.5023, width: 0.4733 }, connector: { start: { x: 0.2464, y: 0.4736 }, end: { x: 0.4694, y: 0.5114 } } }" />
 
 ```kotlin
+import kotlin.time.Instant
+import org.jetbrains.exposed.v1.core.Transaction
+import org.jetbrains.exposed.v1.core.statements.InsertStatement
+import org.jetbrains.exposed.v1.jdbc.insert
+
 context(_: Transaction)
 fun insert(
   title: String,
@@ -832,6 +995,11 @@ VALUES (:title, :speakerId, :startsAt)
 <DrawnAnnotation text="EntityID<Long>" label="Returns `EntityID` not raw Long" :connect="false" :geometry="{ label: { x: 0.4351, y: 0.3666, width: 0.2986 } }" />
 
 ```kotlin
+import kotlin.time.Instant
+import org.jetbrains.exposed.v1.core.Transaction
+import org.jetbrains.exposed.v1.core.dao.id.EntityID
+import org.jetbrains.exposed.v1.jdbc.insertAndGetId
+
 context(_: Transaction)
 fun insertAndGetId(
   title: String,
@@ -859,6 +1027,10 @@ magic-move
 <DrawnAnnotation text=".value" label="Explicitly unwrap" />
 
 ```kotlin
+import kotlin.time.Instant
+import org.jetbrains.exposed.v1.core.Transaction
+import org.jetbrains.exposed.v1.jdbc.insertAndGetId
+
 context(_: Transaction)
 fun insertAndGetId(
   title: String,
@@ -884,6 +1056,11 @@ RETURNING id
 <DrawnAnnotation text="listOf(Talks.id, Talks.createdAt, Talks.updatedAt)" label="Be explicit about returned data"  :geometry="{ label: { x: 0.6771, y: 0.5660, width: 0.2889 } }" />
 
 ```kotlin
+import kotlin.time.Instant
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.Transaction
+import org.jetbrains.exposed.v1.jdbc.insertReturning
+
 context(_: Transaction)
 fun insertReturning(
   title: String,
@@ -912,6 +1089,11 @@ magic-move
 <DrawnAnnotation text="[Talks.id, Talks.createdAt, Talks.updatedAt]" label="Use collection literals if you do!"   :geometry="{ label: { x: 0.6844, y: 0.6180 } }"/>
 
 ```kotlin
+import kotlin.time.Instant
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.Transaction
+import org.jetbrains.exposed.v1.jdbc.insertReturning
+
 context(_: Transaction)
 fun insertReturning(
   title: String,
@@ -940,6 +1122,11 @@ magic-move
 <DrawnAnnotation text="RETURNING *" />
 
 ```kotlin
+import kotlin.time.Instant
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.Transaction
+import org.jetbrains.exposed.v1.jdbc.insertReturning
+
 context(_: Transaction)
 fun insertReturning(
   title: String,
@@ -969,6 +1156,11 @@ magic-move
 <DrawnAnnotation text="map(ResultRow::toTalkWithSpeakerId)" label="Return all data typed" color="var(--drawn-annotation-color)" sequential="false" :geometry="{ label: { x: 0.6679, y: 0.6723, width: 0.3424 }, connector: { start: { x: 0.4946, y: 0.7374 }, end: { x: 0.5683, y: 0.6904 } } }" />
 
 ```kotlin
+import kotlin.time.Instant
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.Transaction
+import org.jetbrains.exposed.v1.jdbc.insertReturning
+
 context(_: Transaction)
 fun insertReturning(
   title: String,
@@ -997,6 +1189,10 @@ RETURNING *
 <DrawnAnnotation text="ON CONFLICT DO NOTHING" />
 
 ```kotlin
+import kotlin.time.Instant
+import org.jetbrains.exposed.v1.core.Transaction
+import org.jetbrains.exposed.v1.jdbc.insertIgnore
+
 context(_: Transaction)
 fun insert(
   title: String,
@@ -1024,6 +1220,9 @@ magic-move
 <DrawnAnnotation text="RETURNING id" />
 
 ```kotlin
+import kotlin.time.Instant
+import org.jetbrains.exposed.v1.jdbc.insertIgnoreAndGetId
+
 Talks.insertIgnoreAndGetId {
   it[Talks.title] = "Another title"
   it[Talks.speakerId] = 99
@@ -1048,6 +1247,9 @@ magic-move
 <DrawnAnnotation text="ignoreErrors" label="Normal insertReturning with a flag"  :geometry="{ label: { x: 0.7593, y: 0.2737 } }"/>
 
 ```kotlin
+import kotlin.time.Instant
+import org.jetbrains.exposed.v1.jdbc.insertReturning
+
 Talks.insertReturning([Talks.id, Talks.createdAt], ignoreErrors = true) {
   it[Talks.title] = "Another title"
   it[Talks.speakerId] = 99
@@ -1070,6 +1272,10 @@ RETURNING id, createdAt;
 <DrawnAnnotation text="RETURNING *" label="JDBC `RETURN_GENERATED_KEYS`: the PostgreSQL driver appends `RETURNING *` itself" on="0" />
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.Transaction
+import org.jetbrains.exposed.v1.jdbc.batchInsert
+
 context(_: Transaction)
 fun insertBatch(newTalk: List<NewTalk>) =
   Talks.batchInsert(newTalk) { newTalk ->
@@ -1095,6 +1301,9 @@ magic-move
 <DrawnAnnotation text="shouldReturnGeneratedValues = false" label="The PostgreSQL driver merges the JDBC batch into multi-row statements `reWriteBatchedInserts=true`"  :geometry="{ label: { x: 0.6125, y: 0.5222, width: 0.7326 }, connector: { start: { x: 0.5850, y: 0.3285 }, end: { x: 0.6164, y: 0.4801 } } }"/>
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.Transaction
+import org.jetbrains.exposed.v1.jdbc.batchInsert
+
 context(_: Transaction)
 fun insertBatch(newTalk: List<NewTalk>) {
   Talks.batchInsert(newTalk, shouldReturnGeneratedValues = false) { newTalk ->
@@ -1118,6 +1327,9 @@ VALUES (:title1, :speakerId1, :startsAt1),
 <DrawnAnnotation text="{ Talks.id eq talkId }" label="Without a precise predicate can affect many rows"  :geometry="{ label: { x: 0.5046, y: 0.3477, width: 0.4722 }, connector: { start: { x: 0.3012, y: 0.2769 }, end: { x: 0.3012, y: 0.3179 } } }" />
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.update
+
 fun update(talkId: Long, status: TalkStatus) =
   Talks.update({ Talks.id eq talkId }) {
     it[Talks.status] = status
@@ -1139,6 +1351,9 @@ magic-move
 <DrawnAnnotation text="it[Talks.status] = status" label="Same DSL as insert"  :geometry="{ label: { x: 0.5105, y: 0.3388, width: 0.1764 }, connector: { start: { x: 0.3820, y: 0.3171 }, end: { x: 0.4182, y: 0.3377 } } }" />
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.update
+
 fun update(talkId: Long, status: TalkStatus) =
   Talks.update({ Talks.id eq talkId }) {
     it[Talks.status] = status
@@ -1160,6 +1375,9 @@ magic-move
 <DrawnAnnotation text="[Talks.speakerId, Talks.title, Talks.startsAt]" label="Use `*Returning` variant to return selected columns"  :geometry="{ label: { x: 0.6756, y: 0.4016, width: 0.4826 } }" />
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.updateReturning
+
 fun update(talkId: Long, status: TalkStatus): TalkPreview? =
   Talks.updateReturning(
     [Talks.speakerId, Talks.title, Talks.startsAt],
@@ -1186,6 +1404,9 @@ magic-move
 <DrawnAnnotation text="singleOrNull()"/>
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.updateReturning
+
 fun update(talkId: Long, status: TalkStatus): TalkPreview? =
   Talks.updateReturning(
     [Talks.speakerId, Talks.title, Talks.startsAt],
@@ -1210,6 +1431,9 @@ RETURNING speaker_id, title, starts_at
 <DrawnAnnotation text="UPDATE SET" />
 
 ```kotlin
+import kotlin.time.Instant
+import org.jetbrains.exposed.v1.jdbc.upsert
+
 fun upsert(slug: String, title: String, speakerId: Long, startsAt: Instant) =
   Talks.upsert {
     it[Talks.slug] = slug
@@ -1240,6 +1464,9 @@ magic-move
 <DrawnAnnotation text="(slug)" label="Must have `UNIQUE` constraint"  :geometry="{ label: { x: 0.4897, y: 0.7424 }, connector: { start: { x: 0.2585, y: 0.6949 }, end: { x: 0.3420, y: 0.7338 } } }"/>
 
 ```kotlin
+import kotlin.time.Instant
+import org.jetbrains.exposed.v1.jdbc.upsert
+
 fun upsert(slug: String, title: String, speakerId: Long, startsAt: Instant) =
   Talks.upsert(Talks.slug) {
     it[Talks.slug] = slug
@@ -1268,6 +1495,9 @@ magic-move
 <DrawnAnnotation text="onUpdateExclude" label="By default every inserted column is updated, except the conflict key" on="0" :geometry="{ label: { x: 0.7158, y: 0.3958, width: 0.4959 }, connector: { start: { x: 0.4484, y: 0.2864 }, end: { x: 0.5500, y: 0.3800 } } }" />
 
 ```kotlin
+import kotlin.time.Instant
+import org.jetbrains.exposed.v1.jdbc.upsert
+
 fun upsert(slug: String, title: String, speakerId: Long, startsAt: Instant) =
   Talks.upsert(Talks.slug, onUpdateExclude = [Talks.speakerId]) {
     it[Talks.slug] = slug
@@ -1295,6 +1525,9 @@ magic-move
 <DrawnAnnotation text="[Talks.id," label="Application-generated values (`clientDefault`, `UuidTable` id) are inserted too, so exclude them" on="0" :geometry="{ label: { x: 0.7158, y: 0.3958, width: 0.4959 }, connector: { start: { x: 0.4484, y: 0.2864 }, end: { x: 0.5500, y: 0.3800 } } }"/>
 
 ```kotlin
+import kotlin.time.Instant
+import org.jetbrains.exposed.v1.jdbc.upsert
+
 fun upsert(slug: String, title: String, speakerId: Long, startsAt: Instant) =
   Talks.upsert(Talks.slug, onUpdateExclude = [Talks.id, Talks.speakerId]) {
     it[Talks.slug] = slug
@@ -1323,6 +1556,10 @@ magic-move
 <DrawnAnnotation text="onUpdate" label="Take full control of update" on="0"  :geometry="{ label: { x: 0.7024, y: 0.2681 }, connector: { start: { x: 0.4485, y: 0.2664 }, end: { x: 0.5797, y: 0.2710 } } }"/>
 
 ```kotlin
+import kotlin.time.Instant
+import org.jetbrains.exposed.v1.datetime.CurrentTimestamp
+import org.jetbrains.exposed.v1.jdbc.upsert
+
 fun upsert(slug: String, title: String, speakerId: Long, startsAt: Instant) =
   Talks.upsert(Talks.slug, onUpdate = {
     it[Talks.title] = insertValue(Talks.title)
@@ -1355,6 +1592,9 @@ magic-move
 <DrawnAnnotation text="RETURNING *" />
 
 ```kotlin
+import kotlin.time.Instant
+import org.jetbrains.exposed.v1.jdbc.upsertReturning
+
 fun upsertReturning(slug: String, title: String, speakerId: Long, startsAt: Instant) =
   Talks.upsertReturning(Talks.slug) {
     it[Talks.slug] = slug
@@ -1385,6 +1625,9 @@ magic-move
 <DrawnAnnotation text="id, updated_at" />
 
 ```kotlin
+import kotlin.time.Instant
+import org.jetbrains.exposed.v1.jdbc.upsertReturning
+
 fun upsertReturning(slug: String, title: String, speakerId: Long, startsAt: Instant) =
   Talks.upsertReturning(Talks.slug, returning = [Talks.id, Talks.updatedAt]) {
     it[Talks.slug] = slug
@@ -1412,6 +1655,9 @@ RETURNING id, updated_at
 <DrawnAnnotation text=": Int" label="`deleteWhere` returns the affected row count" on="1"  :geometry="{ label: { x: 0.6579, y: 0.1886 }, connector: { start: { x: 0.3840, y: 0.2208 }, end: { x: 0.4469, y: 0.2034 } } }"/>
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.deleteWhere
+
 fun delete(talkId: Long): Int =
   Talks.deleteWhere { Talks.id eq talkId }
 ```
@@ -1431,6 +1677,10 @@ magic-move
 <DrawnAnnotation text="RETURNING *" />
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.deleteReturning
+
 fun deleteReturning(talkId: Long): Iterable<ResultRow> =
   Talks.deleteReturning { Talks.id eq talkId }
 ```
@@ -1448,6 +1698,9 @@ magic-move
 # Delete states its scope
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.deleteReturning
+
 fun deleteReturning(talkId: Long): List<TalkPreview> =
   Talks.deleteReturning { Talks.id eq talkId }
     .map { it.toTalkPreview() }
@@ -1466,6 +1719,11 @@ RETURNING *
 <DrawnAnnotation text="StdOutSqlLogger" label="Before driver optimisations"  :geometry="{ label: { x: 0.5962, y: 0.2978 } }"/>
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.StdOutSqlLogger
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.select
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+
 transaction(database) {
   addLogger(StdOutSqlLogger)
   Talks.select(Talks.title)

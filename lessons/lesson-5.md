@@ -18,6 +18,11 @@ kodee: wave
 <DrawnAnnotation text="UuidEntityClass<Talk>(Talks)" label="Bind the entity manager to the `IdTable`" on="1" />
 
 ```kotlin
+import kotlin.uuid.Uuid
+import org.jetbrains.exposed.v1.core.dao.id.EntityID
+import org.jetbrains.exposed.v1.dao.UuidEntity
+import org.jetbrains.exposed.v1.dao.UuidEntityClass
+
 class Talk(id: EntityID<Uuid>) : UuidEntity(id) {
   companion object : UuidEntityClass<Talk>(Talks)
 }
@@ -32,6 +37,11 @@ magic-move
 <DrawnAnnotation text="by Talks.title" label="Kotlin Property Delegates reads, and writes the column" />
 
 ```kotlin
+import kotlin.uuid.Uuid
+import org.jetbrains.exposed.v1.core.dao.id.EntityID
+import org.jetbrains.exposed.v1.dao.UuidEntity
+import org.jetbrains.exposed.v1.dao.UuidEntityClass
+
 class Talk(id: EntityID<Uuid>) : UuidEntity(id) {
   companion object : UuidEntityClass<Talk>(Talks)
 
@@ -46,6 +56,11 @@ magic-move
 # Entity properties delegate to table columns
 
 ```kotlin
+import kotlin.uuid.Uuid
+import org.jetbrains.exposed.v1.core.dao.id.EntityID
+import org.jetbrains.exposed.v1.dao.UuidEntity
+import org.jetbrains.exposed.v1.dao.UuidEntityClass
+
 class Talk(id: EntityID<Uuid>) : UuidEntity(id) {
   companion object : UuidEntityClass<Talk>(Talks)
 
@@ -62,6 +77,8 @@ class Talk(id: EntityID<Uuid>) : UuidEntity(id) {
 # `EntityClass` manages the record lifecycle
 
 ```kotlin
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+
 transaction(database) {
   val talk = Talk.new {
     title = newTalk.title
@@ -84,6 +101,11 @@ transaction(database) {
 <DrawnAnnotation text="referencedOn Talks.speakerId" label="Creates a Kotlin delegate that references `Profile` on `speakerId` as foreign key" on="1"  :geometry="{ label: { x: 0.6588, y: 0.4710, width: 0.4278 }, connector: { start: { x: 0.5913, y: 0.3719 }, end: { x: 0.5913, y: 0.4352 } } }"/>
 
 ```kotlin
+import kotlin.uuid.Uuid
+import org.jetbrains.exposed.v1.core.dao.id.EntityID
+import org.jetbrains.exposed.v1.dao.UuidEntity
+import org.jetbrains.exposed.v1.dao.UuidEntityClass
+
 class Talk(id: EntityID<Uuid>) : UuidEntity(id) {
   companion object : UuidEntityClass<Talk>(Talks)
 
@@ -106,6 +128,8 @@ talk.tags.map(Tag::label)
 > References are lazy by default.
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.eq
+
 val talks: Iterable<Talk> = Talk
   .find { Talks.isPublished eq true }
 ```
@@ -119,6 +143,8 @@ val talks: Iterable<Talk> = Talk
 <DrawnAnnotation text="talk.id" label="Every access results in a SELECT query so talks.size queries" />
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.eq
+
 val talks: Iterable<Talk> = Talk
   .find { Talks.isPublished eq true }
 
@@ -134,6 +160,9 @@ for(talk in talks) {
 <DrawnAnnotation text="with" label="Eagerly load referenced properties in this collection"  :geometry="{ label: { x: 0.6038, y: 0.3640 }, connector: { start: { x: 0.1359, y: 0.3189 }, end: { x: 0.3532, y: 0.3603 } } }"/>
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.dao.with
+
 val talks = Talk
   .find { Talks.isPublished eq true }
   .with(Talk::speaker, Talk::host)
@@ -160,6 +189,10 @@ for(talk in talks) {
 <DrawnAnnotation text="wrapRows" label="Turns Query into managed entities allowing more complex relationships"  :geometry="{ label: { x: 0.4769, y: 0.5324, width: 0.4817 }, connector: { start: { x: 0.4369, y: 0.4238 }, end: { x: 0.4369, y: 0.5052 } } }"/>
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.dao.with
+import org.jetbrains.exposed.v1.jdbc.select
+
 val query = Talks
   .select(Talks.columns)
   .where { Talks.isPublished eq true }
@@ -197,6 +230,10 @@ val talks: Iterable<Talk> = Talk.wrapRows(query)
 <DrawnAnnotation text="databaseGenerated" label="Allows omitting value when inserting" on="3"/>
 
 ```kotlin
+import kotlin.time.Clock
+import org.jetbrains.exposed.v1.datetime.CurrentTimestamp
+import org.jetbrains.exposed.v1.datetime.timestamp
+
 val appUpdatedAt = timestamp("app_updated_at")
   .clientDefault { Clock.System.now() }
 
@@ -215,6 +252,11 @@ val managedUpdatedAt = timestamp("managed_created_at")
 <DrawnAnnotation text="q { +&quot;uuidv7()&quot; }" label="Specialised DSL for building custom functions" on="1" />
 
 ```kotlin
+import kotlin.uuid.Uuid
+import org.jetbrains.exposed.v1.core.Function
+import org.jetbrains.exposed.v1.core.QueryBuilder
+import org.jetbrains.exposed.v1.core.UuidColumnType
+
 object GenerateUuidV7 : Function<Uuid>(UuidColumnType()) {
   override fun toQueryBuilder(q: QueryBuilder) = q { +"uuidv7()" }
 }
@@ -227,6 +269,8 @@ val id = uuid("id").defaultExpression(GenerateUuidV7)
 # Read database-generated values deliberately
 
 ```kotlin
+import org.jetbrains.exposed.v1.jdbc.insertReturning
+
 val created = Talks.insertReturning(
   listOf(Talks.id, Talks.createdAt, Talks.updatedAt),
 ) {

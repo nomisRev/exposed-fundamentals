@@ -29,6 +29,12 @@ kodee: wave
 <DrawnAnnotation text="COUNT(bookmarks.talk_id) bookmark_count" />
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.SortOrder
+import org.jetbrains.exposed.v1.core.alias
+import org.jetbrains.exposed.v1.core.count
+import org.jetbrains.exposed.v1.core.leftJoin
+import org.jetbrains.exposed.v1.jdbc.select
+
 val bookmarkCount = Bookmarks.talkId.count().alias("bookmark_count")
 
 Talks.leftJoin(Bookmarks)
@@ -52,6 +58,13 @@ ORDER BY bookmark_count DESC
 <DrawnAnnotation text="this[bookmarkCount]" label="Use the aliased column in `ResultRow` extraction"  :geometry="{ label: { x: 0.7379, y: 0.3449, width: 0.3015 }, connector: { start: { x: 0.6870, y: 0.5539 }, end: { x: 0.7153, y: 0.3940 } } }"/>
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.SortOrder
+import org.jetbrains.exposed.v1.core.alias
+import org.jetbrains.exposed.v1.core.count
+import org.jetbrains.exposed.v1.core.leftJoin
+import org.jetbrains.exposed.v1.jdbc.select
+
 val bookmarkCount = Bookmarks.talkId.count().alias("bookmark_count")
 
 Talks.leftJoin(Bookmarks)
@@ -80,6 +93,13 @@ magic-move
 <DrawnAnnotation text="Bookmarks.talkId.count()" label="PostgreSQL doesn't make SELECT aliases available but doesn't run it twice" occurrence="2" :connect="false" on="1" :geometry="{ label: { x: 0.7591, y: 0.3499, width: 0.3836 } }"/>
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.SortOrder
+import org.jetbrains.exposed.v1.core.alias
+import org.jetbrains.exposed.v1.core.count
+import org.jetbrains.exposed.v1.core.greaterEq
+import org.jetbrains.exposed.v1.core.leftJoin
+import org.jetbrains.exposed.v1.jdbc.select
+
 val bookmarkCount = Bookmarks.talkId.count().alias("bookmark_count")
 
 Talks.leftJoin(Bookmarks)
@@ -116,6 +136,11 @@ ORDER BY bookmark_count DESC
 # A query can become a value in another query
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.innerJoin
+import org.jetbrains.exposed.v1.jdbc.Query
+import org.jetbrains.exposed.v1.jdbc.select
+
 fun talkIdsForTag(tag: String): Query =
   TalkTags.innerJoin(Tags)
     .select(TalkTags.talkId)
@@ -138,6 +163,12 @@ magic-move
 <DrawnAnnotation text="WHERE talks.id IN" />
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.inSubQuery
+import org.jetbrains.exposed.v1.core.innerJoin
+import org.jetbrains.exposed.v1.jdbc.Query
+import org.jetbrains.exposed.v1.jdbc.select
+
 fun talkIdsForTag(tag: String): Query =
   TalkTags.innerJoin(Tags)
     .select(TalkTags.talkId)
@@ -164,6 +195,12 @@ WHERE talks.id IN (
 <DrawnAnnotation text="exists" label="If the `hasTag` query returns at least one row"  :geometry="{ label: { x: 0.5943, y: 0.6619, width: 0.5428 }, connector: { start: { x: 0.2526, y: 0.5294 }, end: { x: 0.4005, y: 0.6292 } } }"/>
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.and
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.exists
+import org.jetbrains.exposed.v1.core.innerJoin
+import org.jetbrains.exposed.v1.jdbc.select
+
 fun hasTag(tag: String) =
   TalkTags.innerJoin(Tags)
     .select(TalkTags.talkId)
@@ -190,6 +227,10 @@ WHERE EXISTS (
 <DrawnAnnotation text="ProfileTable.name.trim().lowerCase()" label="Create complex expressions by composing functions" on="0" />
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.alias
+import org.jetbrains.exposed.v1.core.lowerCase
+import org.jetbrains.exposed.v1.core.trim
+
 val normalizedName = ProfileTable.name.trim().lowerCase()
   .alias("normalized_name")
 ```
@@ -204,6 +245,12 @@ val normalizedName = ProfileTable.name.trim().lowerCase()
 
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.CustomStringFunction
+import org.jetbrains.exposed.v1.core.Expression
+import org.jetbrains.exposed.v1.core.alias
+import org.jetbrains.exposed.v1.core.lowerCase
+import org.jetbrains.exposed.v1.core.trim
+
 val normalizedName = ProfileTable.name.trim().lowerCase()
   .alias("normalized_name")
 
@@ -224,6 +271,14 @@ val normalizedTitle = Talks.title.lowerCase().unaccent()
 
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.SortOrder
+import org.jetbrains.exposed.v1.core.alias
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.innerJoin
+import org.jetbrains.exposed.v1.core.lowerCase
+import org.jetbrains.exposed.v1.core.trim
+import org.jetbrains.exposed.v1.jdbc.select
+
 val normalizedName = ProfileTable.name.trim().lowerCase().alias("normalized_name")
 
 val normalizedTitle = Talks.title.lowerCase().unaccent().alias("normalized_title")
@@ -249,6 +304,11 @@ ORDER BY normalized_title ASC
 <DrawnAnnotation text="normalizedTitle" occurrence="4" label="Reference them in the ResultRow"  :geometry="{ label: { x: 0.7251, y: 0.3820 } }"/> 
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.SortOrder
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.innerJoin
+import org.jetbrains.exposed.v1.jdbc.select
+
 Talks.innerJoin(ProfileTable) { Talks.speakerId eq ProfileTable.id }
   .select(normalizedName, normalizedTitle)
   .orderBy(normalizedTitle to SortOrder.ASC)
@@ -276,6 +336,10 @@ ORDER BY normalized_title ASC
 <DrawnAnnotation text="QueryBuilder" occurrence="2" label="Full control over the SQL" on="1"  :geometry="{ label: { x: 0.6615, y: 0.4555 } }"/>
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.ExpressionWithColumnType
+import org.jetbrains.exposed.v1.core.LongColumnType
+import org.jetbrains.exposed.v1.core.QueryBuilder
+
 private object TotalCount : ExpressionWithColumnType<Long>() {
   override val columnType = LongColumnType()
 
@@ -291,6 +355,9 @@ private object TotalCount : ExpressionWithColumnType<Long>() {
 <DrawnAnnotation text="row[TotalCount]" label="Returns `Long` through `ExpressionWithColumnType<Long>`"  :geometry="{ label: { x: 0.6709, y: 0.4581, width: 0.4627 }, connector: { start: { x: 0.4383, y: 0.4221 }, end: { x: 0.5534, y: 0.4451 } } }"/>
 
 ```kotlin
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.select
+
 Talks.select(Talks.id, Talks.title, TotalCount)
   .where { Talks.isPublished eq true }
   .map { row ->
