@@ -10,6 +10,7 @@ colorSchema: both
 highlighter: shiki
 themeConfig:
   kodee: greeting
+  siteUrl: https://nomisrev.github.io/exposed-fundamentals/
 kodee: welcome
 ---
 
