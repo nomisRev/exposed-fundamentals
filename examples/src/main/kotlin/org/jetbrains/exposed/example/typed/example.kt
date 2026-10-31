@@ -18,6 +18,7 @@ data class UserWithImage(
   val imageUrl: String
 )
 
+// TODO support where, grouping, etc
 fun main() {
   UserTable
     .select(UserTable.id, UserTable.username, UserTable.email)
