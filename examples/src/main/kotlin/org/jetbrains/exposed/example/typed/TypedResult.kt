@@ -10,8 +10,7 @@ sealed interface ResultSpec {
 
   data object Empty : ResultSpec
 
-  @JvmInline
-  value class Extract<A>(val extract: (ResultRow) -> A) : ResultSpec
+  class Extract<A> private constructor() : ResultSpec
 
   class And<A : ResultSpec, B : ResultSpec>(val a: A, val b: B) : ResultSpec
 }

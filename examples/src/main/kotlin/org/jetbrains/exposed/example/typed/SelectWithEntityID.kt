@@ -10,18 +10,21 @@ import org.jetbrains.exposed.v1.jdbc.select as ExposedSelect
 fun <A : Any, ID : EntityID<A>> Table.select(column: Column<ID>): TypedQuery<Extract<A>> =
   TypedQuery([column], { ExposedSelect(it) })
 
+@JvmName("selectTwoEntityIdFirst")
 fun <A : Any, ID : EntityID<A>, C> Table.select(
   columnA: Column<ID>,
   columnB: Column<C>,
 ): TypedQuery<And<Extract<A>, Extract<C>>> =
   TypedQuery([columnA, columnB], { ExposedSelect(it) })
 
+@JvmName("selectTwoEntityIdSecond")
 fun <A : Any, ID : EntityID<A>> Table.select(
   columnA: Column<A>,
   columnB: Column<ID>,
 ): TypedQuery<And<Extract<A>, Extract<A>>> =
   TypedQuery([columnA, columnB], { ExposedSelect(it) })
 
+@JvmName("selectThreeEntityIdFirst")
 fun <A : Any, ID : EntityID<A>, C, D> Table.select(
   columnA: Column<ID>,
   columnB: Column<C>,
@@ -30,6 +33,7 @@ fun <A : Any, ID : EntityID<A>, C, D> Table.select(
   TypedQuery([columnA, columnB, columnC], { ExposedSelect(it) })
 
 
+@JvmName("selectThreeEntityIdSecond")
 fun <A : Any, ID : EntityID<A>, C> Table.select(
   columnA: Column<A>,
   columnB: Column<ID>,
@@ -37,6 +41,7 @@ fun <A : Any, ID : EntityID<A>, C> Table.select(
 ): TypedQuery<And<And<Extract<A>, Extract<A>>, Extract<C>>> =
   TypedQuery([columnA, columnB, columnC], { ExposedSelect(it) })
 
+@JvmName("selectThreeEntityIdThird")
 fun <A : Any, B, ID : EntityID<A>> Table.select(
   columnA: Column<A>,
   columnB: Column<B>,

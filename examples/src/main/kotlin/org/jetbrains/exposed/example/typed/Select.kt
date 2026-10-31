@@ -14,12 +14,14 @@ fun <A : ResultSpec, B, C> TypedQuery<A>.select(
 ): TypedQuery<And<And<A, Extract<B>>, Extract<C>>> =
   TypedQuery(columns + columnB + columnC, result)
 
+@JvmName("selectEntityIdFirst")
 fun <A : ResultSpec, B : Any, ID : EntityID<B>, C> TypedQuery<A>.select(
   columnB: Column<ID>,
   columnC: Column<C>
 ): TypedQuery<And<And<A, Extract<B>>, Extract<C>>> =
   TypedQuery(columns + columnB + columnC, result)
 
+@JvmName("selectEntityIdSecond")
 fun <A : ResultSpec, B, C : Any, ID : EntityID<C>> TypedQuery<A>.select(
   columnB: Column<B>,
   columnC: Column<ID>
